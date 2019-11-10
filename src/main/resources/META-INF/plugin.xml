@@ -1,0 +1,27 @@
+<idea-plugin>
+    <id>indent-rainbow.indent-rainbow</id>
+    <name>Indent Rainbow</name>
+    <vendor email="diraria+indent-rainbow@yandex.ru" url="https://github.com/dima74/indent-rainbow">Indent Rainbow</vendor>
+
+    <description><![CDATA[
+        A simple extension to make indentation more readable
+
+        This extension colorizes the indentation in front of your text alternating four different colors on each step.
+    ]]></description>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <application-components>
+        <component>
+            <implementation-class>indent.rainbow.MyApplicationComponent</implementation-class>
+        </component>
+    </application-components>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
