@@ -37,7 +37,7 @@ class MyAnnotator : Annotator {
             if (highlightStartOffset == highlightEndOffset) continue
 
             if ((highlightEndOffset - highlightStartOffset) % tabSize != 0) {
-                highlight(holder, highlightStartOffset, highlightEndOffset, MyColors.errorTextAttributesKey)
+                highlight(holder, highlightStartOffset, highlightEndOffset, MyColors.ERROR)
             } else {
                 for (i in highlightStartOffset until highlightEndOffset step tabSize) {
                     val textAttributes = MyColors.getTextAttributes((i - highlightStartOffset) / tabSize)

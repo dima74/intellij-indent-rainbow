@@ -4,9 +4,12 @@
     <vendor email="diraria+indent-rainbow@yandex.ru" url="https://github.com/dima74/indent-rainbow">Indent Rainbow</vendor>
 
     <description><![CDATA[
-        A simple extension to make indentation more readable
-
-        This extension colorizes the indentation in front of your text alternating four different colors on each step.
+        <h1 align="center">Indent Rainbow Plugin</h1>
+        <h2 align="center">A simple extension to make indentation more readable</h2>
+        <!--
+        <div><img width="64" height="64" src="todo"></div>
+        -->
+        <p>This extension colorizes the indentation in front of your text alternating four different colors on each step.</p>
     ]]></description>
 
     <depends>com.intellij.modules.lang</depends>
@@ -18,7 +21,8 @@
     </application-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/IndentRainbowDarcula.xml"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/IndentRainbowDefault.xml"/>
     </extensions>
 
     <actions>

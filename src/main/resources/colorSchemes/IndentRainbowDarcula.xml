@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<list>
+    <option name="INDENT_RAINBOW_ERROR">
+        <value>
+            <option name="BACKGROUND" value="8020204d"/>
+        </value>
+    </option>
+    <option name="INDENT_RAINBOW_COLOR_1">
+        <value>
+            <option name="BACKGROUND" value="ffff4012"/>
+        </value>
+    </option>
+    <option name="INDENT_RAINBOW_COLOR_2">
+        <value>
+            <option name="BACKGROUND" value="7fff7f12"/>
+        </value>
+    </option>
+    <option name="INDENT_RAINBOW_COLOR_3">
+        <value>
+            <option name="BACKGROUND" value="ff7fff12"/>
+        </value>
+    </option>
+    <option name="INDENT_RAINBOW_COLOR_4">
+        <value>
+            <option name="BACKGROUND" value="4fecec12"/>
+        </value>
+    </option>
+</list>
