@@ -21,8 +21,8 @@
     </application-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/IndentRainbowDarcula.xml"/>
-        <additionalTextAttributes scheme="Default" file="colorSchemes/IndentRainbowDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/darcula.xml"/>
+        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/default.xml"/>
     </extensions>
 
     <actions>
