@@ -21,8 +21,10 @@
     </application-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/darcula.xml"/>
-        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/default.xml"/>
+<!--        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/darcula.xml"/>-->
+<!--        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/default.xml"/>-->
+        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml"/>
+        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/original_rgba.xml"/>
     </extensions>
 
     <actions>

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "indent-rainbow"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
@@ -26,7 +26,7 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
-    sinceBuild("172")
+    sinceBuild("182")
     untilBuild("300")
     changeNotes("""Initial version""")
 }
