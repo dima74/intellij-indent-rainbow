@@ -1,10 +1,9 @@
 package indent.rainbow
 
+import com.intellij.application.options.CodeStyle
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
-import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -16,9 +15,12 @@ class MyAnnotator : Annotator {
         if (element !is PsiWhiteSpace) return
 
         val project = element.project
-        val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile) ?: return
-        val editor = EditorFactory.getInstance().getEditors(document).firstOrNull() ?: return
-        val tabSize = EditorUtil.getTabSize(editor)
+        val file = element.containingFile
+        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
+
+        val indentOptions = CodeStyle.getIndentOptions(file)
+        val useTabs = indentOptions.USE_TAB_CHARACTER
+        val tabSize = indentOptions.TAB_SIZE
 
         val range = element.textRange
         var startLine = document.getLineNumber(range.startOffset)
@@ -36,13 +38,19 @@ class MyAnnotator : Annotator {
             }
             if (highlightStartOffset == highlightEndOffset) continue
 
-            if ((highlightEndOffset - highlightStartOffset) % tabSize != 0) {
-                highlight(holder, highlightStartOffset, highlightEndOffset, MyColors.ERROR)
-            } else {
-                for (i in highlightStartOffset until highlightEndOffset step tabSize) {
-                    val textAttributes = MyColors.getTextAttributes((i - highlightStartOffset) / tabSize)
-                    highlight(holder, i, i + tabSize, textAttributes)
+            val highlightText = document.getText(TextRange(highlightStartOffset, highlightEndOffset))
+            val okSpaces = !useTabs
+                    && highlightText.chars().allMatch { it == ' '.toInt() }
+                    && (highlightEndOffset - highlightStartOffset) % tabSize == 0
+            val okTabs = useTabs && highlightText.chars().allMatch { it == '\t'.toInt() }
+            if (okSpaces || okTabs) {
+                val step = if (useTabs) 1 else tabSize
+                for (i in highlightStartOffset until highlightEndOffset step step) {
+                    val textAttributes = MyColors.getTextAttributes((i - highlightStartOffset) / step)
+                    highlight(holder, i, i + step, textAttributes)
                 }
+            } else {
+                highlight(holder, highlightStartOffset, highlightEndOffset, MyColors.ERROR)
             }
         }
     }

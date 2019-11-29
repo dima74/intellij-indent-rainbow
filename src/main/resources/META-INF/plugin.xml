@@ -7,7 +7,7 @@
         <h1 align="center">Indent Rainbow Plugin</h1>
         <h2 align="center">A simple extension to make indentation more readable</h2>
         <!--
-        <div><img width="64" height="64" src="todo"></div>
+        <div><img width="509" height="477" src="https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example.png"></div>
         -->
         <p>This extension colorizes the indentation in front of your text alternating four different colors on each step.</p>
     ]]></description>

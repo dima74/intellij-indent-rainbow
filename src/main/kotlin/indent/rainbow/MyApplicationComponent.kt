@@ -2,7 +2,9 @@ package indent.rainbow
 
 import com.intellij.lang.Language
 import com.intellij.lang.LanguageAnnotators
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.BaseComponent
+import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
 
 class MyApplicationComponent : BaseComponent {
@@ -19,6 +21,7 @@ class MyApplicationComponent : BaseComponent {
     }
 
     private fun initSchemeChangeListener() {
-        EditorColorsManager.getInstance().addEditorColorsListener { MyColors.onSchemeChange() }
+        val listener = EditorColorsListener { MyColors.onSchemeChange() }
+        ApplicationManager.getApplication().messageBus.connect().subscribe(EditorColorsManager.TOPIC, listener)
     }
 }
