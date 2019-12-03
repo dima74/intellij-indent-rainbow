@@ -13,6 +13,7 @@ class MyAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is PsiWhiteSpace) return
+        if (!IndentRainbowConfig.instance.enabled) return
 
         val project = element.project
         val file = element.containingFile

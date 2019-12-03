@@ -21,6 +21,8 @@
     </application-components>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="indent.rainbow.IndentRainbowConfig" />
+
 <!--        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/darcula.xml"/>-->
 <!--        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/default.xml"/>-->
         <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml"/>
@@ -28,6 +30,8 @@
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="IndentRainbow.Toggle"
+                class="indent.rainbow.IndentRainbowToggleAction"
+                text="Indent Rainbow: Toggle (Enable/Disable)" />
     </actions>
 </idea-plugin>
