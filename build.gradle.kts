@@ -22,6 +22,8 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version = "2019.3"
+
+    // setPlugins("com.chrisrm.idea.MaterialThemeUI:4.11.0")
 }
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8

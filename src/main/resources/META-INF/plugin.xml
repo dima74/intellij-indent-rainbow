@@ -23,10 +23,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="indent.rainbow.IndentRainbowConfig" />
 
-<!--        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/darcula.xml"/>-->
-<!--        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/default.xml"/>-->
-        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml"/>
-        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/original_rgba.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml" />
+        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/original_rgba.xml" />
+        <additionalTextAttributes scheme="Empty" file="IndentRainbowColorSchemes/original_rgba.xml" />
     </extensions>
 
     <actions>
