@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+    <rect x="42" y="42" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="82" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="122" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="162" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="202" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="242" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="282" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="42" y="322" width="76" height="36" rx="10" fill="#916eff"/>
+    <rect x="122" y="42" width="76" height="36" rx="10" fill="#d602ee"/>
+    <rect x="122" y="82" width="76" height="36" rx="10" fill="#d602ee"/>
+    <rect x="122" y="122" width="76" height="36" rx="10" fill="#d602ee"/>
+    <rect x="122" y="162" width="76" height="36" rx="10" fill="#d602ee"/>
+    <rect x="122" y="202" width="76" height="36" rx="10" fill="#d602ee"/>
+    <rect x="122" y="322" width="76" height="36" rx="10" fill="#d602ee"/>
+    <rect x="202" y="82" width="76" height="36" rx="10" fill="#ff9e22"/>
+    <rect x="202" y="122" width="76" height="36" rx="10" fill="#ff9e22"/>
+    <rect x="202" y="322" width="76" height="36" rx="10" fill="#ff9e22"/>
+    <g fill="white">
+        <path d="m 228.64031,290 v -16.32 h 21.6 v -66.4 h -21.6 v -16.32 h 62.88 v 16.32 h -21.44 v 66.4 h 21.44 V 290 Z"/>
+        <path d="m 334.24,189.84 q 8.48,0 15.36,1.92 6.88,1.92 11.84,5.92 4.96,4 7.52,10.24 2.72,6.08 2.72,14.4 0,8.64 -3.52,15.68 -3.52,7.04 -11.68,10.72 2.72,4.16 5.76,9.28 3.04,4.96 5.92,10.56 2.88,5.44 5.44,11.04 2.72,5.44 4.64,10.4 H 357.6 q -3.68,-9.6 -8.64,-18.4 -4.8,-8.96 -10.4,-18.08 H 328.32 V 290 h -19.68 v -97.6 q 2.88,-0.64 6.24,-1.12 3.52,-0.64 7.04,-0.8 3.52,-0.32 6.72,-0.48 3.2,-0.16 5.6,-0.16 z m 17.44,32.32 q 0,-7.84 -4.8,-11.52 -4.8,-3.68 -12.64,-3.68 -1.12,0 -2.72,0.16 -1.6,0 -3.2,0.32 v 29.76 h 4.32 q 10.08,0 14.56,-3.84 4.48,-4 4.48,-11.2 z"/>
+    </g>
+</svg>
