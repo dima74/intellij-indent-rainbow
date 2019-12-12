@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "indent-rainbow"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ configure<JavaPluginConvention> {
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     sinceBuild("182")
     untilBuild("300")
-    changeNotes("""Initial version""")
+    changeNotes(file("$projectDir/CHANGELOG.html").readText())
 }
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
