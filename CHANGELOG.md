@@ -1,6 +1,10 @@
 # Changelog
 ----
 
+# 1.0.5
+- Fix indent and alignment handling
+- Add settings page
+
 # 1.0.4
 - Add plugin icon
 
