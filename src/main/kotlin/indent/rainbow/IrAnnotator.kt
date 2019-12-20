@@ -12,8 +12,8 @@ import com.intellij.psi.PsiWhiteSpace
 class IrAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        if (!config.enabled || config.useFormatterBasedAnnotator) return
         if (element !is PsiWhiteSpace) return
-        if (!IrConfig.instance.enabled) return
 
         val project = element.project
         val file = element.containingFile
@@ -64,5 +64,6 @@ class IrAnnotator : Annotator {
 
     companion object {
         val instance: IrAnnotator = IrAnnotator()
+        private val config = IrConfig.instance
     }
 }

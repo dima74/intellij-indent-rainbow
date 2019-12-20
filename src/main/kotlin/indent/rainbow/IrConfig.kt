@@ -10,6 +10,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 class IrConfig : PersistentStateComponent<IrConfig> {
 
     var enabled: Boolean = true
+    var useFormatterBasedAnnotator: Boolean = true
 
     override fun getState(): IrConfig = this
 
