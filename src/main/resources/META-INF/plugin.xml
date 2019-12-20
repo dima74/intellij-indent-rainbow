@@ -16,12 +16,12 @@
 
     <application-components>
         <component>
-            <implementation-class>indent.rainbow.MyApplicationComponent</implementation-class>
+            <implementation-class>indent.rainbow.IrApplicationComponent</implementation-class>
         </component>
     </application-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="indent.rainbow.IndentRainbowConfig" />
+        <applicationService serviceImplementation="indent.rainbow.IrConfig" />
 
         <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml" />
         <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/original_rgba.xml" />
@@ -30,7 +30,7 @@
 
     <actions>
         <action id="IndentRainbow.Toggle"
-                class="indent.rainbow.IndentRainbowToggleAction"
+                class="indent.rainbow.IrToggleAction"
                 text="Indent Rainbow: Toggle (Enable/Disable)" />
     </actions>
 </idea-plugin>

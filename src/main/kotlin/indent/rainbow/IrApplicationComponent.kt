@@ -7,21 +7,21 @@ import com.intellij.openapi.components.BaseComponent
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
 
-class MyApplicationComponent : BaseComponent {
+class IrApplicationComponent : BaseComponent {
     override fun initComponent() {
         initAnnotator()
         initSchemeChangeListener()
     }
 
     private fun initAnnotator() {
-        val annotator = MyAnnotator.instance
+        val annotator = IrAnnotator.instance
         for (language in Language.getRegisteredLanguages()) {
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, annotator)
         }
     }
 
     private fun initSchemeChangeListener() {
-        val listener = EditorColorsListener { MyColors.onSchemeChange() }
+        val listener = EditorColorsListener { IrColors.onSchemeChange() }
         ApplicationManager.getApplication().messageBus.connect().subscribe(EditorColorsManager.TOPIC, listener)
     }
 }

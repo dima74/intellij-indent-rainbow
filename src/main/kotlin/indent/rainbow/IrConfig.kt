@@ -7,16 +7,16 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "IndentRainbowConfig", storages = [(Storage("IndentRainbowConfig.xml"))])
-class IndentRainbowConfig : PersistentStateComponent<IndentRainbowConfig> {
+class IrConfig : PersistentStateComponent<IrConfig> {
 
     var enabled: Boolean = true
 
-    override fun getState(): IndentRainbowConfig = this
+    override fun getState(): IrConfig = this
 
-    override fun loadState(state: IndentRainbowConfig) = XmlSerializerUtil.copyBean(state, this)
+    override fun loadState(state: IrConfig) = XmlSerializerUtil.copyBean(state, this)
 
     companion object {
-        val instance: IndentRainbowConfig
-            get() = ServiceManager.getService(IndentRainbowConfig::class.java)
+        val instance: IrConfig
+            get() = ServiceManager.getService(IrConfig::class.java)
     }
 }

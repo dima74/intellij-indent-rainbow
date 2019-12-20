@@ -9,11 +9,11 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 
-class MyAnnotator : Annotator {
+class IrAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is PsiWhiteSpace) return
-        if (!IndentRainbowConfig.instance.enabled) return
+        if (!IrConfig.instance.enabled) return
 
         val project = element.project
         val file = element.containingFile
@@ -47,11 +47,11 @@ class MyAnnotator : Annotator {
             if (okSpaces || okTabs) {
                 val step = if (useTabs) 1 else tabSize
                 for (i in highlightStartOffset until highlightEndOffset step step) {
-                    val textAttributes = MyColors.getTextAttributes((i - highlightStartOffset) / step)
+                    val textAttributes = IrColors.getTextAttributes((i - highlightStartOffset) / step)
                     highlight(holder, i, i + step, textAttributes)
                 }
             } else {
-                highlight(holder, highlightStartOffset, highlightEndOffset, MyColors.ERROR)
+                highlight(holder, highlightStartOffset, highlightEndOffset, IrColors.ERROR)
             }
         }
     }
@@ -63,6 +63,6 @@ class MyAnnotator : Annotator {
     }
 
     companion object {
-        val instance: MyAnnotator = MyAnnotator()
+        val instance: IrAnnotator = IrAnnotator()
     }
 }

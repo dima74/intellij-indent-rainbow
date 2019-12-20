@@ -17,7 +17,7 @@ fun applyAlpha(color: Color, background: Color): Color {
     return Color(resultF[0], resultF[1], resultF[2])
 }
 
-object MyColors {
+object IrColors {
 
     private val editorBackground: Color
         get() = scheme.defaultBackground
