@@ -18,6 +18,8 @@ jobs:
     steps:
       - checkout
 
+      - run: touch CHANGELOG.html
+
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle.kts" }}
