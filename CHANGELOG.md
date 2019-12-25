@@ -1,7 +1,7 @@
 # Changelog
 ----
 
-# 1.0.5
+# 1.1.0
 - Fix indent and alignment handling
 - Add settings page
 

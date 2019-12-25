@@ -6,7 +6,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "IndentRainbowConfig", storages = [(Storage("IndentRainbowConfig.xml"))])
+@State(name = "IndentRainbowConfig", storages = [Storage("IndentRainbowConfig.xml")])
 class IrConfig : PersistentStateComponent<IrConfig> {
 
     var enabled: Boolean = true
