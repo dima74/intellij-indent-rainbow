@@ -1,6 +1,9 @@
 # Changelog
 ----
 
+# 1.1.1
+- Fix exception related to TextAttributes initialization
+
 # 1.1.0
 - Fix indent and alignment handling
 - Add settings page

@@ -2,13 +2,13 @@ import org.jetbrains.intellij.tasks.PublishTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.14"
+    id("org.jetbrains.intellij") version "0.4.15"
     java
     kotlin("jvm") version "1.3.61"
 }
 
 group = "indent-rainbow"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
-    sinceBuild("193")
+    sinceBuild("171")
     untilBuild("700")
     changeNotes(file("$projectDir/CHANGELOG.html").readText())
 }
