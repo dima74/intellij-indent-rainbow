@@ -22,7 +22,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="indent.rainbow.IrConfig" />
-        <applicationConfigurable displayName="Indent Rainbow Plugin" instance="indent.rainbow.IrConfigurable" />
+        <applicationConfigurable displayName="Indent Rainbow Plugin" provider="indent.rainbow.IrConfigurableProvider" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
 
         <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml" />

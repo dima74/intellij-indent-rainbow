@@ -105,7 +105,7 @@ private class IrExternalAnnotatorImpl(
 
         val indent = if (useTabs) indentSpaces / tabSize else indentSpaces
         val prefixExpected = if (useTabs) {
-            assert(indentSpaces % tabSize == 0)
+            assert(indentSpaces % tabSize == 0) { "indentSpaces: $indentSpaces, tabSize: $tabSize" }
             "\t".repeat(indent) + " ".repeat(alignment)
         } else {
             " ".repeat(indentSpaces + alignment)

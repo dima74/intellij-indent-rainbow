@@ -6,8 +6,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import java.awt.Color
 
 fun applyAlpha(color: Color, background: Color): Color {
-    assert(background.alpha == 255)
-    assert(color.alpha != 255)
+    assert(background.alpha == 255) { background.toString() }
+    assert(color.alpha != 255) { color.toString() }
 
     val backgroundF = background.getRGBComponents(null)
     val colorF = color.getRGBComponents(null)
@@ -24,6 +24,8 @@ object IrColors {
 
     private val scheme: EditorColorsScheme
         get() = EditorColorsManager.getInstance().schemeForCurrentUITheme
+    private val defaultScheme: EditorColorsScheme
+        get() = EditorColorsManager.getInstance().getScheme(EditorColorsManager.DEFAULT_SCHEME_NAME)
 
 
     val ERROR = TextAttributesKey.createTextAttributesKey("INDENT_RAINBOW_ERROR")
@@ -45,8 +47,11 @@ object IrColors {
     }
 
     private fun updateTextAttributes(taKey: TextAttributesKey) {
-        val taDefault = taKey.defaultAttributes
-        val ta = scheme.getAttributes(taKey)
-        ta.backgroundColor = applyAlpha(taDefault.backgroundColor, editorBackground)
+        val taDefault = defaultScheme.getAttributes(taKey)
+        val indentColor = taDefault.backgroundColor
+
+        val ta = taDefault.clone()
+        ta.backgroundColor = applyAlpha(indentColor, editorBackground)
+        scheme.setAttributes(taKey, ta)
     }
 }
