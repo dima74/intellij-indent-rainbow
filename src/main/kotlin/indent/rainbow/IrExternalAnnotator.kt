@@ -1,8 +1,5 @@
 package indent.rainbow
 
-import com.intellij.application.options.CodeStyle
-import com.intellij.formatting.*
-import com.intellij.lang.LanguageFormatting
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.openapi.editor.Document
@@ -11,22 +8,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.util.PsiTreeUtil
-import indent.rainbow.FormatterImplHelper.buildProcessorAndWrapBlocks
-import indent.rainbow.FormatterImplHelper.calcIndent
-import indent.rainbow.FormatterImplHelper.getWhiteSpaceAtOffset
-import java.lang.reflect.Method
 
 @Suppress("RedundantUnitReturnType", "RedundantUnitExpression")
 class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
-
-    init {
-        getWhiteSpaceAtOffset.isAccessible = true
-        buildProcessorAndWrapBlocks.isAccessible = true
-        calcIndent.isAccessible = true
-    }
 
     override fun collectInformation(file: PsiFile): Unit {
         return Unit
@@ -42,18 +27,9 @@ class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
         val project = file.project
         val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
 
-        val codeStyleSettings = CodeStyle.getSettings(file)
-        val indentOptions = codeStyleSettings.getIndentOptionsByFile(file)
+        val indentHelper = IrIndentHelper.getInstance(file) ?: return
 
-        val formattingModelBuilder = LanguageFormatting.INSTANCE.forContext(file) ?: return
-        val formattingModel = CoreFormatterUtil.buildModel(formattingModelBuilder, file, codeStyleSettings, FormattingMode.ADJUST_INDENT)
-        val formattingDocumentModel = formattingModel.documentModel
-
-        val formatter = FormatterEx.getInstanceEx()
-        val formatProcessor = buildProcessorAndWrapBlocks
-            .invoke(formatter, formattingModel, codeStyleSettings, indentOptions, file.textRange, 0 /* ? */) as FormatProcessor
-
-        IrExternalAnnotatorImpl(file, document, formattingDocumentModel, formatter, formatProcessor, holder, indentOptions).apply()
+        IrExternalAnnotatorImpl(file, document, holder, indentHelper).apply()
     }
 
     companion object {
@@ -65,15 +41,12 @@ class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
 private class IrExternalAnnotatorImpl(
     val file: PsiFile,
     val document: Document,
-    val documentModel: FormattingDocumentModel,
-    val formatter: FormatterEx,
-    val formatProcessor: FormatProcessor,
     val holder: AnnotationHolder,
-    indentOptions: CommonCodeStyleSettings.IndentOptions
+    val indentHelper: IrIndentHelper
 ) {
-    val useTabs: Boolean = indentOptions.USE_TAB_CHARACTER
-    val tabSize: Int = indentOptions.TAB_SIZE
-    val indentSize: Int = indentOptions.INDENT_SIZE
+    val useTabs: Boolean = indentHelper.indentOptions.USE_TAB_CHARACTER
+    val tabSize: Int = indentHelper.indentOptions.TAB_SIZE
+    val indentSize: Int = indentHelper.indentOptions.INDENT_SIZE
 
     fun apply() {
         for (line in 0 until document.lineCount) {
@@ -84,15 +57,7 @@ private class IrExternalAnnotatorImpl(
             // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
             if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) continue
 
-            val whiteSpace0 = getWhiteSpaceAtOffset.invoke(formatter, offset, formatProcessor)
-            val whiteSpace = whiteSpace0 as WhiteSpace? ?: continue
-
-            // it is vital to call `calcIndent` method to get correct indent and alignment values
-            // so, we can't use `indentSpaces` and `spaces` from whiteSpace
-            val indentInfo = calcIndent.invoke(null, offset, documentModel, formatProcessor, whiteSpace) as IndentInfo
-            val indent = indentInfo.indentSpaces
-            val alignment = indentInfo.spaces
-
+            val (indent, alignment) = indentHelper.getIndentAndAlignment(offset) ?: continue
             highlight(line, indent, alignment)
         }
     }
@@ -138,27 +103,4 @@ private class IrExternalAnnotatorImpl(
         val annotation = holder.createInfoAnnotation(highlightRange, null)
         annotation.textAttributes = textAttributes
     }
-}
-
-private object FormatterImplHelper {
-    val getWhiteSpaceAtOffset: Method = FormatterImpl::class.java.getDeclaredMethod(
-        "getWhiteSpaceAtOffset",
-        Int::class.java,
-        FormatProcessor::class.java
-    )
-    val buildProcessorAndWrapBlocks: Method = FormatterImpl::class.java.getDeclaredMethod(
-        "buildProcessorAndWrapBlocks",
-        FormattingModel::class.java,
-        CodeStyleSettings::class.java,
-        CommonCodeStyleSettings.IndentOptions::class.java,
-        TextRange::class.java,
-        Int::class.java
-    )
-    val calcIndent: Method = FormatterImpl::class.java.getDeclaredMethod(
-        "calcIndent",
-        Int::class.java,
-        FormattingDocumentModel::class.java,
-        FormatProcessor::class.java,
-        WhiteSpace::class.java
-    )
 }
