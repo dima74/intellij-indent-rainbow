@@ -4,6 +4,28 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import java.awt.Color
+import kotlin.math.abs
+import kotlin.math.pow
+
+fun getAlpha(alpha: Float): Float {
+    var opacityMultiplier = IrConfig.instance.opacityMultiplier  // [-1, +1]
+    val needMoreOpacity = opacityMultiplier > 0F
+
+    opacityMultiplier = abs(opacityMultiplier)
+    // чтобы например при opacityMultiplier == 1 цвета оставались видны
+    opacityMultiplier *= 0.7F
+    // чтобы при изменении opacity возле стандартного значения цвета не сильно менялись
+    opacityMultiplier = opacityMultiplier.pow(3)
+
+    // кусочно-линейная функция 1 -> alpha -> 0
+    return if (needMoreOpacity) {
+        // more opacity
+        alpha * (1 - opacityMultiplier) + 0 * opacityMultiplier
+    } else {
+        // less opacity
+        alpha * (1 - opacityMultiplier) + 1 * opacityMultiplier
+    }
+}
 
 fun applyAlpha(color: Color, background: Color): Color {
     assert(background.alpha == 255) { background.toString() }
@@ -11,7 +33,7 @@ fun applyAlpha(color: Color, background: Color): Color {
 
     val backgroundF = background.getRGBComponents(null)
     val colorF = color.getRGBComponents(null)
-    val alpha = colorF[3]
+    val alpha = getAlpha(colorF[3])
 
     val resultF = (0..2).map { i -> colorF[i] * alpha + backgroundF[i] * (1 - alpha) }
     return Color(resultF[0], resultF[1], resultF[2])
@@ -29,7 +51,7 @@ object IrColors {
 
 
     val ERROR = TextAttributesKey.createTextAttributesKey("INDENT_RAINBOW_ERROR")
-    val COLORS = (1..4)
+    private val COLORS = (1..4)
         .map { TextAttributesKey.createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}") }
         .toTypedArray()
 

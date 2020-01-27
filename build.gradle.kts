@@ -31,7 +31,7 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
-    sinceBuild("171")
+    sinceBuild("182")
     untilBuild("700")
     changeNotes(file("$projectDir/CHANGELOG.html").readText())
 }

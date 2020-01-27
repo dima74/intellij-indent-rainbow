@@ -1,31 +1,69 @@
 package indent.rainbow
 
-import com.intellij.application.options.editor.CheckboxDescriptor
-import com.intellij.application.options.editor.checkBox
-import com.intellij.openapi.options.BoundConfigurable
-import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.layout.CellBuilder
-import com.intellij.ui.layout.panel
-import com.intellij.ui.layout.selected
+import com.intellij.openapi.options.Configurable
+import java.util.*
+import javax.swing.*
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
-class IrConfigurable : BoundConfigurable("Indent Rainbow Plugin") {
-    override fun createPanel(): DialogPanel {
-        return panel {
-            var isEnabledCheckbox: CellBuilder<JBCheckBox>? = null
-            row {
-                isEnabledCheckbox = checkBox(isEnabled)
-            }
-            row {
-                checkBox(useFormatterBasedAnnotator).enableIf(isEnabledCheckbox!!.selected)
-            }
-        }
+class IrConfigurable : Configurable {
+    lateinit var rootPanel: JPanel
+    private lateinit var isEnabled: JCheckBox
+    private lateinit var useFormatterBasedAnnotator: JCheckBox
+    private lateinit var opacityMultiplier: JSlider
+
+    init {
+        isEnabled.addActionListener { updateEnabled() }
+        opacityMultiplier.paintLabels = true
+
+        val labelTable = Hashtable<Int, JLabel>()
+        labelTable[opacityMultiplier.maximum] = JLabel("More opacity")
+        labelTable[opacityMultiplier.minimum] = JLabel("Less opacity")
+        labelTable[0] = JLabel("Default")
+        opacityMultiplier.labelTable = labelTable
+    }
+
+    override fun getDisplayName(): String = "Indent Rainbow Plugin"
+
+    override fun isModified(): Boolean {
+        return isEnabled.isSelected != config.enabled
+                || useFormatterBasedAnnotator.isSelected != config.useFormatterBasedAnnotator
+                || opacityMultiplier.value != opacityMultiplierValue
+    }
+
+    override fun apply() {
+        config.enabled = isEnabled.isSelected
+        config.useFormatterBasedAnnotator = useFormatterBasedAnnotator.isSelected
+        opacityMultiplierValue = opacityMultiplier.value
+        IrColors.onSchemeChange()
+    }
+
+    override fun createComponent(): JComponent {
+        isEnabled.isSelected = config.enabled
+        useFormatterBasedAnnotator.isSelected = config.useFormatterBasedAnnotator
+        opacityMultiplier.value = opacityMultiplierValue
+        updateEnabled()
+        return rootPanel
+    }
+
+    private fun updateEnabled() {
+        val enabled = isEnabled.isSelected
+        useFormatterBasedAnnotator.isEnabled = enabled
+        opacityMultiplier.isEnabled = enabled
     }
 
     companion object {
         private val config = IrConfig.instance
 
-        private val isEnabled = CheckboxDescriptor("Enabled", config::enabled)
-        private val useFormatterBasedAnnotator = CheckboxDescriptor("Use Formatter Based Highlighting", config::useFormatterBasedAnnotator)
+        private var opacityMultiplierValue: Int
+            get() = (config.opacityMultiplier * 100).roundToInt()
+            set(value) {
+                // zero (default value) if value is almost default
+                config.opacityMultiplier = if (abs(value) < 5) {
+                    0F
+                } else {
+                    value / 100F
+                }
+            }
     }
 }

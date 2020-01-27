@@ -11,6 +11,7 @@ class IrConfig : PersistentStateComponent<IrConfig> {
 
     var enabled: Boolean = true
     var useFormatterBasedAnnotator: Boolean = true
+    var opacityMultiplier: Float = 0F  // [-1, +1]
 
     override fun getState(): IrConfig = this
 
