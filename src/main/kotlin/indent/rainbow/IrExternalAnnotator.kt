@@ -96,7 +96,7 @@ private class IrExternalAnnotatorImpl(
         val textAttributes = if (colorIndex != null) {
             IrColors.getTextAttributes(colorIndex)
         } else {
-            IrColors.ERROR
+            IrColors.getErrorTextAttributes()
         }
 
         val highlightRange = TextRange(start, end)

@@ -51,7 +51,7 @@ class IrAnnotator : Annotator {
                     highlight(holder, i, i + step, textAttributes)
                 }
             } else {
-                highlight(holder, highlightStartOffset, highlightEndOffset, IrColors.ERROR)
+                highlight(holder, highlightStartOffset, highlightEndOffset, IrColors.getErrorTextAttributes())
             }
         }
     }

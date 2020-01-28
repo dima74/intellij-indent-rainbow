@@ -36,6 +36,7 @@ class IrConfigurable : Configurable {
         config.useFormatterBasedAnnotator = useFormatterBasedAnnotator.isSelected
         opacityMultiplierValue = opacityMultiplier.value
         IrColors.onSchemeChange()
+        IrColors.refreshEditorIndentColors()
     }
 
     override fun createComponent(): JComponent {

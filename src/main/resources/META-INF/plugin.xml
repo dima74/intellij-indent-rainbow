@@ -24,15 +24,15 @@
         <applicationService serviceImplementation="indent.rainbow.IrConfig" />
         <applicationConfigurable displayName="Indent Rainbow Plugin" instance="indent.rainbow.IrConfigurable" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
-
-        <additionalTextAttributes scheme="Darcula" file="IndentRainbowColorSchemes/original_rgba.xml" />
-        <additionalTextAttributes scheme="Default" file="IndentRainbowColorSchemes/original_rgba.xml" />
-        <additionalTextAttributes scheme="Empty" file="IndentRainbowColorSchemes/original_rgba.xml" />
+        <colorSettingsPage implementation="indent.rainbow.IrColorSettingsPage" />
     </extensions>
 
     <actions>
         <action id="IndentRainbow.Toggle"
-                class="indent.rainbow.IrToggleAction"
+                class="indent.rainbow.actions.IrToggleAction"
                 text="Indent Rainbow: Toggle (Enable/Disable)" />
+        <action id="IndentRainbow.ResetIndentColors"
+                class="indent.rainbow.actions.IrResetColorsAction"
+                text="Indent Rainbow: Reset Indent Colors for All Schemes" />
     </actions>
 </idea-plugin>
