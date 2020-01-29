@@ -1,6 +1,10 @@
 # Changelog
 ----
 
+# 1.2.0
+- Allow using custom indent colors (configure in Settings / Editor / Color Scheme / Indent Rainbow)
+- Add settings to change colors opacity
+
 # 1.1.1
 - Fix exception related to TextAttributes initialization
 

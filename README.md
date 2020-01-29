@@ -11,3 +11,20 @@ This extension colorizes the indentation in front of your text alternating four 
 ![Example](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example.png)
 
 Get it here: [JetBrains Plugins Repository](https://plugins.jetbrains.com/plugin/13308-indent-rainbow)
+
+## Change colors
+There are two options to change indent colors:
+
+1. You can change indent colors opacity using "Opacity multiplier" slider (Settings / Indent Rainbow):
+
+  ![Settings page](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/settings.png)
+
+2. You can configure each color (the error color and four indent colors) independently for each scheme (Settings / Editor / Color Scheme / Indent Rainbow). Firstly, uncheck checkbox "Inherit values from", then change background color:
+
+  ![Color Scheme page](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/color-scheme.png)
+
+## Feedback
+Please welcome to submit issues and feature requests!
+
+## Acknowledgment
+Our plugin was inspired by [Indent-Rainbow plugin for Visual Studio Code](https://github.com/oderwat/vscode-indent-rainbow).
