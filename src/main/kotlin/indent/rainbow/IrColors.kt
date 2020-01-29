@@ -1,61 +1,65 @@
 package indent.rainbow
 
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.openapi.editor.colors.impl.AbstractColorsScheme
 import com.intellij.openapi.editor.colors.impl.EditorColorsManagerImpl
 import java.awt.Color
 import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.math.roundToInt
 
-
-// используется чтобы различать наши цвета в color scheme от цветов установленных пользователем
-const val MARKER_ALPHA_VALUE: Int = 255 - 1
-
-fun Color.toStringWithAlpha(): String {
-    return javaClass.name + "[r=" + red + ",g=" + green + ",b=" + blue + ",a=" + alpha + "]"
+fun Color?.toStringWithAlpha(): String {
+    if (this == null) return "null"
+    return this.javaClass.name + "[r=" + red + ",g=" + green + ",b=" + blue + ",a=" + alpha + "]"
 }
+
+fun interpolate(a: Float, b: Float, qa: Float): Float = a * qa + b * (1 - qa)
 
 fun getAlpha(alpha: Float): Float {
     var opacityMultiplier = IrConfig.instance.opacityMultiplier  // [-1, +1]
     val needMoreOpacity = opacityMultiplier > 0F
 
     opacityMultiplier = abs(opacityMultiplier)
-    // чтобы например при opacityMultiplier == 1 цвета оставались видны
-    opacityMultiplier *= 0.7F
     // чтобы при изменении opacity возле стандартного значения цвета не сильно менялись
-    opacityMultiplier = opacityMultiplier.pow(3)
+    opacityMultiplier = opacityMultiplier.pow(2)
+    // чтобы например при opacityMultiplier == 0 цвета оставались видны
+    opacityMultiplier *= 0.7F
 
-    // кусочно-линейная функция 1 -> alpha -> 0
-    return if (needMoreOpacity) {
-        // more opacity
-        alpha * (1 - opacityMultiplier) + 0 * opacityMultiplier
+    val targetOpacity = if (needMoreOpacity) {
+        1F
     } else {
-        // less opacity
-        alpha * (1 - opacityMultiplier) + 1 * opacityMultiplier
+        0F
     }
+    return interpolate(targetOpacity, alpha, opacityMultiplier)
 }
 
 fun applyAlpha(color: Color, background: Color): Color {
-    assert(background.alpha == 255) { "expect editor background color to have alpha=255, but: ${background.toStringWithAlpha()}" }
-    assert(color.alpha != 255) { "expect indent color to have alpha<255, but: ${color.toStringWithAlpha()}" }
+    assert(background.alpha == 255)
+    { "expect editor background color to have alpha=255, but: ${background.toStringWithAlpha()}" }
+    assert(color.alpha != 255)
+    { "expect indent color to have alpha<255, but: ${color.toStringWithAlpha()}" }
 
     val backgroundF = background.getRGBComponents(null)
     val colorF = color.getRGBComponents(null)
     val alpha = getAlpha(colorF[3])
 
-    val resultF = (0..2).map { i -> colorF[i] * alpha + backgroundF[i] * (1 - alpha) }
-        .map { (it * 255).roundToInt() }
-    return Color(resultF[0], resultF[1], resultF[2], MARKER_ALPHA_VALUE)
+    val resultF = (0..2).map { i -> interpolate(colorF[i], backgroundF[i], alpha) }
+    return Color(resultF[0], resultF[1], resultF[2])
 }
 
 object IrColors {
 
-    private val ERROR_TA = TextAttributesKey.createTextAttributesKey("INDENT_RAINBOW_ERROR")
+    // base TextAttributes are computed by plugin based on scheme and settings
+    private val ERROR_TA = createTextAttributesKey("INDENT_RAINBOW_ERROR")
     private val INDENTS_TA = (1..4)
-        .map { TextAttributesKey.createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}") }
+        .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}") }
+        .toTypedArray()
+    // derived TextAttributes are set by user
+    private val ERROR_TA_DERIVED = createTextAttributesKey("INDENT_RAINBOW_ERROR_DERIVED", ERROR_TA)
+    private val INDENTS_TA_DERIVED = (1..4)
+        .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}_DERIVED", INDENTS_TA[it - 1]) }
         .toTypedArray()
 
     private val COLORS: Map<TextAttributesKey, Color> = mapOf(
@@ -66,48 +70,43 @@ object IrColors {
         INDENTS_TA[3] to 0x124FECEC
     ).mapValues { Color(it.value, true) }
 
-    init {
-        onSchemeChange()
-    }
+    fun getErrorTextAttributes() = ERROR_TA_DERIVED
 
-    fun getErrorTextAttributes() = ERROR_TA
-
-    fun getTextAttributes(tabIndex: Int): TextAttributesKey = INDENTS_TA[tabIndex % INDENTS_TA.size]
+    fun getTextAttributes(tabIndex: Int): TextAttributesKey = INDENTS_TA_DERIVED[tabIndex % INDENTS_TA_DERIVED.size]
 
     fun onSchemeChange() = updateTextAttributesForAllSchemes()
 
-    fun updateTextAttributesForAllSchemes(forceUpdate: Boolean = false) {
+    private fun updateTextAttributesForAllSchemes() {
         val allSchemes = EditorColorsManager.getInstance().allSchemes
         for (scheme in allSchemes) {
             for ((taKey, color) in COLORS) {
                 val ta = scheme.getAttributes(taKey)
-                if (!forceUpdate && ta.backgroundColor?.alpha == 255) continue
 
                 val backgroundColor = ta.backgroundColor
-                // через настройки нельзя установить alpha не равную 255
-                // а наш плагин всегда устанавливает MARKER_ALPHA_VALUE
-                assert(
-                    backgroundColor == null || backgroundColor.alpha == MARKER_ALPHA_VALUE
-                            || (forceUpdate && ta.backgroundColor?.alpha == 255)
-                ) { "unexpected TextAttributes value: $ta (${backgroundColor.toStringWithAlpha()})" }
+                assert(backgroundColor == null || backgroundColor.alpha == 255)
+                { "unexpected TextAttributes value: $ta (${backgroundColor.toStringWithAlpha()})" }
 
                 val taNew = ta.clone()
                 val colorMixed = applyAlpha(color, scheme.defaultBackground)
                 taNew.backgroundColor = colorMixed
-                scheme.setAttributes(taKey, taNew)
+                if (taNew.backgroundColor != ta.backgroundColor) {
+                    LOG.info(
+                        "Changing color of $taKey in scheme $scheme " +
+                                "from ${ta.backgroundColor.toStringWithAlpha()} to ${taNew.backgroundColor.toStringWithAlpha()}"
+                    )
+                    scheme.setAttributes(taKey, taNew)
+                }
             }
 
             if (scheme is AbstractColorsScheme) {
                 scheme.setSaveNeeded(true)
             }
         }
-
-        ApplicationManager.getApplication().saveSettings()
-//        or
-//        (SchemeManagerFactory.getInstance() as SchemeManagerFactoryBase).save()
     }
 
     fun refreshEditorIndentColors() {
         (EditorColorsManager.getInstance() as EditorColorsManagerImpl).schemeChangedOrSwitched(null)
     }
 }
+
+val LOG: Logger = Logger.getInstance(IrColors::class.java)

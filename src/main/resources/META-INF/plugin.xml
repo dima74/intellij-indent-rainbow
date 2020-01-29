@@ -22,7 +22,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="indent.rainbow.IrConfig" />
-        <applicationConfigurable displayName="Indent Rainbow Plugin" instance="indent.rainbow.IrConfigurable" />
+        <applicationConfigurable displayName="Indent Rainbow" instance="indent.rainbow.IrConfigurable" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.IrColorSettingsPage" />
     </extensions>
@@ -31,8 +31,5 @@
         <action id="IndentRainbow.Toggle"
                 class="indent.rainbow.actions.IrToggleAction"
                 text="Indent Rainbow: Toggle (Enable/Disable)" />
-        <action id="IndentRainbow.ResetIndentColors"
-                class="indent.rainbow.actions.IrResetColorsAction"
-                text="Indent Rainbow: Reset Indent Colors for All Schemes" />
     </actions>
 </idea-plugin>

@@ -23,7 +23,7 @@ class IrConfigurable : Configurable {
         opacityMultiplier.labelTable = labelTable
     }
 
-    override fun getDisplayName(): String = "Indent Rainbow Plugin"
+    override fun getDisplayName(): String = "Indent Rainbow"
 
     override fun isModified(): Boolean {
         return isEnabled.isSelected != config.enabled

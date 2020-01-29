@@ -12,9 +12,9 @@ import javax.swing.Icon
 class IrColorSettingsPage : ColorSettingsPage {
 
     override fun getAttributeDescriptors(): Array<AttributesDescriptor> {
-        val errorAttributesDescriptor = AttributesDescriptor("error", IrColors.getErrorTextAttributes())
+        val errorAttributesDescriptor = AttributesDescriptor("Error", IrColors.getErrorTextAttributes())
         val attributesDescriptors = (0 until 4)
-            .map { AttributesDescriptor("indent ${it + 1}", IrColors.getTextAttributes(it)) }
+            .map { AttributesDescriptor("Indent ${it + 1}", IrColors.getTextAttributes(it)) }
             .toTypedArray()
         return arrayOf(errorAttributesDescriptor, *attributesDescriptors)
     }
@@ -74,12 +74,12 @@ class IrColorSettingsPage : ColorSettingsPage {
 
         val indents = if (numberSpaces % 4 != 0) {
             val indent = " ".repeat(numberSpaces)
-            "<error>$indent</error>"
+            "<Error>$indent</Error>"
         } else {
             val numberIndents = numberSpaces / 4
             (0 until numberIndents)
                 .joinToString("") {
-                    val tagName = "indent ${it % 4 + 1}"
+                    val tagName = "Indent ${it % 4 + 1}"
                     "<$tagName>    </$tagName>"
                 }
         }
