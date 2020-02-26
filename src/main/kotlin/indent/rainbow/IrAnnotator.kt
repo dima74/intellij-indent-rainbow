@@ -33,7 +33,7 @@ class IrAnnotator : Annotator {
 
         for (line in startLine..endLine) {
             val highlightStartOffset = document.getLineStartOffset(line)
-            val highlightEndOffset = if (line < endLine) {
+            var highlightEndOffset = if (line < endLine) {
                 document.getLineEndOffset(line)
             } else {
                 range.endOffset
@@ -45,7 +45,11 @@ class IrAnnotator : Annotator {
                     && highlightText.chars().allMatch { it == ' '.toInt() }
                     && (highlightEndOffset - highlightStartOffset) % tabSize == 0
             val okTabs = useTabs && highlightText.chars().allMatch { it == '\t'.toInt() }
-            if (okSpaces || okTabs) {
+            if (okSpaces || okTabs || config.disableErrorHighlighting) {
+                if (config.disableErrorHighlighting && !useTabs) {
+                    highlightEndOffset -= (highlightEndOffset - highlightStartOffset) % tabSize
+                }
+
                 val step = if (useTabs) 1 else tabSize
                 for (i in highlightStartOffset until highlightEndOffset step step) {
                     val textAttributes = IrColors.getTextAttributes((i - highlightStartOffset) / step)

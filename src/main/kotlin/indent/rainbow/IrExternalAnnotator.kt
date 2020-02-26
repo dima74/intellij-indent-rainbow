@@ -12,6 +12,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.settings.IrConfig
+import kotlin.math.min
 
 @Suppress("RedundantUnitReturnType", "RedundantUnitExpression")
 class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
@@ -78,7 +79,7 @@ private class IrExternalAnnotatorImpl(
         val lineText = document.getText(TextRange(lineStartOffset, lineEndOffset))
         if (lineText.isEmpty()) return
 
-        val indent = if (useTabs) indentSpaces / tabSize else indentSpaces
+        var indent = if (useTabs) indentSpaces / tabSize else indentSpaces
         val prefixExpected = if (useTabs) {
             assert(indentSpaces % tabSize == 0) { "indentSpaces: $indentSpaces, tabSize: $tabSize" }
             "\t".repeat(indent) + " ".repeat(alignment)
@@ -89,7 +90,14 @@ private class IrExternalAnnotatorImpl(
 
         val prefixActual = lineText.takeWhile { it == ' ' || it == '\t' }
 
-        if (prefixActual == prefixExpected) {
+        if (prefixActual == prefixExpected || config.disableErrorHighlighting) {
+            if (config.disableErrorHighlighting) {
+                var indentSpacesActual = prefixActual.replace("\t", "    ").length
+                indentSpacesActual -= indentSpacesActual % tabSize
+                val indentActual = if (useTabs) indentSpacesActual / tabSize else indentSpacesActual
+                indent = min(indent, indentActual)
+            }
+
             val step = if (useTabs) 1 else indentSize
             for (offset in 0 until indent step step) {
                 val start = lineStartOffset + offset
@@ -112,5 +120,9 @@ private class IrExternalAnnotatorImpl(
         val highlightRange = TextRange(start, end)
         val annotation = holder.createInfoAnnotation(highlightRange, null)
         annotation.textAttributes = textAttributes
+    }
+
+    companion object {
+        private val config = IrConfig.instance
     }
 }

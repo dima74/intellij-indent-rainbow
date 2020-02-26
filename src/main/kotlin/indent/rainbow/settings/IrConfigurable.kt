@@ -11,6 +11,7 @@ class IrConfigurable : Configurable {
     lateinit var rootPanel: JPanel
     private lateinit var isEnabled: JCheckBox
     private lateinit var useFormatterBasedAnnotator: JCheckBox
+    private lateinit var disableErrorHighlighting: JCheckBox
     private lateinit var opacityMultiplier: JSlider
 
     init {
@@ -29,12 +30,14 @@ class IrConfigurable : Configurable {
     override fun isModified(): Boolean {
         return isEnabled.isSelected != config.enabled
                 || useFormatterBasedAnnotator.isSelected != config.useFormatterBasedAnnotator
+                || disableErrorHighlighting.isSelected != config.disableErrorHighlighting
                 || opacityMultiplier.value != opacityMultiplierValue
     }
 
     override fun apply() {
         config.enabled = isEnabled.isSelected
         config.useFormatterBasedAnnotator = useFormatterBasedAnnotator.isSelected
+        config.disableErrorHighlighting = disableErrorHighlighting.isSelected
         opacityMultiplierValue = opacityMultiplier.value
         IrColors.onSchemeChange()
         IrColors.refreshEditorIndentColors()
@@ -43,6 +46,7 @@ class IrConfigurable : Configurable {
     override fun createComponent(): JComponent {
         isEnabled.isSelected = config.enabled
         useFormatterBasedAnnotator.isSelected = config.useFormatterBasedAnnotator
+        disableErrorHighlighting.isSelected = config.disableErrorHighlighting
         opacityMultiplier.value = opacityMultiplierValue
         updateEnabled()
         return rootPanel
@@ -51,6 +55,7 @@ class IrConfigurable : Configurable {
     private fun updateEnabled() {
         val enabled = isEnabled.isSelected
         useFormatterBasedAnnotator.isEnabled = enabled
+        disableErrorHighlighting.isEnabled = enabled
         opacityMultiplier.isEnabled = enabled
     }
 
