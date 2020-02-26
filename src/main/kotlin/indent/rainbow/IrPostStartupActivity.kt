@@ -1,11 +1,11 @@
 package indent.rainbow
 
-import com.intellij.lang.ExternalLanguageAnnotators
-import com.intellij.lang.Language
-import com.intellij.lang.LanguageAnnotators
+import com.intellij.lang.*
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 
+// todo split into two classes
 class IrPostStartupActivity : StartupActivity {
     private val registeredLanguages = HashSet<Language>()
 
@@ -22,8 +22,31 @@ class IrPostStartupActivity : StartupActivity {
         registeredLanguages.addAll(languagesNew)
 
         for (language in languagesNew) {
+            if (language is MetaLanguage) {
+                LOG.info("[Indent Rainbow] Ignore MetaLanguage: $language")
+                continue
+            }
+            if (language.baseLanguage != null) {
+                LOG.info("[Indent Rainbow] Ignore language $language which has baseLanguage: ${language.baseLanguage}")
+                continue
+            }
+            if (
+                language == Language.ANY
+                || language.displayName in IGNORED_LANGUAGES
+                // e.g. "JVM" meta-language contains languages [JAVA, kotlin, Groovy]
+                || language is MetaLanguage
+                // DependentLanguage is suspicious class, lets ignore it
+                || language is DependentLanguage
+            ) continue
+
+            LOG.info("[Indent Rainbow] Add language: ${language.displayName}")
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, annotator)
             ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, externalAnnotator)
         }
+    }
+
+    companion object {
+        private val LOG: Logger = Logger.getInstance(IrPostStartupActivity::class.java)
+        private val IGNORED_LANGUAGES = listOf("Plain text")
     }
 }

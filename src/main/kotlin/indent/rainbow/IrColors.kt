@@ -109,4 +109,4 @@ object IrColors {
     }
 }
 
-val LOG: Logger = Logger.getInstance(IrColors::class.java)
+private val LOG: Logger = Logger.getInstance(IrColors::class.java)
