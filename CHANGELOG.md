@@ -1,6 +1,10 @@
 # Changelog
 ----
 
+# 1.3.0
+- Fix that indent rainbow not working when file contains errors
+- Improve performance up to 2-3 times on some languages (there was a bug that annotator may be registered several times for some languages)
+
 # 1.2.0
 - Allow using custom indent colors (configure in Settings / Editor / Color Scheme / Indent Rainbow)
 - Add settings to change colors opacity

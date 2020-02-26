@@ -2,13 +2,13 @@ import org.jetbrains.intellij.tasks.PublishTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.15"
+    id("org.jetbrains.intellij") version "0.4.16"
     java
     kotlin("jvm") version "1.3.61"
 }
 
 group = "indent-rainbow"
-version = "1.2.0"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -16,9 +16,9 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compile(kotlin("reflect"))
+    implementation(kotlin("reflect"))
 
-    testCompile("junit", "junit", "4.12")
+    testImplementation("junit", "junit", "4.13")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
