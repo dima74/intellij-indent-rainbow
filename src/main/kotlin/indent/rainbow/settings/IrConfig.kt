@@ -1,4 +1,4 @@
-package indent.rainbow
+package indent.rainbow.settings
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.ServiceManager

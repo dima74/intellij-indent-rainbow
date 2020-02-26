@@ -10,6 +10,8 @@ class IrApplicationComponent : BaseComponent {
     override fun initComponent() {
         IrColors.onSchemeChange()
         initSchemeChangeListener()
+
+        IrAnnotatorsManager.initAnnotators()
     }
 
     private fun initSchemeChangeListener() {

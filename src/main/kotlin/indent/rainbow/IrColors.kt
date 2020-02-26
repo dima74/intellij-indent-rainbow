@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.openapi.editor.colors.impl.AbstractColorsScheme
 import com.intellij.openapi.editor.colors.impl.EditorColorsManagerImpl
+import indent.rainbow.settings.IrConfig
 import java.awt.Color
 import kotlin.math.abs
 import kotlin.math.pow
@@ -91,7 +92,7 @@ object IrColors {
                 taNew.backgroundColor = colorMixed
                 if (taNew.backgroundColor != ta.backgroundColor) {
                     LOG.info(
-                        "Changing color of $taKey in scheme $scheme " +
+                        "[Indent Rainbow] Changing color of $taKey in scheme $scheme " +
                                 "from ${ta.backgroundColor.toStringWithAlpha()} to ${taNew.backgroundColor.toStringWithAlpha()}"
                     )
                     scheme.setAttributes(taKey, taNew)

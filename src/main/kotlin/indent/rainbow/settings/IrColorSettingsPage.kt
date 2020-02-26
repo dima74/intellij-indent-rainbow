@@ -1,4 +1,4 @@
-package indent.rainbow
+package indent.rainbow.settings
 
 import com.intellij.lang.Language
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -7,6 +7,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
+import indent.rainbow.IrColors
 import javax.swing.Icon
 
 class IrColorSettingsPage : ColorSettingsPage {

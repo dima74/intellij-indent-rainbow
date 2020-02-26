@@ -11,6 +11,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import indent.rainbow.settings.IrConfig
 
 @Suppress("RedundantUnitReturnType", "RedundantUnitExpression")
 class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {

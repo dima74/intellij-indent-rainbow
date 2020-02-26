@@ -1,6 +1,7 @@
-package indent.rainbow
+package indent.rainbow.settings
 
 import com.intellij.openapi.options.Configurable
+import indent.rainbow.IrColors
 import java.util.*
 import javax.swing.*
 import kotlin.math.abs

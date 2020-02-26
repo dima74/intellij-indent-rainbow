@@ -8,6 +8,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import indent.rainbow.settings.IrConfig
 
 class IrAnnotator : Annotator {
 
