@@ -17,6 +17,10 @@ class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
         return Unit
     }
 
+    override fun collectInformation(file: PsiFile, editor: Editor, hasErrors: Boolean): Unit {
+        return collectInformation(file)
+    }
+
     override fun doAnnotate(collectedInfo: Unit): Unit {
         return Unit
     }
