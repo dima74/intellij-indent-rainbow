@@ -1,63 +1,23 @@
 package indent.rainbow
 
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.ExternalAnnotator
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Document
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.settings.IrConfig
 import kotlin.math.min
 
-@Suppress("RedundantUnitReturnType", "RedundantUnitExpression")
-class IrExternalAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
-
-    override fun collectInformation(file: PsiFile): Unit {
-        return Unit
-    }
-
-    override fun collectInformation(file: PsiFile, editor: Editor, hasErrors: Boolean): Unit {
-        return collectInformation(file)
-    }
-
-    override fun doAnnotate(collectedInfo: Unit): Unit {
-        return Unit
-    }
-
-    override fun apply(file: PsiFile, annotationResult: Unit, holder: AnnotationHolder) {
-        if (!config.enabled || !config.useFormatterBasedAnnotator) return
-
-        LOG.info("[Indent Rainbow] IrExternalAnnotator::apply")
-
-        val project = file.project
-        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
-
-        val indentHelper = IrIndentHelper.getInstance(file) ?: return
-
-        IrExternalAnnotatorImpl(file, document, holder, indentHelper).apply()
-    }
-
-    companion object {
-        val instance: IrExternalAnnotator = IrExternalAnnotator()
-        private val LOG: Logger = Logger.getInstance(IrExternalAnnotator::class.java)
-        private val config = IrConfig.instance
-    }
-}
-
-private class IrExternalAnnotatorImpl(
-    val file: PsiFile,
-    val document: Document,
-    val holder: AnnotationHolder,
-    val indentHelper: IrIndentHelper
+class IrFormatterAnnotatorImpl(
+    private val file: PsiFile,
+    private val document: Document,
+    private val holder: AnnotationHolder,
+    private val indentHelper: IrIndentHelper
 ) {
-    val useTabs: Boolean = indentHelper.indentOptions.USE_TAB_CHARACTER
-    val tabSize: Int = indentHelper.indentOptions.TAB_SIZE
-    val indentSize: Int = indentHelper.indentOptions.INDENT_SIZE
+    private val useTabs: Boolean = indentHelper.indentOptions.USE_TAB_CHARACTER
+    private val tabSize: Int = indentHelper.indentOptions.TAB_SIZE
+    private val indentSize: Int = indentHelper.indentOptions.INDENT_SIZE
 
     fun apply() {
         for (line in 0 until document.lineCount) {

@@ -11,8 +11,8 @@ object IrAnnotatorsManager {
     private val registeredLanguages = HashSet<Language>()
 
     fun initAnnotators() {
-        val annotator = IrAnnotator.instance
-        val externalAnnotator = IrExternalAnnotator.instance
+        val simpleAnnotator = IrSimpleAnnotator.instance
+        val formatterAnnotator = IrFormatterAnnotator.instance
 
         val languages = Language.getRegisteredLanguages()
         val languagesNew = languages.filterNot { registeredLanguages.contains(it) }
@@ -22,8 +22,8 @@ object IrAnnotatorsManager {
             if (shouldIgnoreLanguage(language)) continue
 
             LOG.info("[Indent Rainbow] Add language: ${language.displayName}")
-            LanguageAnnotators.INSTANCE.addExplicitExtension(language, annotator)
-            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, externalAnnotator)
+            LanguageAnnotators.INSTANCE.addExplicitExtension(language, simpleAnnotator)
+            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterAnnotator)
         }
     }
 

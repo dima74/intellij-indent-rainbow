@@ -4,13 +4,14 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import indent.rainbow.settings.IrConfig
 
-class IrAnnotator : Annotator {
+class IrSimpleAnnotator : Annotator, DumbAware {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (!config.enabled || config.useFormatterBasedAnnotator) return
@@ -68,7 +69,7 @@ class IrAnnotator : Annotator {
     }
 
     companion object {
-        val instance: IrAnnotator = IrAnnotator()
+        val instance: IrSimpleAnnotator = IrSimpleAnnotator()
         private val config = IrConfig.instance
     }
 }
