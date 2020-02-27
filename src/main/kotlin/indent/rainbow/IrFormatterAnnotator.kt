@@ -25,16 +25,15 @@ class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
     }
 
     override fun apply(file: PsiFile, annotationResult: Unit, holder: AnnotationHolder) {
-        if (!config.enabled || !config.useFormatterBasedAnnotator) return
+        if (!config.enabled || !config.useFormatterBasedAnnotator || config.useIncrementalHighlighter) return
 
         LOG.info("[Indent Rainbow] IrExternalAnnotator::apply")
 
         val project = file.project
         val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
 
-        val indentHelper = IrIndentHelper.getInstance(file) ?: return
-
-        IrFormatterAnnotatorImpl(file, document, holder, indentHelper).apply()
+        val formatterAnnotatorImpl = IrFormatterAnnotatorImpl.getInstance(file, document, holder) ?: return
+        formatterAnnotatorImpl.runForAllLines()
     }
 
     companion object {
@@ -43,4 +42,3 @@ class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
         private val config = IrConfig.instance
     }
 }
-

@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.settings.IrConfig
 import kotlin.math.min
 
-class IrFormatterAnnotatorImpl(
+class IrFormatterAnnotatorImpl private constructor(
     private val file: PsiFile,
     private val document: Document,
     private val holder: AnnotationHolder,
@@ -19,18 +19,28 @@ class IrFormatterAnnotatorImpl(
     private val tabSize: Int = indentHelper.indentOptions.TAB_SIZE
     private val indentSize: Int = indentHelper.indentOptions.INDENT_SIZE
 
-    fun apply() {
-        for (line in 0 until document.lineCount) {
-            val offset = document.getLineStartOffset(line)
-            val element = file.findElementAt(offset) ?: continue
-            // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
-            if (!element.text.isBlank()) continue
-            // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
-            if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) continue
+    fun runForAllLines() {
+        val lines = 0 until document.lineCount
+        runForLines(lines)
+    }
 
-            val (indent, alignment) = indentHelper.getIndentAndAlignment(offset) ?: continue
-            highlight(line, indent, alignment)
+    fun runForLines(lines: IntRange) {
+        for (line in lines) {
+            runForLine(line)
         }
+    }
+
+    private fun runForLine(line: Int) {
+        val offset = document.getLineStartOffset(line)
+        val element = file.findElementAt(offset) ?: return
+        // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
+        if (!element.text.isBlank()) return
+        // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
+        if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
+
+        val (indent, alignment) = indentHelper.getIndentAndAlignment(offset) ?: return
+
+        highlight(line, indent, alignment)
     }
 
     private fun highlight(line: Int, indentSpaces: Int, alignment: Int) {
@@ -84,5 +94,10 @@ class IrFormatterAnnotatorImpl(
 
     companion object {
         private val config = IrConfig.instance
+
+        fun getInstance(file: PsiFile, document: Document, holder: AnnotationHolder): IrFormatterAnnotatorImpl? {
+            val indentHelper = IrIndentHelper.getInstance(file) ?: return null
+            return IrFormatterAnnotatorImpl(file, document, holder, indentHelper)
+        }
     }
 }

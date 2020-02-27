@@ -10,9 +10,10 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import indent.rainbow.FormatterImplHelper.buildProcessorAndWrapBlocks
 import indent.rainbow.FormatterImplHelper.calcIndent
 import indent.rainbow.FormatterImplHelper.getWhiteSpaceAtOffset
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
-class IrIndentHelper(
+class IrIndentHelper private constructor(
     private val formattingDocumentModel: FormattingDocumentModel,
     private val formatter: FormatterEx,
     private val formatProcessor: FormatProcessor,
@@ -20,12 +21,12 @@ class IrIndentHelper(
 ) {
 
     fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
-        val whiteSpace0 = getWhiteSpaceAtOffset.invoke(formatter, offset, formatProcessor)
+        val whiteSpace0 = getWhiteSpaceAtOffset.invokeWithRethrow(formatter, offset, formatProcessor)
         val whiteSpace = whiteSpace0 as WhiteSpace? ?: return null
 
         // it is vital to call `calcIndent` method to get correct indent and alignment values
         // so, we can't use `indentSpaces` and `spaces` from whiteSpace
-        val indentInfo = calcIndent.invoke(null, offset, formattingDocumentModel, formatProcessor, whiteSpace) as IndentInfo
+        val indentInfo = calcIndent.invokeWithRethrow(null, offset, formattingDocumentModel, formatProcessor, whiteSpace) as IndentInfo
         val indent = indentInfo.indentSpaces
         val alignment = indentInfo.spaces
         return Pair(indent, alignment)
@@ -43,7 +44,7 @@ class IrIndentHelper(
 
             val formatter = FormatterEx.getInstanceEx()
             val formatProcessor = buildProcessorAndWrapBlocks
-                .invoke(formatter, formattingModel, codeStyleSettings, indentOptions, file.textRange, 0 /* ? */) as FormatProcessor
+                .invokeWithRethrow(formatter, formattingModel, codeStyleSettings, indentOptions, file.textRange, 0 /* ? */) as FormatProcessor
 
             return IrIndentHelper(formattingDocumentModel, formatter, formatProcessor, indentOptions)
         }
@@ -77,5 +78,17 @@ private object FormatterImplHelper {
         getWhiteSpaceAtOffset.isAccessible = true
         buildProcessorAndWrapBlocks.isAccessible = true
         calcIndent.isAccessible = true
+    }
+}
+
+private fun Method.invokeWithRethrow(obj: Any?, vararg args: Any?): Any? {
+    try {
+        return invoke(obj, *args)
+    } catch (e: InvocationTargetException) {
+        throw if (e.targetException is Exception) {
+            e.targetException
+        } else {
+            e
+        }
     }
 }

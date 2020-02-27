@@ -11,6 +11,7 @@ class IrConfig : PersistentStateComponent<IrConfig> {
 
     var enabled: Boolean = true
     var useFormatterBasedAnnotator: Boolean = true
+    var useIncrementalHighlighter: Boolean = true
     var disableErrorHighlighting: Boolean = false
     var opacityMultiplier: Float = 0F  // [-1, +1]
 

@@ -11,11 +11,13 @@ class IrConfigurable : Configurable {
     lateinit var rootPanel: JPanel
     private lateinit var isEnabled: JCheckBox
     private lateinit var useFormatterBasedAnnotator: JCheckBox
+    private lateinit var useIncrementalHighlighter: JCheckBox
     private lateinit var disableErrorHighlighting: JCheckBox
     private lateinit var opacityMultiplier: JSlider
 
     init {
         isEnabled.addActionListener { updateEnabled() }
+        useFormatterBasedAnnotator.addActionListener { updateEnabled() }
         opacityMultiplier.paintLabels = true
 
         val labelTable = Hashtable<Int, JLabel>()
@@ -30,6 +32,7 @@ class IrConfigurable : Configurable {
     override fun isModified(): Boolean {
         return isEnabled.isSelected != config.enabled
                 || useFormatterBasedAnnotator.isSelected != config.useFormatterBasedAnnotator
+                || useIncrementalHighlighter.isSelected != config.useIncrementalHighlighter
                 || disableErrorHighlighting.isSelected != config.disableErrorHighlighting
                 || opacityMultiplier.value != opacityMultiplierValue
     }
@@ -37,6 +40,7 @@ class IrConfigurable : Configurable {
     override fun apply() {
         config.enabled = isEnabled.isSelected
         config.useFormatterBasedAnnotator = useFormatterBasedAnnotator.isSelected
+        config.useIncrementalHighlighter = useIncrementalHighlighter.isSelected
         config.disableErrorHighlighting = disableErrorHighlighting.isSelected
         opacityMultiplierValue = opacityMultiplier.value
         IrColors.onSchemeChange()
@@ -46,6 +50,7 @@ class IrConfigurable : Configurable {
     override fun createComponent(): JComponent {
         isEnabled.isSelected = config.enabled
         useFormatterBasedAnnotator.isSelected = config.useFormatterBasedAnnotator
+        useIncrementalHighlighter.isSelected = config.useIncrementalHighlighter
         disableErrorHighlighting.isSelected = config.disableErrorHighlighting
         opacityMultiplier.value = opacityMultiplierValue
         updateEnabled()
@@ -55,6 +60,7 @@ class IrConfigurable : Configurable {
     private fun updateEnabled() {
         val enabled = isEnabled.isSelected
         useFormatterBasedAnnotator.isEnabled = enabled
+        useIncrementalHighlighter.isEnabled = enabled && useFormatterBasedAnnotator.isSelected
         disableErrorHighlighting.isEnabled = enabled
         opacityMultiplier.isEnabled = enabled
     }

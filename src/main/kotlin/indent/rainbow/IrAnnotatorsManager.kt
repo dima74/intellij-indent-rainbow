@@ -13,6 +13,7 @@ object IrAnnotatorsManager {
     fun initAnnotators() {
         val simpleAnnotator = IrSimpleAnnotator.instance
         val formatterAnnotator = IrFormatterAnnotator.instance
+        val experimentalAnnotator = IrExperimentalAnnotator.instance
 
         val languages = Language.getRegisteredLanguages()
         val languagesNew = languages.filterNot { registeredLanguages.contains(it) }
@@ -23,6 +24,7 @@ object IrAnnotatorsManager {
 
             LOG.info("[Indent Rainbow] Add language: ${language.displayName}")
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, simpleAnnotator)
+            LanguageAnnotators.INSTANCE.addExplicitExtension(language, experimentalAnnotator)
             ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterAnnotator)
         }
     }
