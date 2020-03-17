@@ -12,6 +12,7 @@ import indent.rainbow.FormatterImplHelper.calcIndent
 import indent.rainbow.FormatterImplHelper.getWhiteSpaceAtOffset
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import kotlin.math.max
 
 class IrIndentHelper private constructor(
     private val formattingDocumentModel: FormattingDocumentModel,
@@ -21,6 +22,58 @@ class IrIndentHelper private constructor(
 ) {
 
     fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
+        val (indent1, alignment1) = getIndentAndAlignmentMethod1(offset)
+        val (indent2, alignment2) = getIndentAndAlignmentMethod2(offset) ?: return null
+
+        val total1 = indent1 + alignment1
+        val total2 = indent2 + alignment2
+        if (total1 != total2) return Pair(indent2, alignment2)
+
+        // We calculate maximum of indents because there are some strange cases when
+        // indent1 == alignment2 == 0 and indent2 == alignment1 == N
+        // For example in Rust:
+        // ```
+        // struct Foo {
+        //     x1: i32,  // indent1=4, alignment1=0  indent2=4, alignment2=0
+        //     x2: i32,  // indent1=0, alignment1=4  indent2=4, alignment2=0
+        //     x3: i32,  // indent1=0, alignment1=4  indent2=4, alignment2=0
+        // }
+        // ```
+        val indent = max(indent1, indent2)
+        val alignment = total1 - indent
+        return Pair(indent, alignment)
+    }
+
+    /**
+     * For some reason this method does not work for lines with closed brackets, e.g.:
+     * ```
+     * fun foo() {    // line 1
+     *     println()  // line 2
+     * }              // line 3
+     * ```
+     * For line 3 it will return same indent as for line 2 (indent=4, alignment=0)
+     */
+    private fun getIndentAndAlignmentMethod1(offset: Int): Pair<Int, Int> {
+        val indentInfo = formatProcessor.getIndentAt(offset)
+        val indent = indentInfo.indentSpaces
+        val alignment = indentInfo.spaces
+        return Pair(indent, alignment)
+    }
+
+    /**
+     * For some reason this method produces incorrect indent vs alignment values
+     * when run in incremental mode (that is not applied sequentially to all lines in file)
+     *
+     * For example (after changing foo method body):
+     * ```
+     * class Foo {        // line 1
+     *     fun foo() {    // line 2:  indent=4, alignment=0
+     *         println()  // line 3:  indent=4, alignment=4
+     *     }              // line 4:  indent=0, alignment=4
+     * }                  // line 5
+     * ```
+     */
+    private fun getIndentAndAlignmentMethod2(offset: Int): Pair<Int, Int>? {
         val whiteSpace0 = getWhiteSpaceAtOffset.invokeWithRethrow(formatter, offset, formatProcessor)
         val whiteSpace = whiteSpace0 as WhiteSpace? ?: return null
 

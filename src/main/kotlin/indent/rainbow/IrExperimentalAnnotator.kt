@@ -38,17 +38,18 @@ class IrExperimentalAnnotator : Annotator, DumbAware {
 
     private fun getOrCreateFormatterAnnotatorImpl(file: PsiFile, document: Document, holder: AnnotationHolder): IrFormatterAnnotatorImpl? {
         val session = holder.currentAnnotationSession
-        var formatterAnnotatorImpl = session.getUserData(USER_DATA_KEY)
+        var formatterAnnotatorImpl = session.getUserData(FORMATTER_ANNOTATOR_KEY)
         if (formatterAnnotatorImpl != null) return formatterAnnotatorImpl
 
         formatterAnnotatorImpl = IrFormatterAnnotatorImpl.getInstance(file, document, holder)
-        session.putUserData(USER_DATA_KEY, formatterAnnotatorImpl)
+        session.putUserData(FORMATTER_ANNOTATOR_KEY, formatterAnnotatorImpl)
         return formatterAnnotatorImpl
     }
 
     companion object {
         val instance: IrExperimentalAnnotator = IrExperimentalAnnotator()
         private val config: IrConfig = IrConfig.instance
-        private val USER_DATA_KEY: Key<IrFormatterAnnotatorImpl> = Key("INDENT_RAINBOW_ANNOTATOR_SESSION_USER_DATA")
+        private val FORMATTER_ANNOTATOR_KEY: Key<IrFormatterAnnotatorImpl> =
+            Key("INDENT_RAINBOW_FORMATTER_ANNOTATOR_KEY")
     }
 }
