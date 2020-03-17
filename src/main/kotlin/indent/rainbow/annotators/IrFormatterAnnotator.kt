@@ -1,4 +1,4 @@
-package indent.rainbow
+package indent.rainbow.annotators
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
@@ -6,6 +6,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
+import indent.rainbow.IrFormatterAnnotatorImpl
+import indent.rainbow.LOG
 import indent.rainbow.settings.IrConfig
 
 @Suppress("RedundantUnitReturnType", "RedundantUnitExpression")

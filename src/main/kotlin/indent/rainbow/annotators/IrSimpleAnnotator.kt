@@ -1,4 +1,4 @@
-package indent.rainbow
+package indent.rainbow.annotators
 
 import com.intellij.application.options.CodeStyle
 import com.intellij.lang.annotation.AnnotationHolder
@@ -9,6 +9,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import indent.rainbow.IrColors
 import indent.rainbow.settings.IrConfig
 
 class IrSimpleAnnotator : Annotator, DumbAware {

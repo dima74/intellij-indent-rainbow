@@ -1,6 +1,9 @@
 package indent.rainbow
 
 import com.intellij.lang.*
+import indent.rainbow.annotators.IrExperimentalAnnotator
+import indent.rainbow.annotators.IrFormatterAnnotator
+import indent.rainbow.annotators.IrSimpleAnnotator
 
 object IrAnnotatorsManager {
 
