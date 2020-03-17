@@ -39,6 +39,7 @@ class IrFormatterAnnotatorImpl private constructor(
         if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
 
         val (indent, alignment) = indentHelper.getIndentAndAlignment(offset) ?: return
+        debug("line $line:  $indent $alignment")
 
         highlight(line, indent, alignment)
     }

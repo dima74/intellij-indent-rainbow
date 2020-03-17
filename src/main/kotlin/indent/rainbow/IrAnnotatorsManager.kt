@@ -1,11 +1,9 @@
 package indent.rainbow
 
 import com.intellij.lang.*
-import com.intellij.openapi.diagnostic.Logger
 
 object IrAnnotatorsManager {
 
-    private val LOG: Logger = Logger.getInstance(IrPostStartupActivity::class.java)
     private val IGNORED_LANGUAGES = listOf("Plain text")
 
     private val registeredLanguages = HashSet<Language>()
@@ -22,7 +20,7 @@ object IrAnnotatorsManager {
         for (language in languagesNew) {
             if (shouldIgnoreLanguage(language)) continue
 
-            LOG.info("[Indent Rainbow] Add language: ${language.displayName}")
+            LOG.info("Add language: ${language.displayName}")
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, simpleAnnotator)
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, experimentalAnnotator)
             ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterAnnotator)
@@ -31,13 +29,13 @@ object IrAnnotatorsManager {
 
     private fun shouldIgnoreLanguage(language: Language): Boolean {
         if (language is MetaLanguage) {
-            LOG.info("[Indent Rainbow] Ignore MetaLanguage: ${language.displayName}")
+            LOG.info("Ignore MetaLanguage: ${language.displayName}")
             return true
         }
 
         val baseLanguage = language.baseLanguage
         if (baseLanguage != null) {
-            LOG.info("[Indent Rainbow] Ignore language ${language.displayName} which has baseLanguage: ${baseLanguage.displayName}")
+            LOG.info("Ignore language ${language.displayName} which has baseLanguage: ${baseLanguage.displayName}")
             return true
         }
 

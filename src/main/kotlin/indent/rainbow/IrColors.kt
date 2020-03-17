@@ -1,6 +1,5 @@
 package indent.rainbow
 
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
@@ -57,6 +56,7 @@ object IrColors {
     private val INDENTS_TA = (1..4)
         .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}") }
         .toTypedArray()
+
     // derived TextAttributes are set by user
     private val ERROR_TA_DERIVED = createTextAttributesKey("INDENT_RAINBOW_ERROR_DERIVED", ERROR_TA)
     private val INDENTS_TA_DERIVED = (1..4)
@@ -92,7 +92,7 @@ object IrColors {
                 taNew.backgroundColor = colorMixed
                 if (taNew.backgroundColor != ta.backgroundColor) {
                     LOG.info(
-                        "[Indent Rainbow] Changing color of $taKey in scheme $scheme " +
+                        "Changing color of $taKey in scheme $scheme " +
                                 "from ${ta.backgroundColor.toStringWithAlpha()} to ${taNew.backgroundColor.toStringWithAlpha()}"
                     )
                     scheme.setAttributes(taKey, taNew)
@@ -109,5 +109,3 @@ object IrColors {
         (EditorColorsManager.getInstance() as EditorColorsManagerImpl).schemeChangedOrSwitched(null)
     }
 }
-
-private val LOG: Logger = Logger.getInstance(IrColors::class.java)

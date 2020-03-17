@@ -2,7 +2,6 @@ package indent.rainbow
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiDocumentManager
@@ -27,7 +26,7 @@ class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
     override fun apply(file: PsiFile, annotationResult: Unit, holder: AnnotationHolder) {
         if (!config.enabled || !config.useFormatterBasedAnnotator || config.useIncrementalHighlighter) return
 
-        LOG.info("[Indent Rainbow] IrExternalAnnotator::apply")
+        LOG.info("IrExternalAnnotator::apply")
 
         val project = file.project
         val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
@@ -38,7 +37,6 @@ class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
 
     companion object {
         val instance: IrFormatterAnnotator = IrFormatterAnnotator()
-        private val LOG: Logger = Logger.getInstance(IrFormatterAnnotator::class.java)
         private val config = IrConfig.instance
     }
 }
