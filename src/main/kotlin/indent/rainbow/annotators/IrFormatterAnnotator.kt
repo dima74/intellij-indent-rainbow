@@ -26,8 +26,7 @@ class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
     }
 
     override fun apply(file: PsiFile, annotationResult: Unit, holder: AnnotationHolder) {
-        if (!config.enabled || !config.useFormatterBasedAnnotator || config.useIncrementalHighlighter) return
-
+        if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_SEQUENTIAL, null)) return
         LOG.info("IrExternalAnnotator::apply")
 
         val project = file.project

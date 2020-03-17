@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import indent.rainbow.annotators.isAnnotatorEnabled
 import indent.rainbow.settings.IrConfig
 import kotlin.math.min
 
@@ -33,8 +34,7 @@ class IrFormatterAnnotatorImpl private constructor(
     private fun runForLine(line: Int) {
         val offset = document.getLineStartOffset(line)
         val element = file.findElementAt(offset) ?: return
-        // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
-        if (!element.text.isBlank()) return
+        if (!config.isAnnotatorEnabled(element)) return
         // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
         if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
 

@@ -8,14 +8,12 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiWhiteSpace
 import indent.rainbow.IrFormatterAnnotatorImpl
 import indent.rainbow.settings.IrConfig
 
 class IrExperimentalAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (!config.enabled || !config.useFormatterBasedAnnotator || !config.useIncrementalHighlighter) return
-        if (element !is PsiWhiteSpace) return
+        if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_INCREMENTAL, element)) return
 
         val project = element.project
         val file = element.containingFile
@@ -27,7 +25,7 @@ class IrExperimentalAnnotator : Annotator, DumbAware {
         formatterAnnotatorImpl.runForLines(elementLines)
     }
 
-    private fun getElementLinesRange(element: PsiWhiteSpace, document: Document): IntRange {
+    private fun getElementLinesRange(element: PsiElement, document: Document): IntRange {
         val range = element.textRange
         var startLine = document.getLineNumber(range.startOffset)
         val endLine = document.getLineNumber(range.endOffset)
