@@ -5,13 +5,13 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
+import indent.rainbow.annotators.IrAnnotatorType
 
 @State(name = "IndentRainbowConfig", storages = [Storage("IndentRainbowConfig.xml")])
 class IrConfig : PersistentStateComponent<IrConfig> {
 
     var enabled: Boolean = true
-    var useFormatterBasedAnnotator: Boolean = true
-    var useIncrementalHighlighter: Boolean = true
+    var annotatorType: IrAnnotatorType = IrAnnotatorType.FORMATTER_INCREMENTAL
     var disableErrorHighlighting: Boolean = false
     var opacityMultiplier: Float = 0F  // [-1, +1]
 

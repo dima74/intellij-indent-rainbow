@@ -9,16 +9,9 @@ enum class IrAnnotatorType {
     FORMATTER_INCREMENTAL,
 }
 
-private val IrConfig.currentAnnotator: IrAnnotatorType
-    get() = when {
-        !useFormatterBasedAnnotator -> IrAnnotatorType.SIMPLE
-        useIncrementalHighlighter -> IrAnnotatorType.FORMATTER_INCREMENTAL
-        else -> IrAnnotatorType.FORMATTER_SEQUENTIAL
-    }
-
 fun IrConfig.isAnnotatorEnabled(annotator: IrAnnotatorType, element: PsiElement?): Boolean {
     return enabled
-            && annotator == currentAnnotator
+            && annotator == annotatorType
             && (element == null || isAnnotatorEnabled(element))
 }
 
