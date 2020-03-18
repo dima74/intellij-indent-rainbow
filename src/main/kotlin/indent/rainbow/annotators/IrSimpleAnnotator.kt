@@ -68,7 +68,7 @@ class IrSimpleAnnotator : Annotator, DumbAware {
     }
 
     companion object {
-        val instance: IrSimpleAnnotator = IrSimpleAnnotator()
-        private val config = IrConfig.instance
+        val INSTANCE: IrSimpleAnnotator = IrSimpleAnnotator()
+        private val config = IrConfig.INSTANCE
     }
 }

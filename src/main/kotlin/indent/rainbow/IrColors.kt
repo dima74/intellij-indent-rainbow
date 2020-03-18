@@ -18,7 +18,7 @@ fun Color?.toStringWithAlpha(): String {
 fun interpolate(a: Float, b: Float, qa: Float): Float = a * qa + b * (1 - qa)
 
 fun getAlpha(alpha: Float): Float {
-    var opacityMultiplier = IrConfig.instance.opacityMultiplier  // [-1, +1]
+    var opacityMultiplier = IrConfig.INSTANCE.opacityMultiplier  // [-1, +1]
     val needMoreOpacity = opacityMultiplier > 0F
 
     opacityMultiplier = abs(opacityMultiplier)

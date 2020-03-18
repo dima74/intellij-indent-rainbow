@@ -21,7 +21,7 @@ class IrConfig : PersistentStateComponent<IrConfig> {
     override fun loadState(state: IrConfig) = XmlSerializerUtil.copyBean(state, this)
 
     companion object {
-        val instance: IrConfig
+        val INSTANCE: IrConfig
             get() = ServiceManager.getService(IrConfig::class.java)
     }
 }

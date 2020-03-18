@@ -1,8 +1,8 @@
 package indent.rainbow
 
 import com.intellij.lang.*
-import indent.rainbow.annotators.IrExperimentalAnnotator
-import indent.rainbow.annotators.IrFormatterAnnotator
+import indent.rainbow.annotators.IrFormatterIncrementalAnnotator
+import indent.rainbow.annotators.IrFormatterSequentialAnnotator
 import indent.rainbow.annotators.IrSimpleAnnotator
 
 object IrAnnotatorsManager {
@@ -12,9 +12,9 @@ object IrAnnotatorsManager {
     private val registeredLanguages = HashSet<Language>()
 
     fun initAnnotators() {
-        val simpleAnnotator = IrSimpleAnnotator.instance
-        val formatterAnnotator = IrFormatterAnnotator.instance
-        val experimentalAnnotator = IrExperimentalAnnotator.instance
+        val simpleAnnotator = IrSimpleAnnotator.INSTANCE
+        val formatterSequentialAnnotator = IrFormatterSequentialAnnotator.INSTANCE
+        val formatterIncrementalAnnotator = IrFormatterIncrementalAnnotator.INSTANCE
 
         val languages = Language.getRegisteredLanguages()
         val languagesNew = languages.filterNot { registeredLanguages.contains(it) }
@@ -25,8 +25,8 @@ object IrAnnotatorsManager {
 
             LOG.info("Add language: ${language.displayName}")
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, simpleAnnotator)
-            LanguageAnnotators.INSTANCE.addExplicitExtension(language, experimentalAnnotator)
-            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterAnnotator)
+            LanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterIncrementalAnnotator)
+            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterSequentialAnnotator)
         }
     }
 

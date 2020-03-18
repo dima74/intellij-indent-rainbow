@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import indent.rainbow.IrFormatterAnnotatorImpl
 import indent.rainbow.settings.IrConfig
 
-class IrExperimentalAnnotator : Annotator, DumbAware {
+class IrFormatterIncrementalAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_INCREMENTAL, element)) return
 
@@ -46,8 +46,8 @@ class IrExperimentalAnnotator : Annotator, DumbAware {
     }
 
     companion object {
-        val instance: IrExperimentalAnnotator = IrExperimentalAnnotator()
-        private val config: IrConfig = IrConfig.instance
+        val INSTANCE: IrFormatterIncrementalAnnotator = IrFormatterIncrementalAnnotator()
+        private val config: IrConfig = IrConfig.INSTANCE
         private val FORMATTER_ANNOTATOR_KEY: Key<IrFormatterAnnotatorImpl> =
             Key("INDENT_RAINBOW_FORMATTER_ANNOTATOR_KEY")
     }

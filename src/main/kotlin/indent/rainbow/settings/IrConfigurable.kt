@@ -88,7 +88,7 @@ class IrConfigurable : Configurable {
             .key
 
     companion object {
-        private val config = IrConfig.instance
+        private val config = IrConfig.INSTANCE
 
         private var opacityMultiplierValue: Int
             get() = (config.opacityMultiplier * 100).roundToInt()

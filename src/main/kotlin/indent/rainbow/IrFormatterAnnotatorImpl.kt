@@ -94,7 +94,7 @@ class IrFormatterAnnotatorImpl private constructor(
     }
 
     companion object {
-        private val config = IrConfig.instance
+        private val config = IrConfig.INSTANCE
 
         fun getInstance(file: PsiFile, document: Document, holder: AnnotationHolder): IrFormatterAnnotatorImpl? {
             val indentHelper = IrIndentHelper.getInstance(file) ?: return null

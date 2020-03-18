@@ -6,9 +6,9 @@ import com.intellij.openapi.project.DumbAware
 import indent.rainbow.settings.IrConfig
 
 class IrToggleAction : ToggleAction(), DumbAware {
-    override fun isSelected(e: AnActionEvent): Boolean = IrConfig.instance.enabled
+    override fun isSelected(e: AnActionEvent): Boolean = IrConfig.INSTANCE.enabled
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        IrConfig.instance.enabled = state
+        IrConfig.INSTANCE.enabled = state
     }
 }

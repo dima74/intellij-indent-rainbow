@@ -11,7 +11,7 @@ import indent.rainbow.LOG
 import indent.rainbow.settings.IrConfig
 
 @Suppress("RedundantUnitReturnType", "RedundantUnitExpression")
-class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
+class IrFormatterSequentialAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
 
     override fun collectInformation(file: PsiFile): Unit {
         return Unit
@@ -37,7 +37,7 @@ class IrFormatterAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
     }
 
     companion object {
-        val instance: IrFormatterAnnotator = IrFormatterAnnotator()
-        private val config = IrConfig.instance
+        val INSTANCE: IrFormatterSequentialAnnotator = IrFormatterSequentialAnnotator()
+        private val config = IrConfig.INSTANCE
     }
 }
