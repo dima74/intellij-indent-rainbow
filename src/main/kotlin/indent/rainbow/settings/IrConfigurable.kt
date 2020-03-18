@@ -20,6 +20,7 @@ class IrConfigurable : Configurable {
     private val highlighterTypeGroup: Map<IrAnnotatorType, JRadioButton>
 
     private lateinit var disableErrorHighlighting: JCheckBox
+    private lateinit var isEnabledForReadOnlyFiles: JCheckBox
 
     private lateinit var opacityMultiplierLabel: JLabel
     private lateinit var opacityMultiplier: JSlider
@@ -47,6 +48,7 @@ class IrConfigurable : Configurable {
         return isEnabled.isSelected != config.enabled
                 || annotatorType != config.annotatorType
                 || disableErrorHighlighting.isSelected != config.disableErrorHighlighting
+                || isEnabledForReadOnlyFiles.isSelected != config.isEnabledForReadOnlyFiles
                 || opacityMultiplier.value != opacityMultiplierValue
     }
 
@@ -54,6 +56,7 @@ class IrConfigurable : Configurable {
         config.enabled = isEnabled.isSelected
         config.annotatorType = annotatorType
         config.disableErrorHighlighting = disableErrorHighlighting.isSelected
+        config.isEnabledForReadOnlyFiles = isEnabledForReadOnlyFiles.isSelected
         opacityMultiplierValue = opacityMultiplier.value
         IrColors.onSchemeChange()
         IrColors.refreshEditorIndentColors()
@@ -63,6 +66,7 @@ class IrConfigurable : Configurable {
         isEnabled.isSelected = config.enabled
         highlighterTypeGroup.getValue(config.annotatorType).isSelected = true
         disableErrorHighlighting.isSelected = config.disableErrorHighlighting
+        isEnabledForReadOnlyFiles.isSelected = config.isEnabledForReadOnlyFiles
         opacityMultiplier.value = opacityMultiplierValue
         updateEnabled()
         return rootPanel
@@ -73,6 +77,7 @@ class IrConfigurable : Configurable {
         highlighterTypePanel.isEnabled = enabled
         highlighterTypeGroup.values.forEach { it.isEnabled = enabled }
         disableErrorHighlighting.isEnabled = enabled
+        isEnabledForReadOnlyFiles.isEnabled = enabled
         opacityMultiplierLabel.isEnabled = enabled
         opacityMultiplier.isEnabled = enabled
     }

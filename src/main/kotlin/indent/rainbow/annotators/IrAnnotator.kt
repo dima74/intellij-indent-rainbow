@@ -17,5 +17,6 @@ fun IrConfig.isAnnotatorEnabled(annotator: IrAnnotatorType, element: PsiElement?
 
 fun IrConfig.isAnnotatorEnabled(element: PsiElement): Boolean {
     // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
-    return element.text.isBlank() && element.isWritable
+    return element.text.isBlank()
+            && (element.isWritable || isEnabledForReadOnlyFiles)
 }
