@@ -1,6 +1,11 @@
 # Changelog
 ----
 
+# 1.4.0
+- Implement new incremental formatter-based highlighter, which is now default. It should significantly improve performance on large files
+- Disable indent rainbow for read-only files by default
+- Add option "Never highlight indent as error"
+
 # 1.3.0
 - Fix that indent rainbow not working when file contains errors
 - Improve performance up to 2-3 times on some languages (there was a bug that annotator may be registered several times for some languages)

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "indent-rainbow"
-version = "1.3.0"
+version = "1.4.0"
 
 repositories {
     mavenCentral()
@@ -25,7 +25,11 @@ dependencies {
 intellij {
     version = "2019.3"
 
-    // setPlugins("com.chrisrm.idea.MaterialThemeUI:4.11.0")
+//    setPlugins(
+//        // "com.chrisrm.idea.MaterialThemeUI:4.11.0"
+//        "org.toml.lang:0.2.115.36-193",
+//        "org.rust.lang:0.2.118.2171-193"
+//    )
 }
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
