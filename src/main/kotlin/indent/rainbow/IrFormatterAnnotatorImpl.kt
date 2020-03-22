@@ -52,7 +52,10 @@ class IrFormatterAnnotatorImpl private constructor(
 
         var indent = if (useTabs) indentSpaces / tabSize else indentSpaces
         val prefixExpected = if (useTabs) {
-            assert(indentSpaces % tabSize == 0) { "indentSpaces: $indentSpaces, tabSize: $tabSize" }
+            if (indentSpaces % tabSize != 0) {
+                LOG.error("Unexpected indent value: $indentSpaces, tabSize: $tabSize, alignment: $alignment")
+            }
+
             "\t".repeat(indent) + " ".repeat(alignment)
         } else {
             " ".repeat(indentSpaces + alignment)
@@ -61,8 +64,12 @@ class IrFormatterAnnotatorImpl private constructor(
 
         val prefixActual = lineText.takeWhile { it == ' ' || it == '\t' }
 
-        if (prefixActual == prefixExpected || config.disableErrorHighlighting) {
-            if (config.disableErrorHighlighting) {
+        val disableErrorHighlighting = config.disableErrorHighlighting
+                // todo this is actually a workaround,
+                //  ideally we should retrieve continuationIndentSize from formatter
+                || useTabs && indentSpaces % tabSize != 0
+        if (prefixActual == prefixExpected || disableErrorHighlighting) {
+            if (disableErrorHighlighting) {
                 var indentSpacesActual = prefixActual.replace("\t", "    ").length
                 indentSpacesActual -= indentSpacesActual % tabSize
                 val indentActual = if (useTabs) indentSpacesActual / tabSize else indentSpacesActual
@@ -70,9 +77,19 @@ class IrFormatterAnnotatorImpl private constructor(
             }
 
             val step = if (useTabs) 1 else indentSize
-            for (offset in 0 until indent step step) {
+            for (offset in 0 until (indent - indent % step) step step) {
                 val start = lineStartOffset + offset
                 val end = start + step
+                annotate(holder, start, end, offset / step)
+            }
+
+            // this can happen for example if indentSize=4 and continuationIndentSize=2
+            // ideally we should extract such information from formatter
+            val lastTabSize = indent % step
+            if (lastTabSize != 0) {
+                val offset = indent - lastTabSize
+                val start = lineStartOffset + offset
+                val end = start + lastTabSize
                 annotate(holder, start, end, offset / step)
             }
         } else {
