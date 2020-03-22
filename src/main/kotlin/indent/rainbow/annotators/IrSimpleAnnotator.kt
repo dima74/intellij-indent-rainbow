@@ -14,7 +14,11 @@ import indent.rainbow.settings.IrConfig
 class IrSimpleAnnotator : Annotator, DumbAware {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (!config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, element)) return
+        annotate(element, holder, false)
+    }
+
+    fun annotate(element: PsiElement, holder: AnnotationHolder, asFallback: Boolean) {
+        if (!config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, element) && !asFallback) return
 
         val project = element.project
         val file = element.containingFile
@@ -45,8 +49,9 @@ class IrSimpleAnnotator : Annotator, DumbAware {
                     && highlightText.chars().allMatch { it == ' '.toInt() }
                     && (highlightEndOffset - highlightStartOffset) % tabSize == 0
             val okTabs = useTabs && highlightText.chars().allMatch { it == '\t'.toInt() }
-            if (okSpaces || okTabs || config.disableErrorHighlighting) {
-                if (config.disableErrorHighlighting && !useTabs) {
+            val disableErrorHighlighting = config.disableErrorHighlighting || asFallback
+            if (okSpaces || okTabs || disableErrorHighlighting) {
+                if (disableErrorHighlighting && !useTabs) {
                     highlightEndOffset -= (highlightEndOffset - highlightStartOffset) % tabSize
                 }
 

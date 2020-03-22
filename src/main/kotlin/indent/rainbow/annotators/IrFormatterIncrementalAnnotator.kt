@@ -13,16 +13,22 @@ import indent.rainbow.settings.IrConfig
 
 class IrFormatterIncrementalAnnotator : Annotator, DumbAware {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_INCREMENTAL, element)) return
+        if (config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_INCREMENTAL, element)) {
+            tryAnnotate(element, holder)
+        }
+    }
 
+    fun tryAnnotate(element: PsiElement, holder: AnnotationHolder): Boolean {
         val project = element.project
         val file = element.containingFile
-        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
+        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return false
 
         val elementLines = getElementLinesRange(element, document)
 
-        val formatterAnnotatorImpl = getOrCreateFormatterAnnotatorImpl(file, document, holder) ?: return
+        val formatterAnnotatorImpl = getOrCreateFormatterAnnotatorImpl(file, document, holder)
+            ?: return false
         formatterAnnotatorImpl.runForLines(elementLines)
+        return true
     }
 
     private fun getElementLinesRange(element: PsiElement, document: Document): IntRange {
