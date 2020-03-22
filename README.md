@@ -8,9 +8,9 @@
 
 This extension colorizes the indentation in front of your text alternating four different colors on each step.
 
-![Example](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example.png)
-
 Get it here: [JetBrains Plugins Repository](https://plugins.jetbrains.com/plugin/13308-indent-rainbow)
+
+![Example](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example.png)
 
 ## Change colors
 There are two options to change indent colors:

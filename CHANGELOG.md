@@ -1,6 +1,9 @@
 # Changelog
 ----
 
+# 1.4.1
+- Use simple highlighter instead of incremental formatter-based if there is no formatting model for language. This is workaround for Rider and Haskell
+
 # 1.4.0
 - Implement new incremental formatter-based highlighter, which is now default. It should significantly improve performance on large files
 - Disable indent rainbow for read-only files by default
