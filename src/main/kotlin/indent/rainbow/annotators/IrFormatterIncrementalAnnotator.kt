@@ -6,8 +6,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import indent.rainbow.IrFormatterAnnotatorImpl
-import indent.rainbow.settings.IrConfig
+import indent.rainbow.IrAnnotatorImpl
 
 class IrFormatterIncrementalAnnotator {
 
@@ -18,9 +17,8 @@ class IrFormatterIncrementalAnnotator {
 
         val elementLines = getElementLinesRange(element, document)
 
-        val formatterAnnotatorImpl = getOrCreateFormatterAnnotatorImpl(file, document, holder)
-            ?: return false
-        formatterAnnotatorImpl.runForLines(elementLines)
+        val annotatorImpl = getOrCreateAnnotatorImpl(file, document, holder) ?: return false
+        annotatorImpl.runForLines(elementLines)
         return true
     }
 
@@ -34,20 +32,18 @@ class IrFormatterIncrementalAnnotator {
         return startLine..endLine
     }
 
-    private fun getOrCreateFormatterAnnotatorImpl(file: PsiFile, document: Document, holder: AnnotationHolder): IrFormatterAnnotatorImpl? {
+    private fun getOrCreateAnnotatorImpl(file: PsiFile, document: Document, holder: AnnotationHolder): IrAnnotatorImpl? {
         val session = holder.currentAnnotationSession
-        var formatterAnnotatorImpl = session.getUserData(FORMATTER_ANNOTATOR_KEY)
-        if (formatterAnnotatorImpl != null) return formatterAnnotatorImpl
+        var annotatorImpl = session.getUserData(ANNOTATOR_IMPL_KEY)
+        if (annotatorImpl != null) return annotatorImpl
 
-        formatterAnnotatorImpl = IrFormatterAnnotatorImpl.getInstance(file, document, holder)
-        session.putUserData(FORMATTER_ANNOTATOR_KEY, formatterAnnotatorImpl)
-        return formatterAnnotatorImpl
+        annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder)
+        session.putUserData(ANNOTATOR_IMPL_KEY, annotatorImpl)
+        return annotatorImpl
     }
 
     companion object {
         val INSTANCE: IrFormatterIncrementalAnnotator = IrFormatterIncrementalAnnotator()
-        private val config: IrConfig = IrConfig.INSTANCE
-        private val FORMATTER_ANNOTATOR_KEY: Key<IrFormatterAnnotatorImpl> =
-            Key("INDENT_RAINBOW_FORMATTER_ANNOTATOR_KEY")
+        private val ANNOTATOR_IMPL_KEY: Key<IrAnnotatorImpl> = Key("INDENT_RAINBOW_ANNOTATOR_IMPL_KEY")
     }
 }

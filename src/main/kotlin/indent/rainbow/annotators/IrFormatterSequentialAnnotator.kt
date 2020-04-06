@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import indent.rainbow.IrFormatterAnnotatorImpl
+import indent.rainbow.IrAnnotatorImpl
 import indent.rainbow.LOG
 import indent.rainbow.settings.IrConfig
 
@@ -32,8 +32,8 @@ class IrFormatterSequentialAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAwar
         val project = file.project
         val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
 
-        val formatterAnnotatorImpl = IrFormatterAnnotatorImpl.getInstance(file, document, holder) ?: return
-        formatterAnnotatorImpl.runForAllLines()
+        val annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder) ?: return
+        annotatorImpl.runForAllLines()
     }
 
     companion object {

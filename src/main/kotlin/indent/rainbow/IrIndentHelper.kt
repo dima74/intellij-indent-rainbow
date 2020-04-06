@@ -14,14 +14,19 @@ import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.math.max
 
-class IrIndentHelper private constructor(
+abstract class IrIndentHelper {
+    abstract val indentOptions: CommonCodeStyleSettings.IndentOptions
+    abstract fun getIndentAndAlignment(offset: Int): Pair<Int, Int>?
+}
+
+class IrFormatterIndentHelper private constructor(
     private val formattingDocumentModel: FormattingDocumentModel,
     private val formatter: FormatterEx,
     private val formatProcessor: FormatProcessor,
-    val indentOptions: CommonCodeStyleSettings.IndentOptions
-) {
+    override val indentOptions: CommonCodeStyleSettings.IndentOptions
+) : IrIndentHelper() {
 
-    fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
+    override fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
         val (indent1, alignment1) = getIndentAndAlignmentMethod1(offset)
         val (indent2, alignment2) = getIndentAndAlignmentMethod2(offset) ?: return null
 
@@ -86,8 +91,7 @@ class IrIndentHelper private constructor(
     }
 
     companion object {
-
-        fun getInstance(file: PsiFile): IrIndentHelper? {
+        fun getInstance(file: PsiFile): IrFormatterIndentHelper? {
             val codeStyleSettings = CodeStyle.getSettings(file)
             val indentOptions = codeStyleSettings.getIndentOptionsByFile(file)
 
@@ -99,7 +103,7 @@ class IrIndentHelper private constructor(
             val formatProcessor = buildProcessorAndWrapBlocks
                 .invokeWithRethrow(formatter, formattingModel, codeStyleSettings, indentOptions, file.textRange, 0 /* ? */) as FormatProcessor
 
-            return IrIndentHelper(formattingDocumentModel, formatter, formatProcessor, indentOptions)
+            return IrFormatterIndentHelper(formattingDocumentModel, formatter, formatProcessor, indentOptions)
         }
     }
 }

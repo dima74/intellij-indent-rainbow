@@ -29,7 +29,7 @@ class IrTest : BasePlatformTestCase() {
 
         val startOffset = document.getLineStartOffset(3)
 
-        val indentHelper = IrIndentHelper.getInstance(psiFile)!!
+        val indentHelper = IrFormatterIndentHelper.getInstance(psiFile)!!
         val (indent, alignment) = indentHelper.getIndentAndAlignment(startOffset)!!
 
         val useTabs = indentHelper.indentOptions.USE_TAB_CHARACTER

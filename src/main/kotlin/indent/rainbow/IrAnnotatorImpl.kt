@@ -10,7 +10,7 @@ import indent.rainbow.annotators.isAnnotatorEnabled
 import indent.rainbow.settings.IrConfig
 import kotlin.math.min
 
-class IrFormatterAnnotatorImpl private constructor(
+class IrAnnotatorImpl private constructor(
     private val file: PsiFile,
     private val document: Document,
     private val holder: AnnotationHolder,
@@ -113,9 +113,9 @@ class IrFormatterAnnotatorImpl private constructor(
     companion object {
         private val config = IrConfig.INSTANCE
 
-        fun getInstance(file: PsiFile, document: Document, holder: AnnotationHolder): IrFormatterAnnotatorImpl? {
-            val indentHelper = IrIndentHelper.getInstance(file) ?: return null
-            return IrFormatterAnnotatorImpl(file, document, holder, indentHelper)
+        fun getInstance(file: PsiFile, document: Document, holder: AnnotationHolder): IrAnnotatorImpl? {
+            val indentHelper = IrFormatterIndentHelper.getInstance(file) ?: return null
+            return IrAnnotatorImpl(file, document, holder, indentHelper)
         }
     }
 }
