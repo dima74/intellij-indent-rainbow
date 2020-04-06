@@ -1,9 +1,7 @@
 package indent.rainbow.annotators
 
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.Document
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -11,12 +9,7 @@ import com.intellij.psi.PsiFile
 import indent.rainbow.IrFormatterAnnotatorImpl
 import indent.rainbow.settings.IrConfig
 
-class IrFormatterIncrementalAnnotator : Annotator, DumbAware {
-    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_INCREMENTAL, element)) {
-            tryAnnotate(element, holder)
-        }
-    }
+class IrFormatterIncrementalAnnotator {
 
     fun tryAnnotate(element: PsiElement, holder: AnnotationHolder): Boolean {
         val project = element.project

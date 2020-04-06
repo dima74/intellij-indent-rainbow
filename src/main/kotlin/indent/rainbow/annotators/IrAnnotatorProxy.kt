@@ -14,7 +14,7 @@ class IrAnnotatorProxy : Annotator, DumbAware {
                 IrSimpleAnnotator.INSTANCE.annotate(element, holder, true)
             }
         } else if (config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, element)) {
-            IrSimpleAnnotator.INSTANCE.annotate(element, holder)
+            IrSimpleAnnotator.INSTANCE.annotate(element, holder, false)
         }
     }
 
