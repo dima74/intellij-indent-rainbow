@@ -37,7 +37,7 @@ class IrFormatterIncrementalAnnotator {
         var annotatorImpl = session.getUserData(ANNOTATOR_IMPL_KEY)
         if (annotatorImpl != null) return annotatorImpl
 
-        annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder)
+        annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder, true)
         session.putUserData(ANNOTATOR_IMPL_KEY, annotatorImpl)
         return annotatorImpl
     }

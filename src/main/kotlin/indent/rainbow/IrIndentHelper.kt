@@ -3,6 +3,7 @@ package indent.rainbow
 import com.intellij.application.options.CodeStyle
 import com.intellij.formatting.*
 import com.intellij.lang.LanguageFormatting
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
@@ -17,6 +18,25 @@ import kotlin.math.max
 abstract class IrIndentHelper {
     abstract val indentOptions: CommonCodeStyleSettings.IndentOptions
     abstract fun getIndentAndAlignment(offset: Int): Pair<Int, Int>?
+}
+
+class IrSimpleIndentHelper(
+    file: PsiFile,
+    private val document: Document
+) : IrIndentHelper() {
+
+    override val indentOptions: CommonCodeStyleSettings.IndentOptions =
+        CodeStyle.getSettings(file).getIndentOptionsByFile(file)
+
+    override fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
+        val fileText = document.charsSequence
+
+        var offsetEnd = offset
+        while (offsetEnd < fileText.length && fileText[offsetEnd].let { it == ' ' || it == '\t' }) {
+            ++offsetEnd
+        }
+        return Pair(offsetEnd - offset, 0)
+    }
 }
 
 class IrFormatterIndentHelper private constructor(

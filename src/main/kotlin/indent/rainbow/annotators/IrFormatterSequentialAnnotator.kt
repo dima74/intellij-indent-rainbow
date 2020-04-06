@@ -26,13 +26,13 @@ class IrFormatterSequentialAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAwar
     }
 
     override fun apply(file: PsiFile, annotationResult: Unit, holder: AnnotationHolder) {
-        if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_SEQUENTIAL, null)) return
+        if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_SEQUENTIAL, null, file)) return
         LOG.info("IrExternalAnnotator::apply")
 
         val project = file.project
         val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
 
-        val annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder) ?: return
+        val annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder, true) ?: return
         annotatorImpl.runForAllLines()
     }
 

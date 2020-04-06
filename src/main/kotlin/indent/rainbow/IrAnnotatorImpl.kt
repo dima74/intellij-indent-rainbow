@@ -14,7 +14,8 @@ class IrAnnotatorImpl private constructor(
     private val file: PsiFile,
     private val document: Document,
     private val holder: AnnotationHolder,
-    private val indentHelper: IrIndentHelper
+    private val indentHelper: IrIndentHelper,
+    private val useFormatterIndentHelper: Boolean
 ) {
     private val useTabs: Boolean = indentHelper.indentOptions.USE_TAB_CHARACTER
     private val tabSize: Int = indentHelper.indentOptions.TAB_SIZE
@@ -31,15 +32,21 @@ class IrAnnotatorImpl private constructor(
         }
     }
 
+    fun runForTextRange(range: TextRange) {
+        val lineStart = document.getLineNumber(range.startOffset)
+        val lineEnd = document.getLineNumber(range.endOffset)
+        runForLines(lineStart..lineEnd)
+    }
+
     private fun runForLine(line: Int) {
         val offset = document.getLineStartOffset(line)
         val element = file.findElementAt(offset) ?: return
-        if (!config.isAnnotatorEnabled(element)) return
+        if (useFormatterIndentHelper && !isAnnotatorEnabled(element)) return
         // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
         if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
 
         val (indent, alignment) = indentHelper.getIndentAndAlignment(offset) ?: return
-        debug("line $line:  $indent $alignment")
+        // debug("line $line:  $indent $alignment")
 
         highlight(line, indent, alignment)
     }
@@ -52,7 +59,7 @@ class IrAnnotatorImpl private constructor(
 
         var indent = if (useTabs) indentSpaces / tabSize else indentSpaces
         val prefixExpected = if (useTabs) {
-            if (indentSpaces % tabSize != 0) {
+            if (useFormatterIndentHelper && indentSpaces % tabSize != 0) {
                 LOG.error("Unexpected indent value: $indentSpaces, tabSize: $tabSize, alignment: $alignment")
             }
 
@@ -65,6 +72,7 @@ class IrAnnotatorImpl private constructor(
         val prefixActual = lineText.takeWhile { it == ' ' || it == '\t' }
 
         val disableErrorHighlighting = config.disableErrorHighlighting
+                || !useFormatterIndentHelper
                 // todo this is actually a workaround,
                 //  ideally we should retrieve continuationIndentSize from formatter
                 || useTabs && indentSpaces % tabSize != 0
@@ -83,7 +91,7 @@ class IrAnnotatorImpl private constructor(
                 annotate(holder, start, end, offset / step)
             }
 
-            // this can happen for example if indentSize=4 and continuationIndentSize=2
+            // this can happen for example if indentSize=4 and continuationIndentSize=2  (or if !useFormatterIndentHelper)
             // ideally we should extract such information from formatter
             val lastTabSize = indent % step
             if (lastTabSize != 0) {
@@ -113,9 +121,13 @@ class IrAnnotatorImpl private constructor(
     companion object {
         private val config = IrConfig.INSTANCE
 
-        fun getInstance(file: PsiFile, document: Document, holder: AnnotationHolder): IrAnnotatorImpl? {
-            val indentHelper = IrFormatterIndentHelper.getInstance(file) ?: return null
-            return IrAnnotatorImpl(file, document, holder, indentHelper)
+        fun getInstance(file: PsiFile, document: Document, holder: AnnotationHolder, useFormatterIndentHelper: Boolean): IrAnnotatorImpl? {
+            val indentHelper = (if (useFormatterIndentHelper) {
+                IrFormatterIndentHelper.getInstance(file)
+            } else {
+                IrSimpleIndentHelper(file, document)
+            }) ?: return null
+            return IrAnnotatorImpl(file, document, holder, indentHelper, useFormatterIndentHelper)
         }
     }
 }
