@@ -1,6 +1,9 @@
 # Changelog
 ----
 
+# 1.4.2
+- Fix for F# in Rider
+
 # 1.4.1
 - Use simple highlighter instead of incremental formatter-based if there is no formatting model for language. This is workaround for Rider and Haskell
 

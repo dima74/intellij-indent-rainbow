@@ -2,13 +2,13 @@ import org.jetbrains.intellij.tasks.PublishTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.16"
+    id("org.jetbrains.intellij") version "0.4.18"
     java
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.71"
 }
 
 group = "indent-rainbow"
-version = "1.4.1"
+version = "1.4.2"
 
 repositories {
     mavenCentral()
@@ -25,11 +25,12 @@ dependencies {
 intellij {
     version = "2019.3"
 
-//    setPlugins(
-//        // "com.chrisrm.idea.MaterialThemeUI:4.11.0"
-//        "org.toml.lang:0.2.115.36-193",
-//        "org.rust.lang:0.2.118.2171-193"
-//    )
+    setPlugins(
+        "PsiViewer:193-SNAPSHOT"
+        // "com.chrisrm.idea.MaterialThemeUI:4.11.0"
+        // "org.toml.lang:0.2.115.36-193",
+        // "org.rust.lang:0.2.118.2171-193"
+    )
 }
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
