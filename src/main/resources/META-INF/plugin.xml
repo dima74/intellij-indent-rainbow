@@ -14,14 +14,15 @@
 
     <depends>com.intellij.modules.lang</depends>
 
-    <application-components>
-        <component>
-            <implementation-class>indent.rainbow.IrApplicationComponent</implementation-class>
-        </component>
-    </application-components>
+    <applicationListeners>
+        <listener class="indent.rainbow.listeners.IrAppLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+        <listener class="indent.rainbow.listeners.IrEditorColorsListener" topic="com.intellij.openapi.editor.colors.EditorColorsManager"/>
+        <listener class="indent.rainbow.listeners.IrFileEditorManagerListener" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="indent.rainbow.settings.IrConfig" />
+        <applicationService serviceImplementation="indent.rainbow.IrApplicationService" />
         <applicationConfigurable displayName="Indent Rainbow" instance="indent.rainbow.settings.IrConfigurable" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
