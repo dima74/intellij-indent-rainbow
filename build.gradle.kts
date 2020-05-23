@@ -2,9 +2,9 @@ import org.jetbrains.intellij.tasks.PublishTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.18"
+    id("org.jetbrains.intellij") version "0.4.21"
     java
-    kotlin("jvm") version "1.3.71"
+    kotlin("jvm") version "1.3.72"
 }
 
 group = "indent-rainbow"
