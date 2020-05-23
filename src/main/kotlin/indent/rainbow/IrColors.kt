@@ -12,7 +12,7 @@ import kotlin.math.pow
 
 fun Color?.toStringWithAlpha(): String {
     if (this == null) return "null"
-    return this.javaClass.name + "[r=" + red + ",g=" + green + ",b=" + blue + ",a=" + alpha + "]"
+    return "Color[r=$red,g=$green,b=$blue,a=$alpha]"
 }
 
 fun interpolate(a: Float, b: Float, qa: Float): Float = a * qa + b * (1 - qa)
@@ -37,16 +37,24 @@ fun getAlpha(alpha: Float): Float {
 
 fun applyAlpha(color: Color, background: Color): Color {
     assert(background.alpha == 255)
-    { "expect editor background color to have alpha=255, but: ${background.toStringWithAlpha()}" }
+    { "expect editor background color to have alpha=255, but got: ${background.toStringWithAlpha()}" }
     assert(color.alpha != 255)
-    { "expect indent color to have alpha<255, but: ${color.toStringWithAlpha()}" }
+    { "expect indent color to have alpha<255, but got: ${color.toStringWithAlpha()}" }
 
     val backgroundF = background.getRGBComponents(null)
     val colorF = color.getRGBComponents(null)
     val alpha = getAlpha(colorF[3])
 
     val resultF = (0..2).map { i -> interpolate(colorF[i], backgroundF[i], alpha) }
-    return Color(resultF[0], resultF[1], resultF[2])
+    val result = Color(resultF[0], resultF[1], resultF[2])
+    LOG.info(
+        "[applyAlpha] " +
+                "input: ${color.toStringWithAlpha()}, " +
+                "output: ${result.toStringWithAlpha()}, " +
+                "alpha: $alpha, " +
+                "opacityMultiplier: ${IrConfig.INSTANCE.opacityMultiplier}"
+    )
+    return result
 }
 
 object IrColors {
@@ -80,6 +88,7 @@ object IrColors {
     private fun updateTextAttributesForAllSchemes() {
         val allSchemes = EditorColorsManager.getInstance().allSchemes
         for (scheme in allSchemes) {
+            LOG.info("[updateTextAttributesForAllSchemes] scheme: $scheme, defaultBackground: ${scheme.defaultBackground}")
             for ((taKey, color) in COLORS) {
                 val ta = scheme.getAttributes(taKey)
 
