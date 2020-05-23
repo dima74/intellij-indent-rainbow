@@ -45,7 +45,7 @@ class IrAnnotatorImpl private constructor(
         // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
         if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
 
-        val (indent, alignment) = indentHelper.getIndentAndAlignment(offset) ?: return
+        val (indent, alignment) = indentHelper.getIndentAndAlignment(line) ?: return
         // debug("line $line:  $indent $alignment")
 
         highlight(line, indent, alignment)
@@ -114,7 +114,8 @@ class IrAnnotatorImpl private constructor(
         }
 
         val highlightRange = TextRange(start, end)
-        val annotation = holder.createInfoAnnotation(highlightRange, null)
+        // 2018.2
+        @Suppress("DEPRECATION") val annotation = holder.createInfoAnnotation(highlightRange, null)
         annotation.textAttributes = textAttributes
     }
 

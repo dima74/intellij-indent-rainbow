@@ -4,34 +4,33 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import indent.rainbow.IrColors
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.document
 
 class IrSimpleAnnotator {
 
     fun annotate(element: PsiElement, holder: AnnotationHolder, asFallback: Boolean) {
         if (!config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, element) && !asFallback) return
 
-        val project = element.project
         val file = element.containingFile
-        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
+        val document = file.document ?: return
 
         val indentOptions = CodeStyle.getIndentOptions(file)
         val useTabs = indentOptions.USE_TAB_CHARACTER
         val tabSize = indentOptions.TAB_SIZE
 
         val range = element.textRange
-        var startLine = document.getLineNumber(range.startOffset)
-        val endLine = document.getLineNumber(range.endOffset)
-        if (document.getLineStartOffset(startLine) != range.startOffset) {
-            ++startLine
+        var lineStart = document.getLineNumber(range.startOffset)
+        val lineEnd = document.getLineNumber(range.endOffset)
+        if (document.getLineStartOffset(lineStart) != range.startOffset) {
+            ++lineStart
         }
 
-        for (line in startLine..endLine) {
+        for (line in lineStart..lineEnd) {
             val highlightStartOffset = document.getLineStartOffset(line)
-            var highlightEndOffset = if (line < endLine) {
+            var highlightEndOffset = if (line < lineEnd) {
                 document.getLineEndOffset(line)
             } else {
                 range.endOffset
@@ -62,7 +61,8 @@ class IrSimpleAnnotator {
 
     private fun highlight(holder: AnnotationHolder, start: Int, end: Int, textAttributes: TextAttributesKey) {
         val highlightRange = TextRange(start, end)
-        val annotation = holder.createInfoAnnotation(highlightRange, null)
+        // 2018.2
+        @Suppress("DEPRECATION") val annotation = holder.createInfoAnnotation(highlightRange, null)
         annotation.textAttributes = textAttributes
     }
 

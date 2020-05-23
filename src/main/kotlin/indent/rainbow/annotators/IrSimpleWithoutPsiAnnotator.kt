@@ -6,14 +6,14 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import indent.rainbow.IrAnnotatorImpl
+import indent.rainbow.settings.document
 
 class IrSimpleWithoutPsiAnnotator {
 
     fun annotate(file: PsiFile, holder: AnnotationHolder) {
-        val document = PsiDocumentManager.getInstance(file.project).getDocument(file) ?: return
+        val document = file.document ?: return
         val dirtyTextRange = getDirtyTextRange(file, document) ?: file.textRange
 
         val annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder, false) ?: return

@@ -11,13 +11,14 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import indent.rainbow.FormatterImplHelper.buildProcessorAndWrapBlocks
 import indent.rainbow.FormatterImplHelper.calcIndent
 import indent.rainbow.FormatterImplHelper.getWhiteSpaceAtOffset
+import indent.rainbow.settings.document
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.math.max
 
 abstract class IrIndentHelper {
     abstract val indentOptions: CommonCodeStyleSettings.IndentOptions
-    abstract fun getIndentAndAlignment(offset: Int): Pair<Int, Int>?
+    abstract fun getIndentAndAlignment(line: Int): Pair<Int, Int>?
 }
 
 class IrSimpleIndentHelper(
@@ -28,7 +29,8 @@ class IrSimpleIndentHelper(
     override val indentOptions: CommonCodeStyleSettings.IndentOptions =
         CodeStyle.getSettings(file).getIndentOptionsByFile(file)
 
-    override fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
+    override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? {
+        val offset = document.getLineStartOffset(line)
         val fileText = document.charsSequence
 
         var offsetEnd = offset
@@ -40,13 +42,15 @@ class IrSimpleIndentHelper(
 }
 
 class IrFormatterIndentHelper private constructor(
+    private val document: Document,
     private val formattingDocumentModel: FormattingDocumentModel,
     private val formatter: FormatterEx,
     private val formatProcessor: FormatProcessor,
     override val indentOptions: CommonCodeStyleSettings.IndentOptions
 ) : IrIndentHelper() {
 
-    override fun getIndentAndAlignment(offset: Int): Pair<Int, Int>? {
+    override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? {
+        val offset = document.getLineStartOffset(line)
         val (indent1, alignment1) = getIndentAndAlignmentMethod1(offset)
         val (indent2, alignment2) = getIndentAndAlignmentMethod2(offset) ?: return null
 
@@ -123,7 +127,8 @@ class IrFormatterIndentHelper private constructor(
             val formatProcessor = buildProcessorAndWrapBlocks
                 .invokeWithRethrow(formatter, formattingModel, codeStyleSettings, indentOptions, file.textRange, 0 /* ? */) as FormatProcessor
 
-            return IrFormatterIndentHelper(formattingDocumentModel, formatter, formatProcessor, indentOptions)
+            val document = file.document ?: return null
+            return IrFormatterIndentHelper(document, formattingDocumentModel, formatter, formatProcessor, indentOptions)
         }
     }
 }

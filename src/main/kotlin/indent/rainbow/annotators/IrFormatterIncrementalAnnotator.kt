@@ -3,17 +3,16 @@ package indent.rainbow.annotators
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.Key
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import indent.rainbow.IrAnnotatorImpl
+import indent.rainbow.settings.document
 
 class IrFormatterIncrementalAnnotator {
 
     fun tryAnnotate(element: PsiElement, holder: AnnotationHolder): Boolean {
-        val project = element.project
         val file = element.containingFile
-        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return false
+        val document = file.document ?: return false
 
         val elementLines = getElementLinesRange(element, document)
 

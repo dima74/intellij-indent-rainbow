@@ -4,11 +4,11 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import indent.rainbow.IrAnnotatorImpl
 import indent.rainbow.LOG
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.document
 
 @Suppress("RedundantUnitReturnType", "RedundantUnitExpression")
 class IrFormatterSequentialAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAware {
@@ -29,9 +29,7 @@ class IrFormatterSequentialAnnotator : ExternalAnnotator<Unit, Unit>(), DumbAwar
         if (!config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_SEQUENTIAL, null, file)) return
         LOG.info("IrExternalAnnotator::apply")
 
-        val project = file.project
-        val document = PsiDocumentManager.getInstance(project).getDocument(file) ?: return
-
+        val document = file.document ?: return
         val annotatorImpl = IrAnnotatorImpl.getInstance(file, document, holder, true) ?: return
         annotatorImpl.runForAllLines()
     }

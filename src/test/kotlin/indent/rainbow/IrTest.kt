@@ -2,7 +2,6 @@ package indent.rainbow
 
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.StdFileTypes
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class IrTest : BasePlatformTestCase() {
@@ -25,12 +24,11 @@ class IrTest : BasePlatformTestCase() {
         """.trimIndent()
 
         val psiFile = myFixture.configureByText(StdFileTypes.JAVA, content)
-        val document = PsiDocumentManager.getInstance(project).getDocument(psiFile)!!
 
-        val startOffset = document.getLineStartOffset(3)
+        val lineStart = 3
 
         val indentHelper = IrFormatterIndentHelper.getInstance(psiFile)!!
-        val (indent, alignment) = indentHelper.getIndentAndAlignment(startOffset)!!
+        val (indent, alignment) = indentHelper.getIndentAndAlignment(lineStart)!!
 
         val useTabs = indentHelper.indentOptions.USE_TAB_CHARACTER
         if (useTabs) {
