@@ -1,7 +1,9 @@
 package indent.rainbow.annotators
 
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiLanguageInjectionHost
 import indent.rainbow.settings.IrConfig
 
 enum class IrAnnotatorType {
@@ -26,13 +28,19 @@ fun IrConfig.isAnnotatorEnabled(annotatorType: IrAnnotatorType, element: PsiElem
         check(element != null)
         element == containingFile
     } else {
-        element == null || isAnnotatorEnabled(element)
+        element == null || isAnnotatorEnabled(element) || isCommentOrInjectedHost(element)
     }
 }
 
 fun isAnnotatorEnabled(element: PsiElement): Boolean {
     // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
     return element.text.isBlank()
+}
+
+// We want highlighting to "Cut through multiline strings": https://github.com/dima74/intellij-indent-rainbow/issues/9
+// Multiline strings usually implement `PsiLanguageInjectionHost`
+private fun isCommentOrInjectedHost(element: PsiElement): Boolean {
+    return element is PsiComment || element is PsiLanguageInjectionHost
 }
 
 private fun IrConfig.getAnnotatorTypeForFile(file: PsiFile): IrAnnotatorType {

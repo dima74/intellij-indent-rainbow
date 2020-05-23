@@ -20,7 +20,7 @@ class IrSimpleWithoutPsiAnnotator {
         annotatorImpl.runForTextRange(dirtyTextRange)
     }
 
-    // unfortunately usually not working for files with one node (this annotator is used only for such files)
+    // unfortunately usually does not work for files with one node (this annotator is used only for such files)
     private fun getDirtyTextRange(file: PsiFile, document: Document): TextRange? {
         val editors = EditorFactory.getInstance().getEditors(document, file.project)
         val editor = editors.firstOrNull() ?: return null

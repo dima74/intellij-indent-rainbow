@@ -30,8 +30,13 @@ class IrAnnotatorImpl private constructor(
     }
 
     fun runForLines(lines: IntRange) {
+        var indentAndAlignmentPrev: Pair<Int, Int>? = null
         for (line in lines) {
-            runForLine(line)
+            val indentAndAlignmentCurr = getLineIndentAndAlignment(line)
+            val indentAndAlignment = indentAndAlignmentCurr ?: indentAndAlignmentPrev ?: continue
+            val (indent, alignment) = indentAndAlignment
+            highlight(line, indent, alignment, indentAndAlignmentCurr == null)
+            indentAndAlignmentPrev = indentAndAlignment
         }
     }
 
@@ -41,16 +46,17 @@ class IrAnnotatorImpl private constructor(
         runForLines(lineStart..lineEnd)
     }
 
-    private fun runForLine(line: Int) {
+    private fun getLineIndentAndAlignment(line: Int): Pair<Int, Int>? {
         val offset = document.getLineStartOffset(line)
-        val element = file.findElementAt(offset) ?: return
-        if (isInsideLanguageInjection(element)) return
-        if (useFormatterIndentHelper && !isAnnotatorEnabled(element)) return
+        val element = file.findElementAt(offset) ?: return null
+        if (isInsideLanguageInjection(element)) return null
+        if (useFormatterIndentHelper && !isAnnotatorEnabled(element)) return null
         // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
-        if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
+        if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return null
+        if (PsiTreeUtil.getParentOfType(element, PsiLanguageInjectionHost::class.java, false) != null) return null
 
-        val (indent, alignment) = indentHelper.getIndentAndAlignment(line) ?: return
-        // debug("line $line:  $indent $alignment")
+        return indentHelper.getIndentAndAlignment(line)
+    }
 
     // https://www.jetbrains.com/help/idea/using-language-injections.html
     private fun isInsideLanguageInjection(element: PsiElement): Boolean {
@@ -59,7 +65,7 @@ class IrAnnotatorImpl private constructor(
         return injectionHost != null
     }
 
-    private fun highlight(line: Int, indentSpaces: Int, alignment: Int) {
+    private fun highlight(line: Int, indentSpaces: Int, alignment: Int, forceDisableErrorHighlighting: Boolean = false) {
         val lineStartOffset = document.getLineStartOffset(line)
         val lineEndOffset = document.getLineEndOffset(line)
         val lineText = document.getText(TextRange(lineStartOffset, lineEndOffset))
@@ -84,9 +90,10 @@ class IrAnnotatorImpl private constructor(
                 // todo this is actually a workaround,
                 //  ideally we should retrieve continuationIndentSize from formatter
                 || useTabs && indentSpaces % tabSize != 0
+                || forceDisableErrorHighlighting
         if (prefixActual == prefixExpected || disableErrorHighlighting) {
             if (disableErrorHighlighting) {
-                var indentSpacesActual = prefixActual.replace("\t", "    ").length
+                var indentSpacesActual = prefixActual.replace("\t", " ".repeat(tabSize)).length
                 indentSpacesActual -= indentSpacesActual % tabSize
                 val indentActual = if (useTabs) indentSpacesActual / tabSize else indentSpacesActual
                 indent = min(indent, indentActual)

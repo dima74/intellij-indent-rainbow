@@ -13,6 +13,8 @@ class IrSimpleAnnotator {
 
     fun annotate(element: PsiElement, holder: AnnotationHolder, asFallback: Boolean) {
         if (!config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, element) && !asFallback) return
+        // have to check because of `isCommentOrInjectedHost`
+        if (!isAnnotatorEnabled(element)) return
 
         val file = element.containingFile
         val document = file.document ?: return
