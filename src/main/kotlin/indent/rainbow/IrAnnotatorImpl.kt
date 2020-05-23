@@ -1,10 +1,13 @@
 package indent.rainbow
 
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.annotators.isAnnotatorEnabled
 import indent.rainbow.settings.IrConfig
@@ -41,6 +44,7 @@ class IrAnnotatorImpl private constructor(
     private fun runForLine(line: Int) {
         val offset = document.getLineStartOffset(line)
         val element = file.findElementAt(offset) ?: return
+        if (isInsideLanguageInjection(element)) return
         if (useFormatterIndentHelper && !isAnnotatorEnabled(element)) return
         // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
         if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return
@@ -48,7 +52,11 @@ class IrAnnotatorImpl private constructor(
         val (indent, alignment) = indentHelper.getIndentAndAlignment(line) ?: return
         // debug("line $line:  $indent $alignment")
 
-        highlight(line, indent, alignment)
+    // https://www.jetbrains.com/help/idea/using-language-injections.html
+    private fun isInsideLanguageInjection(element: PsiElement): Boolean {
+        val injectionManager = InjectedLanguageManager.getInstance(element.project)
+        val injectionHost = injectionManager.getInjectionHost(element)
+        return injectionHost != null
     }
 
     private fun highlight(line: Int, indentSpaces: Int, alignment: Int) {
