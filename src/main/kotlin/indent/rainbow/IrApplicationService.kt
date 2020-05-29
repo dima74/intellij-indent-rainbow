@@ -1,7 +1,9 @@
 package indent.rainbow
 
-import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 
+@Service
 class IrApplicationService {
 
     @Volatile
@@ -21,7 +23,6 @@ class IrApplicationService {
     }
 
     companion object {
-        val INSTANCE: IrApplicationService
-            get() = ServiceManager.getService(IrApplicationService::class.java)
+        val INSTANCE: IrApplicationService get() = service()
     }
 }

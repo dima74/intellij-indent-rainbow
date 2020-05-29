@@ -1,12 +1,10 @@
 package indent.rainbow.settings
 
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.XmlSerializerUtil
 import indent.rainbow.annotators.IrAnnotatorType
 
+@Service
 @State(name = "IndentRainbowConfig", storages = [Storage("IndentRainbowConfig.xml")])
 class IrConfig : PersistentStateComponent<IrConfig> {
 
@@ -21,9 +19,7 @@ class IrConfig : PersistentStateComponent<IrConfig> {
     override fun loadState(state: IrConfig) = XmlSerializerUtil.copyBean(state, this)
 
     companion object {
-        val INSTANCE: IrConfig
-            get() = ServiceManager.getService(IrConfig::class.java)
-        val isInitialized: Boolean
-            get() = ServiceManager.getService(IrConfig::class.java) != null
+        val INSTANCE: IrConfig get() = service()
+        val isInitialized: Boolean get() = serviceOrNull<IrConfig>() != null
     }
 }

@@ -21,8 +21,6 @@
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="indent.rainbow.settings.IrConfig" />
-        <applicationService serviceImplementation="indent.rainbow.IrApplicationService" />
         <applicationConfigurable displayName="Indent Rainbow" instance="indent.rainbow.settings.IrConfigurable" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
