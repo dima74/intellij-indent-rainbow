@@ -23,5 +23,7 @@ class IrConfig : PersistentStateComponent<IrConfig> {
     companion object {
         val INSTANCE: IrConfig
             get() = ServiceManager.getService(IrConfig::class.java)
+        val isInitialized: Boolean
+            get() = ServiceManager.getService(IrConfig::class.java) != null
     }
 }

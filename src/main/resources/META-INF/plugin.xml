@@ -26,6 +26,7 @@
         <applicationConfigurable displayName="Indent Rainbow" instance="indent.rainbow.settings.IrConfigurable" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
+        <errorHandler implementation="indent.rainbow.SentryErrorReporter"/>
     </extensions>
 
     <actions>

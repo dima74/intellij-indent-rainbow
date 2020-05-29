@@ -16,7 +16,12 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
+    implementation("io.sentry:sentry:1.7.30") {
+        // we need to exclude the slf4j transitive dependency
+        // IntelliJ already bundles it and will report a classloader
+        // problem if this isn't excluded
+        exclude("org.slf4j")
+    }
 
     testImplementation("junit", "junit", "4.13")
 }

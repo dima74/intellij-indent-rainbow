@@ -127,5 +127,7 @@ hs_err_pid*
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 
 # End of https://www.gitignore.io/api/java,kotlin,intellij+all
+
 build
 CHANGELOG.html
+/src/main/resources/sentry.properties
