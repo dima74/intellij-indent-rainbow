@@ -4,7 +4,9 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.IrColors
 import indent.rainbow.settings.IrConfig
 import indent.rainbow.settings.document
@@ -12,9 +14,7 @@ import indent.rainbow.settings.document
 class IrSimpleAnnotator {
 
     fun annotate(element: PsiElement, holder: AnnotationHolder, asFallback: Boolean) {
-        if (!config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, element) && !asFallback) return
-        // have to check because of `isCommentOrInjectedHost`
-        if (!isAnnotatorEnabled(element)) return
+        if (!element.isWhiteSpace()) return
 
         val file = element.containingFile
         val document = file.document ?: return
@@ -45,6 +45,7 @@ class IrSimpleAnnotator {
                     && (highlightEndOffset - highlightStartOffset) % tabSize == 0
             val okTabs = useTabs && highlightText.chars().allMatch { it == '\t'.toInt() }
             val disableErrorHighlighting = config.disableErrorHighlighting || asFallback
+                    || PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null
             if (okSpaces || okTabs || disableErrorHighlighting) {
                 if (disableErrorHighlighting && !useTabs) {
                     highlightEndOffset -= (highlightEndOffset - highlightStartOffset) % tabSize

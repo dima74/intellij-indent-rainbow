@@ -14,10 +14,8 @@ class IrFormatterIncrementalAnnotator {
         val file = element.containingFile
         val document = file.document ?: return false
 
-        val elementLines = getElementLinesRange(element, document)
-
         val annotatorImpl = getOrCreateAnnotatorImpl(file, document, holder) ?: return false
-        annotatorImpl.runForLines(elementLines)
+        annotatorImpl.runForElement(element)
         return true
     }
 
@@ -35,11 +33,4 @@ class IrFormatterIncrementalAnnotator {
         val INSTANCE: IrFormatterIncrementalAnnotator = IrFormatterIncrementalAnnotator()
         private val ANNOTATOR_IMPL_KEY: Key<IrAnnotatorImpl> = Key("INDENT_RAINBOW_ANNOTATOR_IMPL_KEY")
     }
-}
-
-fun getElementLinesRange(element: PsiElement, document: Document): IntRange {
-    val range = element.textRange
-    val lineStart = document.getLineNumber(range.startOffset)
-    val lineEnd = document.getLineNumber(range.endOffset)
-    return lineStart..lineEnd
 }

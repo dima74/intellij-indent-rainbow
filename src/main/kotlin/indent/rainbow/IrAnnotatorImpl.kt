@@ -7,9 +7,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.PsiTreeUtil
-import indent.rainbow.annotators.isAnnotatorEnabled
+import indent.rainbow.annotators.isCommentOrInjectedHost
+import indent.rainbow.annotators.isWhiteSpace
 import indent.rainbow.settings.IrConfig
 import kotlin.math.min
 
@@ -24,19 +24,11 @@ class IrAnnotatorImpl private constructor(
     private val tabSize: Int = indentHelper.indentOptions.TAB_SIZE
     private val indentSize: Int = indentHelper.indentOptions.INDENT_SIZE
 
-    fun runForAllLines() {
-        val lines = 0 until document.lineCount
-        runForLines(lines)
-    }
-
-    fun runForLines(lines: IntRange) {
-        var indentAndAlignmentPrev: Pair<Int, Int>? = null
-        for (line in lines) {
-            val indentAndAlignmentCurr = getLineIndentAndAlignment(line)
-            val indentAndAlignment = indentAndAlignmentCurr ?: indentAndAlignmentPrev ?: continue
-            val (indent, alignment) = indentAndAlignment
-            highlight(line, indent, alignment, indentAndAlignmentCurr == null)
-            indentAndAlignmentPrev = indentAndAlignment
+    fun runForElement(element: PsiElement) {
+        val lines = getElementLinesRange(element, document)
+        when {
+            element.isWhiteSpace() -> runForLines(lines)
+            element.isCommentOrInjectedHost() -> runForCommentOrInjectedHost(lines)
         }
     }
 
@@ -46,14 +38,33 @@ class IrAnnotatorImpl private constructor(
         runForLines(lineStart..lineEnd)
     }
 
+    fun runForAllLines() {
+        val lines = 0 until document.lineCount
+        runForLines(lines)
+    }
+
+    private fun runForLines(lines: IntRange) {
+        for (line in lines) {
+            val (indent, alignment) = getLineIndentAndAlignment(line) ?: continue
+            highlight(line, indent, alignment)
+        }
+    }
+
+    private fun runForCommentOrInjectedHost(lines: IntRange) {
+        val indentAndAlignment = getLineIndentAndAlignment(lines.first) ?: return
+        for (line in lines) {
+            val (indent, alignment) = indentAndAlignment
+            highlight(line, indent, alignment, line > lines.first)
+        }
+    }
+
     private fun getLineIndentAndAlignment(line: Int): Pair<Int, Int>? {
         val offset = document.getLineStartOffset(line)
         val element = file.findElementAt(offset) ?: return null
         if (isInsideLanguageInjection(element)) return null
-        if (useFormatterIndentHelper && !isAnnotatorEnabled(element)) return null
+        if (useFormatterIndentHelper && !element.isWhiteSpace()) return null
         // unfortunately spaces in doc comments (at beginning of lines) are PsiWhiteSpace
         if (PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null) return null
-        if (PsiTreeUtil.getParentOfType(element, PsiLanguageInjectionHost::class.java, false) != null) return null
 
         return indentHelper.getIndentAndAlignment(line)
     }
@@ -146,4 +157,18 @@ class IrAnnotatorImpl private constructor(
             return IrAnnotatorImpl(file, document, holder, indentHelper, useFormatterIndentHelper)
         }
     }
+}
+
+private fun getElementLinesRange(element: PsiElement, document: Document): IntRange {
+    val range = element.textRange
+    var startOffset = range.startOffset
+    val endOffset = range.endOffset
+    val charsSequence = document.charsSequence
+    while (startOffset < endOffset && charsSequence[startOffset] == '\n') {
+        ++startOffset
+    }
+
+    val lineStart = document.getLineNumber(startOffset)
+    val lineEnd = document.getLineNumber(endOffset)
+    return lineStart..lineEnd
 }
