@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>indent-rainbow.indent-rainbow</id>
     <name>Indent Rainbow</name>
-    <vendor email="diraria+indent-rainbow@yandex.ru" url="https://github.com/dima74/indent-rainbow">Indent Rainbow</vendor>
+    <vendor email="diraria+indent-rainbow@yandex.ru" url="https://github.com/dima74/intellij-indent-rainbow">Indent Rainbow</vendor>
 
     <description><![CDATA[
         <h1 align="center">Indent Rainbow Plugin</h1>
@@ -15,9 +15,15 @@
     <depends>com.intellij.modules.lang</depends>
 
     <applicationListeners>
-        <listener class="indent.rainbow.listeners.IrAppLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
-        <listener class="indent.rainbow.listeners.IrEditorColorsListener" topic="com.intellij.openapi.editor.colors.EditorColorsManager"/>
-        <listener class="indent.rainbow.listeners.IrFileEditorManagerListener" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+        <listener
+                class="indent.rainbow.listeners.IrAppLifecycleListener"
+                topic="com.intellij.ide.AppLifecycleListener" />
+        <listener
+                class="indent.rainbow.listeners.IrEditorColorsListener"
+                topic="com.intellij.openapi.editor.colors.EditorColorsListener" />
+        <listener
+                class="indent.rainbow.listeners.IrFileEditorManagerListener"
+                topic="com.intellij.openapi.fileEditor.FileEditorManagerListener" />
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">

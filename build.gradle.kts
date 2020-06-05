@@ -1,4 +1,6 @@
+import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.PublishTask
+import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,7 +10,7 @@ plugins {
 }
 
 group = "indent-rainbow"
-version = "1.4.2"
+version = "1.5.0"
 
 repositories {
     mavenCentral()
@@ -37,18 +39,23 @@ intellij {
         // "org.rust.lang:0.2.118.2171-193"
     )
 }
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType<RunIdeTask> {
+    jvmArgs("-Xmx2G", "-XX:+UseG1GC", "-XX:SoftRefLRUPolicyMSPerMB=50")
+    jvmArgs("-Didea.ProcessCanceledException=disabled")
 }
-tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
-    sinceBuild("182")
+tasks.getByName<PatchPluginXmlTask>("patchPluginXml") {
+    sinceBuild("193")
     untilBuild("700")
     changeNotes(file("$projectDir/CHANGELOG.html").readText())
 }
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 tasks.withType<PublishTask> {
     token(System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken"))
+}
+
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }

@@ -1,6 +1,12 @@
 # Changelog
 ----
 
+# 1.5.0
+- Now indent rainbow cuts through [multiline strings](https://github.com/dima74/intellij-indent-rainbow/issues/9) and [comments](https://github.com/dima74/intellij-indent-rainbow/issues/17)
+- Fix [incorrect highlighting](https://github.com/dima74/intellij-indent-rainbow/issues/10) for language injections
+- Make plugin dynamic
+- Improve error reporting
+
 # 1.4.2
 - Fix for F# in Rider
 
