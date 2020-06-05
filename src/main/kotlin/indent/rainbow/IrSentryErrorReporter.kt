@@ -112,6 +112,6 @@ private fun initSentryClient(): SentryClient {
         override fun getInAppFrames(dsn: Dsn): Collection<String> = listOf("indent.rainbow")
     }
 
-    val dsn = CommonBundle.messageOrNull(ResourceBundle.getBundle("sentry"), "dsn")
+    val dsn = CommonBundle.message(ResourceBundle.getBundle("sentry"), "dsn")
     return factory.createClient(dsn)
 }
