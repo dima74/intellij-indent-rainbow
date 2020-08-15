@@ -21,7 +21,7 @@ object IrAnnotatorsManager {
         for (language in languagesNew) {
             if (shouldIgnoreLanguage(language)) continue
 
-            LOG.info("Add language: ${language.displayName}")
+            debug { "Add language: ${language.displayName}" }
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, annotatorFacade)
             ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterSequentialAnnotator)
         }
@@ -29,13 +29,13 @@ object IrAnnotatorsManager {
 
     private fun shouldIgnoreLanguage(language: Language): Boolean {
         if (language is MetaLanguage) {
-            LOG.info("Ignore MetaLanguage: ${language.displayName}")
+            debug { "Ignore MetaLanguage: ${language.displayName}" }
             return true
         }
 
         val baseLanguage = language.baseLanguage
         if (baseLanguage != null) {
-            LOG.info("Ignore language ${language.displayName} which has baseLanguage: ${baseLanguage.displayName}")
+            debug { "Ignore language ${language.displayName} which has baseLanguage: ${baseLanguage.displayName}" }
             return true
         }
 

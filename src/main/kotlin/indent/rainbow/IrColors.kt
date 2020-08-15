@@ -36,9 +36,9 @@ fun getAlpha(alpha: Float): Float {
 }
 
 fun applyAlpha(color: Color, background: Color): Color {
-    assert(background.alpha == 255)
+    check(background.alpha == 255)
     { "expect editor background color to have alpha=255, but got: ${background.toStringWithAlpha()}" }
-    assert(color.alpha != 255)
+    check(color.alpha != 255)
     { "expect indent color to have alpha<255, but got: ${color.toStringWithAlpha()}" }
 
     val backgroundF = background.getRGBComponents(null)
@@ -47,13 +47,13 @@ fun applyAlpha(color: Color, background: Color): Color {
 
     val resultF = (0..2).map { i -> interpolate(colorF[i], backgroundF[i], alpha) }
     val result = Color(resultF[0], resultF[1], resultF[2])
-    LOG.info(
+    debug {
         "[applyAlpha] " +
                 "input: ${color.toStringWithAlpha()}, " +
                 "output: ${result.toStringWithAlpha()}, " +
                 "alpha: $alpha, " +
                 "opacityMultiplier: ${IrConfig.INSTANCE.opacityMultiplier}"
-    )
+    }
     return result
 }
 
@@ -88,22 +88,22 @@ object IrColors {
     private fun updateTextAttributesForAllSchemes() {
         val allSchemes = EditorColorsManager.getInstance().allSchemes
         for (scheme in allSchemes) {
-            LOG.info("[updateTextAttributesForAllSchemes] scheme: $scheme, defaultBackground: ${scheme.defaultBackground}")
+            debug { "[updateTextAttributesForAllSchemes] scheme: $scheme, defaultBackground: ${scheme.defaultBackground}" }
             for ((taKey, color) in COLORS) {
                 val ta = scheme.getAttributes(taKey)
 
                 val backgroundColor = ta.backgroundColor
-                assert(backgroundColor == null || backgroundColor.alpha == 255)
+                check(backgroundColor == null || backgroundColor.alpha == 255)
                 { "unexpected TextAttributes value: $ta (${backgroundColor.toStringWithAlpha()})" }
 
                 val taNew = ta.clone()
                 val colorMixed = applyAlpha(color, scheme.defaultBackground)
                 taNew.backgroundColor = colorMixed
                 if (taNew.backgroundColor != ta.backgroundColor) {
-                    LOG.info(
+                    debug {
                         "Changing color of $taKey in scheme $scheme " +
                                 "from ${ta.backgroundColor.toStringWithAlpha()} to ${taNew.backgroundColor.toStringWithAlpha()}"
-                    )
+                    }
                     scheme.setAttributes(taKey, taNew)
                 }
             }

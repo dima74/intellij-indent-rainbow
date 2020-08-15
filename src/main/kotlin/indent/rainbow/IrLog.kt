@@ -7,15 +7,15 @@ val LOG: Logger = Logger.getInstance("IndentRainbow")
 private var lastLogTime: Long = 0
 private const val logTimeThreshold: Long = 1000  // milliseconds
 
-fun debug(message: String) {
+fun debug(message: () -> String) {
     if (!LOG.isDebugEnabled) return
 
     val currentTime = System.currentTimeMillis()
     if (currentTime - lastLogTime > logTimeThreshold) {
-        LOG.info("")
+        LOG.debug("")
     }
 
-    LOG.info(message)
+    LOG.debug(message())
 
     lastLogTime = currentTime
 }
