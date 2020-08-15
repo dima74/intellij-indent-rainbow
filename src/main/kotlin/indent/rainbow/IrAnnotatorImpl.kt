@@ -18,7 +18,7 @@ class IrAnnotatorImpl private constructor(
     private val document: Document,
     private val holder: AnnotationHolder,
     private val indentHelper: IrIndentHelper,
-    private val useFormatterIndentHelper: Boolean
+    private val useFormatterIndentHelper: Boolean,
 ) {
     private val useTabs: Boolean = indentHelper.indentOptions.USE_TAB_CHARACTER
     private val tabSize: Int = indentHelper.indentOptions.TAB_SIZE

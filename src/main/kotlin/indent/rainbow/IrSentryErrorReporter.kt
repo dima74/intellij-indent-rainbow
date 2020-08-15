@@ -37,7 +37,7 @@ class SentryErrorReporter : ErrorReportSubmitter() {
         events: Array<IdeaLoggingEvent>,
         additionalInfo: String?,
         parentComponent: Component,
-        consumer: Consumer<SubmittedReportInfo>
+        consumer: Consumer<SubmittedReportInfo>,
     ): Boolean {
         val context = DataManager.getInstance().getDataContext(parentComponent)
         val project = CommonDataKeys.PROJECT.getData(context)

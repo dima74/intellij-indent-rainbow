@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.jetbrains.intellij") version "0.4.21"
     java
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
 }
 
 group = "indent-rainbow"
@@ -30,10 +30,11 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = "2020.1"
+    version = "2020.2"
+    // version = "203-EAP-SNAPSHOT"
 
     setPlugins(
-        "PsiViewer:201-SNAPSHOT"
+        "PsiViewer:202-SNAPSHOT.3"
         // "com.chrisrm.idea.MaterialThemeUI:4.11.0"
         // "org.toml.lang:0.2.115.36-193",
         // "org.rust.lang:0.2.118.2171-193"

@@ -23,7 +23,7 @@ abstract class IrIndentHelper {
 
 class IrSimpleIndentHelper(
     file: PsiFile,
-    private val document: Document
+    private val document: Document,
 ) : IrIndentHelper() {
 
     override val indentOptions: CommonCodeStyleSettings.IndentOptions =
@@ -46,7 +46,7 @@ class IrFormatterIndentHelper private constructor(
     private val formattingDocumentModel: FormattingDocumentModel,
     private val formatter: FormatterEx,
     private val formatProcessor: FormatProcessor,
-    override val indentOptions: CommonCodeStyleSettings.IndentOptions
+    override val indentOptions: CommonCodeStyleSettings.IndentOptions,
 ) : IrIndentHelper() {
 
     override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? {
