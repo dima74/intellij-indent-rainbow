@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    compileOnly(kotlin("stdlib-jdk8"))
     implementation("io.sentry:sentry:1.7.30") {
         // we need to exclude the slf4j transitive dependency
         // IntelliJ already bundles it and will report a classloader
@@ -58,5 +58,9 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = "1.8"
+        languageVersion = "1.4"
+        apiVersion = "1.3"
+    }
 }
