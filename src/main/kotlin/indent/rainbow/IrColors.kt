@@ -1,10 +1,14 @@
 package indent.rainbow
 
+import com.intellij.openapi.components.serviceOrNull
 import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.openapi.editor.colors.impl.AbstractColorsScheme
 import com.intellij.openapi.editor.colors.impl.EditorColorsManagerImpl
+import indent.rainbow.IrColorsPalette.Companion.DEFAULT_ERROR_COLOR
+import indent.rainbow.settings.IrColorsPaletteType
 import indent.rainbow.settings.IrConfig
 import java.awt.Color
 import kotlin.math.abs
@@ -57,39 +61,118 @@ fun applyAlpha(color: Color, background: Color): Color {
     return result
 }
 
-object IrColors {
+interface IrColorsPalette {
+    val errorTextAttributes: TextAttributesKey
+    val indentsTextAttributes: Array<TextAttributesKey>
 
-    // base TextAttributes are computed by plugin based on scheme and settings
-    private val ERROR_TA = createTextAttributesKey("INDENT_RAINBOW_ERROR")
-    private val INDENTS_TA = (1..4)
-        .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}") }
+    companion object {
+        const val DEFAULT_ERROR_COLOR: Int = 0x4D802020
+    }
+}
+
+class IrBuiltinColorsPalette(errorColor: Int, indentColors: Array<Int>) : IrColorsPalette {
+
+    // Base TextAttributes are computed by plugin based on color scheme and settings
+    private val errorTaBase = createTextAttributesKey("INDENT_RAINBOW_ERROR")
+    private val indentsTaBase = (1..indentColors.size)
+        .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_$it") }
         .toTypedArray()
 
-    // derived TextAttributes are set by user
-    private val ERROR_TA_DERIVED = createTextAttributesKey("INDENT_RAINBOW_ERROR_DERIVED", ERROR_TA)
-    private val INDENTS_TA_DERIVED = (1..4)
-        .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}_DERIVED", INDENTS_TA[it - 1]) }
+    // Derived TextAttributes are set by user
+    private val errorTaDerived = createTextAttributesKey("INDENT_RAINBOW_ERROR_DERIVED", errorTaBase)
+    private val indentsTaDerived = indentsTaBase
+        .mapIndexed { i, ta -> createTextAttributesKey("INDENT_RAINBOW_COLOR_${i + 1}_DERIVED", ta) }
         .toTypedArray()
 
-    private val COLORS: Map<TextAttributesKey, Color> = mapOf(
-        ERROR_TA to 0x4D802020,  // argb
-        INDENTS_TA[0] to 0x12FFFF40,
-        INDENTS_TA[1] to 0x127FFF7F,
-        INDENTS_TA[2] to 0x12FF7FFF,
-        INDENTS_TA[3] to 0x124FECEC
+    val colorsBase: Map<TextAttributesKey, Color> = mapOf(
+        errorTaBase to errorColor,
+        *(indentsTaBase zip indentColors).toTypedArray()
     ).mapValues { Color(it.value, true) }
 
-    fun getErrorTextAttributes() = ERROR_TA_DERIVED
+    override val errorTextAttributes: TextAttributesKey get() = errorTaDerived
+    override val indentsTextAttributes: Array<TextAttributesKey> get() = indentsTaDerived
 
-    fun getTextAttributes(tabIndex: Int): TextAttributesKey = INDENTS_TA_DERIVED[tabIndex % INDENTS_TA_DERIVED.size]
+    companion object {
+        val DEFAULT = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(0x12FFFF40, 0x127FFF7F, 0x12FF7FFF, 0x124FECEC)
+        )
+        val PASTEL = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            // https://github.com/oderwat/vscode-indent-rainbow/pull/64
+            arrayOf(0x32C7CEEA, 0x32B5EAD7, 0x32E2F0CB, 0x32FFDAC1, 0x32FFB7B2, 0x32FF9AA2)
+        )
+    }
+}
+
+class IrCustomColorsPalette(private val numberColors: Int) : IrColorsPalette {
+
+    private val errorTaCustom = createTextAttributesKey("INDENT_RAINBOW_ERROR_CUSTOM")
+    private val indentsTaCustom = (1..numberColors)
+        .map { createTextAttributesKey("INDENT_RAINBOW_COLOR_${it}_CUSTOM") }
+        .toTypedArray()
+
+    init {
+        for (scheme in EditorColorsManager.getInstance().allSchemes) {
+            scheme.setTaBackground(errorTaCustom, Color(DEFAULT_ERROR_COLOR, true))
+
+            val indentsColor = scheme.defaultBackground.darker()
+            for (taKey in indentsTaCustom) {
+                scheme.setTaBackground(taKey, indentsColor)
+            }
+        }
+    }
+
+    private fun EditorColorsScheme.setTaBackground(taKey: TextAttributesKey, background: Color) {
+        val ta = getAttributes(taKey)
+        if (ta.backgroundColor != null) return
+        val taCopy = ta.clone()
+        taCopy.backgroundColor = background
+        setAttributes(taKey, taCopy)
+    }
+
+    override val errorTextAttributes: TextAttributesKey get() = errorTaCustom
+    override val indentsTextAttributes: Array<TextAttributesKey> get() = indentsTaCustom
+
+    companion object {
+        private var cachedValue: IrCustomColorsPalette? = null
+        fun getInstance(config: IrConfig): IrCustomColorsPalette {
+            cachedValue
+                ?.takeIf { it.numberColors == config.customPaletteNumberColors }
+                ?.let { return it }
+            return IrCustomColorsPalette(config.customPaletteNumberColors)
+                .also { this.cachedValue = it }
+        }
+    }
+}
+
+object IrColors {
+
+    val currentPalette: IrColorsPalette
+        get() {
+            val config = serviceOrNull<IrConfig>() ?: return IrBuiltinColorsPalette.DEFAULT
+            return when (config.paletteType) {
+                IrColorsPaletteType.DEFAULT -> IrBuiltinColorsPalette.DEFAULT
+                IrColorsPaletteType.PASTEL -> IrBuiltinColorsPalette.PASTEL
+                IrColorsPaletteType.CUSTOM -> IrCustomColorsPalette.getInstance(config)
+            }
+        }
+
+    fun getErrorTextAttributes(): TextAttributesKey = currentPalette.errorTextAttributes
+
+    fun getTextAttributes(tabIndex: Int): TextAttributesKey {
+        val indentsTa = currentPalette.indentsTextAttributes
+        return indentsTa[tabIndex % indentsTa.size]
+    }
 
     fun onSchemeChange() = updateTextAttributesForAllSchemes()
 
     private fun updateTextAttributesForAllSchemes() {
         val allSchemes = EditorColorsManager.getInstance().allSchemes
+        val currentPalette = currentPalette as? IrBuiltinColorsPalette ?: return
         for (scheme in allSchemes) {
             debug { "[updateTextAttributesForAllSchemes] scheme: $scheme, defaultBackground: ${scheme.defaultBackground}" }
-            for ((taKey, color) in COLORS) {
+            for ((taKey, color) in currentPalette.colorsBase) {
                 val ta = scheme.getAttributes(taKey)
 
                 val backgroundColor = ta.backgroundColor

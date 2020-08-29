@@ -14,8 +14,8 @@ class IrColorSettingsPage : ColorSettingsPage {
 
     override fun getAttributeDescriptors(): Array<AttributesDescriptor> {
         val errorAttributesDescriptor = AttributesDescriptor("Error", IrColors.getErrorTextAttributes())
-        val attributesDescriptors = (0 until 4)
-            .map { AttributesDescriptor("Indent ${it + 1}", IrColors.getTextAttributes(it)) }
+        val attributesDescriptors = IrColors.currentPalette.indentsTextAttributes
+            .mapIndexed { i, ta -> AttributesDescriptor("Indent ${i + 1}", ta) }
             .toTypedArray()
         return arrayOf(errorAttributesDescriptor, *attributesDescriptors)
     }
@@ -24,7 +24,7 @@ class IrColorSettingsPage : ColorSettingsPage {
         @org.intellij.lang.annotations.Language("Java")
         val text = """
             public class Matrix {
-                private int[][] matrix;
+                private final int[][] matrix;
             
                 public Matrix(int n) {
                     matrix = new int[n][n];
@@ -34,9 +34,9 @@ class IrColorSettingsPage : ColorSettingsPage {
                 public Matrix multiply(Matrix other) {
                     int n = other.matrix.length;
                     Matrix result = new Matrix(n);
-                    for (int i = 0; i < n; i++) {
-                        for (int j = 0; j < n; j++) {
-                            for (int k = 0; k < n; k++) {
+                    for (int i = 0; i < n; ++i) {
+                        for (int j = 0; j < n; ++j) {
+                            for (int k = 0; k < n; ++k) {
                                 result.matrix[i][j] += matrix[i][k] * matrix[k][j];
                             }
                         }
@@ -73,14 +73,15 @@ class IrColorSettingsPage : ColorSettingsPage {
         val lineTrimmed = line.trimStart()
         val numberSpaces = line.length - lineTrimmed.length
 
-        val indents = if (numberSpaces % 4 != 0) {
+        val tabSize = 4
+        val indents = if (numberSpaces % tabSize != 0) {
             val indent = " ".repeat(numberSpaces)
             "<Error>$indent</Error>"
         } else {
-            val numberIndents = numberSpaces / 4
+            val numberIndents = numberSpaces / tabSize
             (0 until numberIndents)
                 .joinToString("") {
-                    val tagName = "Indent ${it % 4 + 1}"
+                    val tagName = "Indent ${it % tabSize + 1}"
                     "<$tagName>    </$tagName>"
                 }
         }

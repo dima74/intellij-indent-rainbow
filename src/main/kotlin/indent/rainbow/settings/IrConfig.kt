@@ -12,6 +12,9 @@ data class IrConfig(
     var disableErrorHighlighting: Boolean = false,
     var isEnabledForReadOnlyFiles: Boolean = false,
     var opacityMultiplier: Float = 0F,  // [-1, +1]
+
+    var paletteType: IrColorsPaletteType = IrColorsPaletteType.DEFAULT,
+    var customPaletteNumberColors: Int = 7,
 ) : PersistentStateComponent<IrConfig> {
 
     override fun getState(): IrConfig = this
@@ -23,3 +26,5 @@ data class IrConfig(
         val isInitialized: Boolean get() = serviceOrNull<IrConfig>() != null
     }
 }
+
+enum class IrColorsPaletteType { DEFAULT, PASTEL, CUSTOM }

@@ -1,16 +1,21 @@
 package indent.rainbow.settings
 
+import com.intellij.application.options.colors.ColorAndFontOptions
+import com.intellij.ide.DataManager
+import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.util.BuildNumber
+import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.layout.*
 import com.intellij.util.ui.UIUtil
 import indent.rainbow.IrColors
 import indent.rainbow.annotators.IrAnnotatorType
+import java.awt.Component
+import java.awt.event.ActionListener
 import java.util.*
-import javax.swing.AbstractButton
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JSlider
+import javax.swing.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -25,6 +30,9 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             ).apply { attachSubRowsEnabled(component) }
             row("Highlighter type:") {
                 createHighlighterTypeButtonGroup()
+            }
+            row("Color palette:") {
+                createPaletteTypeButtonGroup()
             }
             row {
                 checkBox(
@@ -63,6 +71,61 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             row {
                 radioButton("Simple, incremental (not recommended)", IrAnnotatorType.SIMPLE)
             }
+        }
+    }
+
+    private fun Row.createPaletteTypeButtonGroup() {
+        val binding = PropertyBinding(
+            { config.paletteType },
+            { config.paletteType = it }
+        )
+        buttonGroup(binding) {
+            row {
+                radioButton("Default (4 colors)", IrColorsPaletteType.DEFAULT)
+            }
+            row {
+                radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
+            }
+            lateinit var radioButton: CellBuilder<JBRadioButton>
+            row {
+                cell {
+                    radioButton = this@row.radioButton("Custom with", IrColorsPaletteType.CUSTOM)
+                    intTextField(
+                        getter = { config.customPaletteNumberColors },
+                        setter = { config.customPaletteNumberColors = it },
+                        columns = 1,
+                        range = 1..99
+                    ).enableIf(radioButton.selected)
+                    label("colors")
+                }
+            }
+            // BACKCOMPAT: 2020.1 - [ActionLink] machinery was added in 2020.2
+            if (ApplicationInfo.getInstance().build >= BuildNumber.fromString("202")!!) {
+                row {
+                    cell {
+                        label("To set custom colors, visit")
+                        ActionLink("Settings | Editor | Color Scheme | Indent Rainbow") {
+                            // BACKCOMPAT: 2019.3 - use component returned by `label()`
+                            // openColorSettings(label.component)
+                            openColorSettings(radioButton.component)
+                        }()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun openColorSettings(context: Component) {
+        val dataContext = DataManager.getInstance().getDataContext(context)
+        val settings = Settings.KEY.getData(dataContext) ?: return
+        try {
+            // try to select related configurable in the current Settings dialog
+            val configurable = settings.find("reference.settingsdialog.IDE.editor.colors") ?: return
+            val configurables = (configurable as? ColorAndFontOptions)?.configurables ?: return
+            val irConfigurable = configurables.find { it.displayName == "Indent Rainbow" } ?: return
+            settings.select(irConfigurable)
+        } catch (ignored: IllegalStateException) {
+            // see ScopeColorsPageFactory.java:74
         }
     }
 
@@ -140,4 +203,14 @@ private fun <T : JSlider> CellBuilder<T>.labelTable(table: Hashtable<Int, JCompo
 // BACKCOMPAT: 2019.3
 private fun <T : JSlider> CellBuilder<T>.withValueBinding(modelBinding: PropertyBinding<Int>): CellBuilder<T> {
     return withBinding(JSlider::getValue, JSlider::setValue, modelBinding)
+}
+
+/** Similar to [com.intellij.ui.components.ActionLink] introduced in 2020.2, but without `autoHideOnDisable` */
+private class ActionLink(text: String, listener: ActionListener) : JButton() {
+    init {
+        this.text = text
+        addActionListener(listener)
+    }
+
+    override fun getUIClassID(): String = "LinkButtonUI"
 }
