@@ -28,7 +28,7 @@ fun getAlpha(alpha: Float): Float {
     opacityMultiplier = abs(opacityMultiplier)
     // чтобы при изменении opacity возле стандартного значения цвета не сильно менялись
     opacityMultiplier = opacityMultiplier.pow(2)
-    // чтобы например при opacityMultiplier == 0 цвета оставались видны
+    // чтобы например при `targetOpacity == 0` цвета оставались видны
     opacityMultiplier *= 0.7F
 
     val targetOpacity = if (needMoreOpacity) {
@@ -39,7 +39,7 @@ fun getAlpha(alpha: Float): Float {
     return interpolate(targetOpacity, alpha, opacityMultiplier)
 }
 
-fun applyAlpha(color: Color, background: Color): Color {
+fun applyAlpha(color: Color, background: Color, increaseOpacity: Boolean): Color {
     check(background.alpha == 255)
     { "expect editor background color to have alpha=255, but got: ${background.toStringWithAlpha()}" }
     check(color.alpha != 255)
@@ -47,7 +47,7 @@ fun applyAlpha(color: Color, background: Color): Color {
 
     val backgroundF = background.getRGBComponents(null)
     val colorF = color.getRGBComponents(null)
-    val alpha = getAlpha(colorF[3])
+    val alpha = getAlpha(colorF[3] + if (increaseOpacity) 0.05F else 0F)
 
     val resultF = (0..2).map { i -> interpolate(colorF[i], backgroundF[i], alpha) }
     val result = Color(resultF[0], resultF[1], resultF[2])
@@ -100,7 +100,7 @@ class IrBuiltinColorsPalette(errorColor: Int, indentColors: Array<Int>) : IrColo
         val PASTEL = IrBuiltinColorsPalette(
             DEFAULT_ERROR_COLOR,
             // https://github.com/oderwat/vscode-indent-rainbow/pull/64
-            arrayOf(0x32C7CEEA, 0x32B5EAD7, 0x32E2F0CB, 0x32FFDAC1, 0x32FFB7B2, 0x32FF9AA2)
+            arrayOf(0x26C7CEEA, 0x26B5EAD7, 0x26E2F0CB, 0x26FFDAC1, 0x26FFB7B2, 0x26FF9AA2)
         )
     }
 }
@@ -180,7 +180,8 @@ object IrColors {
                 { "unexpected TextAttributes value: $ta (${backgroundColor.toStringWithAlpha()})" }
 
                 val taNew = ta.clone()
-                val colorMixed = applyAlpha(color, scheme.defaultBackground)
+                val increaseOpacity = isColorLight(scheme.defaultBackground) && !taKey.externalName.contains("ERROR")
+                val colorMixed = applyAlpha(color, scheme.defaultBackground, increaseOpacity)
                 taNew.backgroundColor = colorMixed
                 if (taNew.backgroundColor != ta.backgroundColor) {
                     debug {
@@ -200,4 +201,9 @@ object IrColors {
     fun refreshEditorIndentColors() {
         (EditorColorsManager.getInstance() as EditorColorsManagerImpl).schemeChangedOrSwitched(null)
     }
+}
+
+private fun isColorLight(color: Color): Boolean {
+    val lightness = (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255
+    return lightness >= 0.5
 }
