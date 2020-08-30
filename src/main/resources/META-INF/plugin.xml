@@ -37,11 +37,5 @@
         <action id="IndentRainbow.Toggle"
                 class="indent.rainbow.actions.IrToggleAction"
                 text="Indent Rainbow: Toggle (Enable/Disable)" />
-        <action id="IndentRainbow.Debug"
-                class="indent.rainbow.actions.IrDebugAction"
-                text="Indent Rainbow: Debug"
-                internal="true">
-            <add-to-group group-id="ToolbarRunGroup" anchor="first" />
-        </action>
     </actions>
 </idea-plugin>

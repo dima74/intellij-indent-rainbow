@@ -1,6 +1,5 @@
 package indent.rainbow
 
-import com.intellij.CommonBundle
 import com.intellij.diagnostic.IdeaReportingEvent
 import com.intellij.diagnostic.ReportMessages
 import com.intellij.ide.DataManager
@@ -113,6 +112,6 @@ private fun initSentryClient(): SentryClient {
 
     }
 
-    val dsn = CommonBundle.message(ResourceBundle.getBundle("sentry"), "dsn")
+    val dsn = ResourceBundle.getBundle("sentry").getString("dsn")
     return factory.createClient(dsn)
 }

@@ -1,7 +1,15 @@
 # Changelog
 ----
 
-# 1.5.0
+# 1.6
+- Now you can [choose color palette in settings](https://user-images.githubusercontent.com/6505554/91661297-94f18f00-eaf4-11ea-9d8e-0a97ba7ae982.png):
+    - Added pastel color palette. Please try it out, especially if you use light theme!
+    - Added custom palette, where you can change number of colors
+- Added an option to choose specific file types plugin should work on
+- Addressed some exceptions, thanks to everyone who reported them!
+- Reduced plugin size from 2M to 0.5M
+
+# 1.5
 - Now indent rainbow cuts through [multiline strings](https://github.com/dima74/intellij-indent-rainbow/issues/9) and [comments](https://github.com/dima74/intellij-indent-rainbow/issues/17)
 - Fix [incorrect highlighting](https://github.com/dima74/intellij-indent-rainbow/issues/10) for language injections
 - Make plugin dynamic

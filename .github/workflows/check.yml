@@ -27,6 +27,5 @@ jobs:
         uses: ChrisCarini/intellij-platform-plugin-verifier-action@v0.0.2
         with:
           ide-versions: |
-            ideaIC:2019.3
-            ideaIC:2020.1
+            ideaIC:2020.2
             ideaIC:LATEST-EAP-SNAPSHOT
