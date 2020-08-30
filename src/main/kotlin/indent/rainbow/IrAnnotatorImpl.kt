@@ -85,7 +85,8 @@ class IrAnnotatorImpl private constructor(
         var indent = if (useTabs) indentSpaces / tabSize else indentSpaces
         val prefixExpected = if (useTabs) {
             if (useFormatterIndentHelper && indentSpaces % tabSize != 0) {
-                LOG.error("Unexpected indent value: $indentSpaces, tabSize: $tabSize, alignment: $alignment")
+                // TODO: Log error with file attached
+                debug { "Unexpected indent value: $indentSpaces, tabSize: $tabSize, alignment: $alignment" }
             }
 
             "\t".repeat(indent) + " ".repeat(alignment)
@@ -110,7 +111,7 @@ class IrAnnotatorImpl private constructor(
                 indent = min(indent, indentActual)
             }
 
-            val step = if (useTabs) 1 else indentSize
+            val step = if (useTabs) 1 else indentSize.also { if (it <= 0) return }
             for (offset in 0 until (indent - indent % step) step step) {
                 val start = lineStartOffset + offset
                 val end = start + step

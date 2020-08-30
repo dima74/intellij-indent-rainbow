@@ -19,7 +19,10 @@ fun IrConfig.isAnnotatorEnabled(annotatorType: IrAnnotatorType, file: PsiFile): 
             && annotatorType == getAnnotatorTypeForFile(file)
 
 // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
-fun PsiElement.isWhiteSpace(): Boolean = text.isBlank()
+fun PsiElement.isWhiteSpace(): Boolean {
+    val text = text ?: return false
+    return text.isBlank()
+}
 
 // We want highlighting to "Cut through multiline strings": https://github.com/dima74/intellij-indent-rainbow/issues/9
 // Multiline strings usually implement `PsiLanguageInjectionHost`

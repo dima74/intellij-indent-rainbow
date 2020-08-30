@@ -4,6 +4,7 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.formatting.*
 import com.intellij.lang.LanguageFormatting
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
@@ -49,7 +50,9 @@ class IrFormatterIndentHelper private constructor(
     override val indentOptions: CommonCodeStyleSettings.IndentOptions,
 ) : IrIndentHelper() {
 
-    override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? {
+    override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? = retry { doGetIndentAndAlignment(line) }
+
+    private fun doGetIndentAndAlignment(line: Int): Pair<Int, Int>? {
         val offset = document.getLineStartOffset(line)
         val (indent1, alignment1) = getIndentAndAlignmentMethod1(offset)
         val (indent2, alignment2) = getIndentAndAlignmentMethod2(offset) ?: return null
@@ -115,7 +118,9 @@ class IrFormatterIndentHelper private constructor(
     }
 
     companion object {
-        fun getInstance(file: PsiFile): IrFormatterIndentHelper? {
+        fun getInstance(file: PsiFile): IrFormatterIndentHelper? = retry { doGetInstance(file) }
+
+        private fun doGetInstance(file: PsiFile): IrFormatterIndentHelper? {
             val codeStyleSettings = CodeStyle.getSettings(file)
             val indentOptions = codeStyleSettings.getIndentOptionsByFile(file)
 
@@ -163,14 +168,24 @@ private object FormatterImplHelper {
     }
 }
 
+private fun <T> retry(retries: Int = 3, action: () -> T): T {
+    repeat(retries - 1) {
+        try {
+            return action()
+        } catch (e: Throwable) {
+            if (e is ProcessCanceledException) throw e
+            // else ignore
+        }
+    }
+    return action()
+}
+
 private fun Method.invokeWithRethrow(obj: Any?, vararg args: Any?): Any? {
-    try {
-        return invoke(obj, *args)
-    } catch (e: InvocationTargetException) {
-        throw if (e.targetException is Exception) {
-            e.targetException
-        } else {
-            e
+    return retry {
+        try {
+            invoke(obj, *args)
+        } catch (e: InvocationTargetException) {
+            throw e.cause ?: e
         }
     }
 }
