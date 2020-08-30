@@ -4,6 +4,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.util.PatternUtil
 import indent.rainbow.settings.IrConfig
 
 enum class IrAnnotatorType {
@@ -15,8 +16,18 @@ enum class IrAnnotatorType {
 
 fun IrConfig.isAnnotatorEnabled(annotatorType: IrAnnotatorType, file: PsiFile): Boolean =
     enabled
+            && isEnabledForFile(file.name)
             && (file.isWritable || isEnabledForReadOnlyFiles)
             && annotatorType == getAnnotatorTypeForFile(file)
+
+private fun IrConfig.isEnabledForFile(fileName: String): Boolean {
+    val masks = fileMasks.trim()
+    if (masks == "*") return true
+    return masks.split(";").any {
+        val mask = it.trim()
+        mask.isNotEmpty() && PatternUtil.fromMask(mask).matcher(fileName).matches()
+    }
+}
 
 // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
 fun PsiElement.isWhiteSpace(): Boolean {

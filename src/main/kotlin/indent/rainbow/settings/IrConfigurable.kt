@@ -2,12 +2,14 @@ package indent.rainbow.settings
 
 import com.intellij.application.options.colors.ColorAndFontOptions
 import com.intellij.ide.DataManager
+import com.intellij.openapi.application.ApplicationBundle
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.BuildNumber
 import com.intellij.ui.components.JBRadioButton
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.layout.*
 import com.intellij.util.ui.UIUtil
 import indent.rainbow.IrColors
@@ -47,6 +49,11 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                     getter = { config.isEnabledForReadOnlyFiles },
                     setter = { config.isEnabledForReadOnlyFiles = it }
                 )
+            }
+            row {
+                cell {
+                    createFileMasksField()
+                }
             }
             row("Indent colors opacity") {
                 row {
@@ -127,6 +134,25 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
         } catch (ignored: IllegalStateException) {
             // see ScopeColorsPageFactory.java:74
         }
+    }
+
+    private fun InnerCell.createFileMasksField() {
+        val emptyTextString = ApplicationBundle.message("soft.wraps.file.masks.empty.text")
+        val commentString = ApplicationBundle.message("soft.wraps.file.masks.hint")
+
+        label("Enable for files:")
+        // textField({ config.fileMasks }, { config.fileMasks = it })
+        //     .growPolicy(GrowPolicy.MEDIUM_TEXT)
+        //     .applyToComponent { emptyText.text = emptyTextString }
+        //     .comment(commentString)
+
+        // BACKCOMPAT: 2019.3 - remove this code and uncomment implementation above
+        val binding = PropertyBinding({ config.fileMasks }, { config.fileMasks = it })
+        val component = JBTextField(binding.get())
+        component.emptyText.text = emptyTextString
+        component(growPolicy = GrowPolicy.MEDIUM_TEXT)
+            .withTextBinding(binding)
+            .comment(commentString)
     }
 
     private fun Row.createOpacitySlider() {
