@@ -47,12 +47,11 @@ class SentryErrorReporter : ErrorReportSubmitter() {
                 sentryEvent.withMessage(additionalInfo)
                 attachExtraInfo(sentryEvent)
 
-                // by default, Sentry is sending async in a background thread
-                sentryClient.sendEvent(sentryEvent)
+                retry {
+                    // synchronous, since we have `getAsyncEnabled = false`
+                    sentryClient.sendEvent(sentryEvent)
+                }
                 ApplicationManager.getApplication().invokeLater {
-                    // we're a bit lazy here.
-                    // Alternatively, we could add a listener to the sentry client
-                    // to be notified if the message was successfully send
                     ReportMessages.GROUP
                         .createNotification("Thank you for submitting your report!", NotificationType.INFORMATION)
                         .setImportant(false)
@@ -110,6 +109,8 @@ private val sentryClient: SentryClient = initSentryClient()
 private fun initSentryClient(): SentryClient {
     val factory = object : DefaultSentryClientFactory() {
         override fun getInAppFrames(dsn: Dsn): Collection<String> = listOf("indent.rainbow")
+        override fun getAsyncEnabled(dsn: Dsn?): Boolean = false
+
     }
 
     val dsn = CommonBundle.message(ResourceBundle.getBundle("sentry"), "dsn")

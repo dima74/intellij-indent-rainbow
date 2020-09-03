@@ -168,7 +168,7 @@ private object FormatterImplHelper {
     }
 }
 
-private fun <T> retry(retries: Int = 3, action: () -> T): T {
+fun <T> retry(retries: Int = 3, action: () -> T): T {
     repeat(retries - 1) {
         try {
             return action()
