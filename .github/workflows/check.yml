@@ -18,9 +18,7 @@ jobs:
           java-version: 11
 
       - name: Build
-        run: |
-          touch CHANGELOG.html
-          ./gradlew buildPlugin -Pkotlin.incremental=false --no-daemon
+        run: ./gradlew buildPlugin -Pkotlin.incremental=false --no-daemon
 
       - name: Verify Plugin on IntelliJ Platforms
         id: verify

@@ -2,9 +2,11 @@ import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.PublishTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.changelog.markdownToHTML
 
 plugins {
     id("org.jetbrains.intellij") version "0.4.21"
+    id("org.jetbrains.changelog") version "0.6.2"
     java
     kotlin("jvm") version "1.4.0"
 }
@@ -14,6 +16,7 @@ version = "1.6"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -48,7 +51,7 @@ tasks.withType<RunIdeTask> {
 tasks.getByName<PatchPluginXmlTask>("patchPluginXml") {
     sinceBuild("202")
     untilBuild("700")
-    changeNotes(file("$projectDir/CHANGELOG.html").readText())
+    changeNotes(markdownToHTML(file("$projectDir/CHANGELOG.md").readText()))
 }
 tasks.withType<PublishTask> {
     token(System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken"))

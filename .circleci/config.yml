@@ -14,7 +14,6 @@ jobs:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle.kts" }}
-      - run: touch CHANGELOG.html
       - run: gradle test
       - save_cache:
           paths:
