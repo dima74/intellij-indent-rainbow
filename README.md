@@ -3,7 +3,6 @@
 [![Plugin version](https://img.shields.io/jetbrains/plugin/v/13308-indent-rainbow.svg)](https://plugins.jetbrains.com/plugin/13308-indent-rainbow)
 [![Plugin downloads](https://img.shields.io/jetbrains/plugin/d/13308-indent-rainbow.svg)](https://plugins.jetbrains.com/plugin/13308-indent-rainbow)
 [![GitHub issues](https://img.shields.io/github/issues/dima74/intellij-indent-rainbow)](https://github.com/dima74/intellij-indent-rainbow/issues)
-[![CircleCI](https://circleci.com/gh/dima74/intellij-indent-rainbow.svg?style=svg)](https://circleci.com/gh/dima74/intellij-indent-rainbow)
 [![check](https://github.com/dima74/intellij-indent-rainbow/workflows/check/badge.svg)](https://github.com/dima74/intellij-indent-rainbow/actions)
 
 ## A simple extension to make indentation more readable
