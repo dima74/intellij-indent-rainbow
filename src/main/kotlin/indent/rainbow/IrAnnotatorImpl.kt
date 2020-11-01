@@ -103,7 +103,9 @@ class IrAnnotatorImpl private constructor(
                 //  ideally we should retrieve continuationIndentSize from formatter
                 || useTabs && indentSpaces % tabSize != 0
                 || forceDisableErrorHighlighting
-        if (prefixActual == prefixExpected || disableErrorHighlighting) {
+        val isCorrectIndent = prefixActual == prefixExpected
+        if (isCorrectIndent && config.highlightOnlyIncorrectIndent) return
+        if (isCorrectIndent || disableErrorHighlighting) {
             if (disableErrorHighlighting) {
                 var indentSpacesActual = prefixActual.replace("\t", " ".repeat(tabSize)).length
                 indentSpacesActual -= indentSpacesActual % tabSize

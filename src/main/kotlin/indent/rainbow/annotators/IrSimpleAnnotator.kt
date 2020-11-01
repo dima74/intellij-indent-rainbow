@@ -47,7 +47,9 @@ class IrSimpleAnnotator {
             val okTabs = useTabs && highlightText.chars().allMatch { it == '\t'.toInt() }
             val disableErrorHighlighting = config.disableErrorHighlighting || asFallback
                     || PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null
-            if (okSpaces || okTabs || disableErrorHighlighting) {
+            val isCorrectIndent = okSpaces || okTabs
+            if (isCorrectIndent && config.highlightOnlyIncorrectIndent) return
+            if (isCorrectIndent || disableErrorHighlighting) {
                 if (disableErrorHighlighting && !useTabs) {
                     highlightEndOffset -= (highlightEndOffset - highlightStartOffset) % tabSize
                 }

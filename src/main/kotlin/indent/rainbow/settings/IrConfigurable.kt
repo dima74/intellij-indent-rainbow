@@ -6,6 +6,7 @@ import com.intellij.openapi.application.ApplicationBundle
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.layout.*
 import indent.rainbow.IrColors
 import indent.rainbow.annotators.IrAnnotatorType
@@ -31,13 +32,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             row("Color palette:") {
                 createPaletteTypeButtonGroup()
             }
-            row {
-                checkBox(
-                    "Never highlight indent as error (in red color)",
-                    getter = { config.disableErrorHighlighting },
-                    setter = { config.disableErrorHighlighting = it }
-                )
-            }
+            createHighlightingOptions()
             row {
                 checkBox(
                     "Enable in read only files",
@@ -109,6 +104,27 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 }
             }
         }
+    }
+
+    private fun Row.createHighlightingOptions() {
+        lateinit var disableErrorHighlightingCheckbox: CellBuilder<JBCheckBox>
+        lateinit var highlightOnlyIncorrectIndentCheckbox: CellBuilder<JBCheckBox>
+        row {
+            disableErrorHighlightingCheckbox = checkBox(
+                "Never highlight indent as error (in red color)",
+                getter = { config.disableErrorHighlighting },
+                setter = { config.disableErrorHighlighting = it }
+            )
+        }
+        row {
+            highlightOnlyIncorrectIndentCheckbox = checkBox(
+                "Highlight only lines with incorrect indentation",
+                getter = { config.highlightOnlyIncorrectIndent },
+                setter = { config.highlightOnlyIncorrectIndent = it }
+            )
+        }
+        disableErrorHighlightingCheckbox.enableIf(highlightOnlyIncorrectIndentCheckbox.selected.not())
+        highlightOnlyIncorrectIndentCheckbox.enableIf(disableErrorHighlightingCheckbox.selected.not())
     }
 
     private fun openColorSettings(context: Component) {
@@ -186,4 +202,11 @@ private class ActionLink(text: String, listener: ActionListener) : JButton() {
     }
 
     override fun getUIClassID(): String = "LinkButtonUI"
+}
+
+fun ComponentPredicate.not(): ComponentPredicate = NotPredicate(this)
+
+private class NotPredicate(private val predicate: ComponentPredicate) : ComponentPredicate() {
+    override fun invoke(): Boolean = !predicate.invoke()
+    override fun addListener(listener: (Boolean) -> Unit) = predicate.addListener { listener(!it) }
 }

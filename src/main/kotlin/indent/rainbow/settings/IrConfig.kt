@@ -10,6 +10,7 @@ data class IrConfig(
     var enabled: Boolean = true,
     var annotatorType: IrAnnotatorType = IrAnnotatorType.FORMATTER_INCREMENTAL,
     var disableErrorHighlighting: Boolean = false,
+    var highlightOnlyIncorrectIndent: Boolean = false,
     var isEnabledForReadOnlyFiles: Boolean = false,
     var opacityMultiplier: Float = 0F,  // [-1, +1]
     var fileMasks: String = "*",
