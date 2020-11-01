@@ -54,7 +54,7 @@ class IrAnnotatorImpl private constructor(
         val indentAndAlignment = getLineIndentAndAlignment(lines.first) ?: return
         for (line in lines) {
             val (indent, alignment) = indentAndAlignment
-            highlight(line, indent, alignment, line > lines.first)
+            highlight(line, indent, alignment, forceDisableErrorHighlighting = line > lines.first)
         }
     }
 

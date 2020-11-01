@@ -28,7 +28,7 @@ import java.awt.Component
 import java.util.*
 
 // https://plugin-dev.com/intellij/general/error-reporting/
-class SentryErrorReporter : ErrorReportSubmitter() {
+class IrSentryErrorReporter : ErrorReportSubmitter() {
 
     override fun getReportActionText(): String = "Report to Author"
 
@@ -109,7 +109,6 @@ private fun initSentryClient(): SentryClient {
     val factory = object : DefaultSentryClientFactory() {
         override fun getInAppFrames(dsn: Dsn): Collection<String> = listOf("indent.rainbow")
         override fun getAsyncEnabled(dsn: Dsn?): Boolean = false
-
     }
 
     val dsn = ResourceBundle.getBundle("sentry").getString("dsn")

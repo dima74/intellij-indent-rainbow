@@ -17,20 +17,20 @@ import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.math.max
 
-abstract class IrIndentHelper {
-    abstract val indentOptions: CommonCodeStyleSettings.IndentOptions
-    abstract fun getIndentAndAlignment(line: Int): Pair<Int, Int>?
+interface IrIndentHelper {
+    val indentOptions: CommonCodeStyleSettings.IndentOptions
+    fun getIndentAndAlignment(line: Int): Pair<Int, Int>?
 }
 
 class IrSimpleIndentHelper(
     file: PsiFile,
     private val document: Document,
-) : IrIndentHelper() {
+) : IrIndentHelper {
 
     override val indentOptions: CommonCodeStyleSettings.IndentOptions =
         CodeStyle.getSettings(file).getIndentOptionsByFile(file)
 
-    override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? {
+    override fun getIndentAndAlignment(line: Int): Pair<Int, Int> {
         val offset = document.getLineStartOffset(line)
         val fileText = document.charsSequence
 
@@ -48,7 +48,7 @@ class IrFormatterIndentHelper private constructor(
     private val formatter: FormatterEx,
     private val formatProcessor: FormatProcessor,
     override val indentOptions: CommonCodeStyleSettings.IndentOptions,
-) : IrIndentHelper() {
+) : IrIndentHelper {
 
     override fun getIndentAndAlignment(line: Int): Pair<Int, Int>? = retry { doGetIndentAndAlignment(line) }
 
