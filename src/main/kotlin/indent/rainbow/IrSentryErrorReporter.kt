@@ -33,14 +33,14 @@ class SentryErrorReporter : ErrorReportSubmitter() {
     override fun getReportActionText(): String = "Report to Author"
 
     override fun submit(
-        events: Array<IdeaLoggingEvent>,
+        events: Array<out IdeaLoggingEvent>,
         additionalInfo: String?,
         parentComponent: Component,
         consumer: Consumer<SubmittedReportInfo>,
     ): Boolean {
         val context = DataManager.getInstance().getDataContext(parentComponent)
         val project = CommonDataKeys.PROJECT.getData(context)
-        object : Backgroundable(project, "Sending Error Report") {
+        object : Backgroundable(project, "Sending error report") {
             override fun run(indicator: ProgressIndicator) {
                 val sentryEvent = createEvent(events)
                 sentryEvent.withMessage(additionalInfo)
@@ -62,7 +62,7 @@ class SentryErrorReporter : ErrorReportSubmitter() {
         return true
     }
 
-    private fun createEvent(events: Array<IdeaLoggingEvent>): EventBuilder {
+    private fun createEvent(events: Array<out IdeaLoggingEvent>): EventBuilder {
         // this is the tricky part
         // ideaEvent.throwable is a com.intellij.diagnostic.IdeaReportingEvent.TextBasedThrowable
         // This is a wrapper and is only providing the original stacktrace via 'printStackTrace(...)',
