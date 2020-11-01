@@ -168,8 +168,9 @@ private object FormatterImplHelper {
     }
 }
 
-fun <T> retry(retries: Int = 3, action: () -> T): T {
-    repeat(retries - 1) {
+/** Runs [action] at most [retries] times until it succeeds, otherwise returns null */
+fun <T> retry(retries: Int = 3, action: () -> T): T? {
+    repeat(retries) {
         try {
             return action()
         } catch (e: Throwable) {
@@ -177,15 +178,14 @@ fun <T> retry(retries: Int = 3, action: () -> T): T {
             // else ignore
         }
     }
-    return action()
+    return null
 }
 
 private fun Method.invokeWithRethrow(obj: Any?, vararg args: Any?): Any? {
-    return retry {
-        try {
-            invoke(obj, *args)
-        } catch (e: InvocationTargetException) {
-            throw e.cause ?: e
-        }
+    /** Здесь не нужен [retry], потому что сейчас [invokeWithRethrow] и так всегда вызывается внутри [retry] */
+    try {
+        return invoke(obj, *args)
+    } catch (e: InvocationTargetException) {
+        throw e.cause ?: e
     }
 }

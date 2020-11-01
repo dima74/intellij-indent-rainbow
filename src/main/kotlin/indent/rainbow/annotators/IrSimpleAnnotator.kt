@@ -37,7 +37,8 @@ class IrSimpleAnnotator {
             } else {
                 range.endOffset
             }
-            if (highlightStartOffset == highlightEndOffset) continue
+            // Я не смог придумать пример когда строго больше, но было несколько репортов из-за этого в Sentry
+            if (highlightStartOffset >= highlightEndOffset) continue
 
             val highlightText = document.getText(TextRange(highlightStartOffset, highlightEndOffset))
             val okSpaces = !useTabs
