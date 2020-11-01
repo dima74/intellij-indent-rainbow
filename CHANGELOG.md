@@ -1,3 +1,7 @@
+## 1.6.1
+- Add an option to show only incorrect indentation
+- Addressed some exceptions, thanks to everyone who reported them! 
+
 ## 1.6.0
 - Now you can [choose color palette in settings](https://user-images.githubusercontent.com/6505554/91661297-94f18f00-eaf4-11ea-9d8e-0a97ba7ae982.png):
     - Added pastel color palette. Please try it out, especially if you use light theme!
