@@ -6,29 +6,36 @@ import indent.rainbow.annotators.IrFormatterSequentialAnnotator
 
 object IrAnnotatorsManager {
 
-    private val IGNORED_LANGUAGES = listOf("Plain text")
+    private val IGNORED_LANGUAGES: List<String> = listOf("Plain text")
 
-    private val registeredLanguages = HashSet<Language>()
+    // https://plugins.jetbrains.com/docs/intellij/dynamic-plugins.html#do-not-use-filetypelanguage-as-map-key
+    private val registeredLanguages: MutableSet<String> = hashSetOf()
 
     fun initAnnotators() {
-        val annotatorFacade = IrAnnotatorProxy.INSTANCE
-        val formatterSequentialAnnotator = IrFormatterSequentialAnnotator.INSTANCE
-
         val languages = Language.getRegisteredLanguages()
-        val languagesNew = languages.filterNot { registeredLanguages.contains(it) }
-        registeredLanguages.addAll(languagesNew)
 
-        for (language in languagesNew) {
+        for (language in languages) {
+            if (!registeredLanguages.add(language.id)) continue
             if (shouldIgnoreLanguage(language)) continue
 
             debug { "Add language: ${language.displayName}" }
-            LanguageAnnotators.INSTANCE.addExplicitExtension(language, annotatorFacade)
-            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, formatterSequentialAnnotator)
+            LanguageAnnotators.INSTANCE.addExplicitExtension(language, IrAnnotatorProxy.INSTANCE)
+            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, IrFormatterSequentialAnnotator.INSTANCE)
         }
+    }
+
+    fun disposeAnnotators() {
+        for (languageId in registeredLanguages) {
+            val language = Language.findLanguageByID(languageId) ?: continue
+            LanguageAnnotators.INSTANCE.removeExplicitExtension(language, IrAnnotatorProxy.INSTANCE)
+            ExternalLanguageAnnotators.INSTANCE.removeExplicitExtension(language, IrFormatterSequentialAnnotator.INSTANCE)
+        }
+        registeredLanguages.clear()
     }
 
     private fun shouldIgnoreLanguage(language: Language): Boolean {
         if (language is MetaLanguage) {
+            // e.g. "JVM" meta-language contains languages [JAVA, kotlin, Groovy]
             debug { "Ignore MetaLanguage: ${language.displayName}" }
             return true
         }
@@ -41,8 +48,6 @@ object IrAnnotatorsManager {
 
         return language == Language.ANY
                 || language.displayName in IGNORED_LANGUAGES
-                // e.g. "JVM" meta-language contains languages [JAVA, kotlin, Groovy]
-                || language is MetaLanguage
                 // DependentLanguage is suspicious class, lets ignore it
                 || language is DependentLanguage
     }

@@ -24,13 +24,16 @@
         <listener
                 class="indent.rainbow.listeners.IrFileEditorManagerListener"
                 topic="com.intellij.openapi.fileEditor.FileEditorManagerListener" />
+        <listener
+                class="indent.rainbow.listeners.IrDynamicPluginListener"
+                topic="com.intellij.ide.plugins.DynamicPluginListener" />
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable instance="indent.rainbow.settings.IrConfigurable" />
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
-        <errorHandler implementation="indent.rainbow.IrSentryErrorReporter"/>
+        <errorHandler implementation="indent.rainbow.IrSentryErrorReporter" />
     </extensions>
 
     <actions>

@@ -12,8 +12,8 @@ import indent.rainbow.IrColors
 import indent.rainbow.annotators.IrAnnotatorType
 import java.awt.Component
 import java.awt.event.ActionListener
-import java.util.*
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JLabel
 import kotlin.math.abs
 import kotlin.math.roundToInt
 

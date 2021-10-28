@@ -58,11 +58,19 @@ tasks {
         }
         withType<KotlinCompile> {
             kotlinOptions.jvmTarget = it
+            kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
 
     wrapper {
         gradleVersion = properties("gradleVersion")
+    }
+
+    runIde {
+        // https://plugins.jetbrains.com/docs/intellij/dynamic-plugins.html#diagnosing-leaks
+        jvmArgs("-XX:+UnlockDiagnosticVMOptions")
+        // Don't show "Tip of the Day" at startup
+        jvmArgs("-Dide.show.tips.on.startup.default.value=false")
     }
 
     patchPluginXml {
