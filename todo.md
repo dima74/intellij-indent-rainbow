@@ -1,3 +1,8 @@
+* indent.rainbow.IrAnnotatorImpl.runForElement - только для whitespaces которые в начале/конце строки?
+  иначе мы несколько раз одну и ту же строку аннотируем
+
+Вообще в идеале свой highlighting pass написать
+
 ## Полезное
 document.getText(FileStatusMap.getDirtyTextRange(editor, Pass.EXTERNAL_TOOLS)!!)
 https://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/documents.html#how-do-i-get-notified-when-documents-change
