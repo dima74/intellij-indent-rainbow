@@ -6,10 +6,10 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
-    id("org.jetbrains.intellij") version "1.1.6"
+    id("org.jetbrains.intellij") version "1.2.1"
     // Used only for `markdownToHTML` function
-    id("org.jetbrains.changelog") version "1.3.0"
-    id("org.jetbrains.qodana") version "0.1.12"
+    id("org.jetbrains.changelog") version "1.3.1"
+    id("org.jetbrains.qodana") version "0.1.13"
 }
 
 group = properties("pluginGroup")
