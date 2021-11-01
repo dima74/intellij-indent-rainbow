@@ -1,3 +1,6 @@
+## 1.6.2
+- Fix dynamic plugin unloading
+
 ## 1.6.1
 - Add an option to show only incorrect indentation
 - Addressed some exceptions, thanks to everyone who reported them! 
