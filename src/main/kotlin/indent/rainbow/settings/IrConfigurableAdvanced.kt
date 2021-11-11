@@ -12,6 +12,11 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
 
     override fun createPanel(): DialogPanel = panel {
         row {
+            cell {
+                createDisableOnBigFilesCheckBox()
+            }
+        }
+        row {
             checkBox("Enable in read only files", config::isEnabledForReadOnlyFiles)
         }
         row {
@@ -20,6 +25,16 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
         row {
             createEnableInFiles()
         }
+    }
+
+    private fun InnerCell.createDisableOnBigFilesCheckBox() {
+        val checkbox = checkBox("Disable on files with more than", config::disableOnBigFiles)
+        intTextField(
+            prop = config::bigFilesLineThreshold,
+            columns = 5,
+            range = 1..Int.MAX_VALUE
+        ).enableIf(checkbox.selected)
+        label("lines")
     }
 
     private fun Row.createSimpleHighlighterInFiles() {

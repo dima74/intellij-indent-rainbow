@@ -47,7 +47,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                     val radioButton = this@row.radioButton("Custom with", IrColorsPaletteType.CUSTOM)
                     intTextField(
                         prop = config::customPaletteNumberColors,
-                        columns = 1,
+                        columns = 3,
                         range = 1..99
                     ).enableIf(radioButton.selected)
                     label("colors")

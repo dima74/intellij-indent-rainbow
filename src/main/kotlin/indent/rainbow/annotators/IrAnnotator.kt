@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.PatternUtil
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.document
 
 enum class IrAnnotatorType {
     SIMPLE,
@@ -17,6 +18,12 @@ fun IrConfig.isAnnotatorEnabled(file: PsiFile): Boolean =
     enabled
             && matchesFileMask(fileMasks, file.name)
             && (file.isWritable || isEnabledForReadOnlyFiles)
+            && !(disableOnBigFiles && file.hasMoreLinesThan(bigFilesLineThreshold))
+
+private fun PsiFile.hasMoreLinesThan(count: Int): Boolean {
+    val document = document ?: return false
+    return document.lineCount > count
+}
 
 private fun matchesFileMask(fileMasks: String, fileName: String): Boolean {
     val masks = fileMasks.trim()

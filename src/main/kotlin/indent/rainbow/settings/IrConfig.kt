@@ -18,6 +18,9 @@ data class IrConfig(
 
     var useSimpleHighlighter: Boolean = false,
     var simpleHighlighterFileMasks: String = "*",
+
+    var disableOnBigFiles: Boolean = true,
+    var bigFilesLineThreshold: Int = 1000,
 ) : PersistentStateComponent<IrConfig> {
 
     override fun getState(): IrConfig = this
