@@ -172,6 +172,7 @@ object IrColors {
         val currentPalette = currentPalette as? IrBuiltinColorsPalette ?: return
         for (scheme in allSchemes) {
             debug { "[updateTextAttributesForAllSchemes] scheme: $scheme, defaultBackground: ${scheme.defaultBackground}" }
+            var anyColorChanged = false
             for ((taKey, color) in currentPalette.colorsBase) {
                 val ta = scheme.getAttributes(taKey)
 
@@ -189,10 +190,11 @@ object IrColors {
                                 "from ${ta.backgroundColor.toStringWithAlpha()} to ${taNew.backgroundColor.toStringWithAlpha()}"
                     }
                     scheme.setAttributes(taKey, taNew)
+                    anyColorChanged = true
                 }
             }
 
-            if (scheme is AbstractColorsScheme) {
+            if (anyColorChanged && scheme is AbstractColorsScheme) {
                 scheme.setSaveNeeded(true)
             }
         }
