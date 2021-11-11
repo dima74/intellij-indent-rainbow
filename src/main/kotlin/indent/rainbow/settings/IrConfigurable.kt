@@ -2,14 +2,12 @@ package indent.rainbow.settings
 
 import com.intellij.application.options.colors.ColorAndFontOptions
 import com.intellij.ide.DataManager
-import com.intellij.openapi.application.ApplicationBundle
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.layout.*
 import indent.rainbow.IrColors
-import indent.rainbow.annotators.IrAnnotatorType
 import java.awt.Component
 import java.awt.event.ActionListener
 import javax.swing.JButton
@@ -20,63 +18,24 @@ import kotlin.math.roundToInt
 class IrConfigurable : BoundConfigurable("Indent Rainbow") {
 
     override fun createPanel(): DialogPanel = panel {
-        row {
-            checkBox(
-                "Enable Indent Rainbow",
-                getter = { config.enabled },
-                setter = { config.enabled = it }
-            ).apply { attachSubRowsEnabled(component) }
-            row("Highlighter type:") {
-                createHighlighterTypeButtonGroup()
-            }
-            row("Color palette:") {
-                createPaletteTypeButtonGroup()
+        blockRow {
+            row {
+                checkBox("Enable Indent Rainbow", config::enabled)
             }
             createHighlightingOptions()
-            row {
-                checkBox(
-                    "Enable in read only files",
-                    getter = { config.isEnabledForReadOnlyFiles },
-                    setter = { config.isEnabledForReadOnlyFiles = it }
-                )
-            }
-            row {
-                cell {
-                    createFileMasksField()
-                }
-            }
-            row("Indent colors opacity") {
-                row {
-                    createOpacitySlider()
-                }
-            }
         }
-    }
-
-    private fun Row.createHighlighterTypeButtonGroup() {
-        val binding = PropertyBinding(
-            { config.annotatorType },
-            { config.annotatorType = it }
-        )
-        buttonGroup(binding) {
+        titledRow("Color Palette") {
+            createPaletteTypeButtonGroup()
+        }
+        row("Indent colors opacity") {
             row {
-                radioButton("Formatter-based, incremental (recommended)", IrAnnotatorType.FORMATTER_INCREMENTAL)
-            }
-            row {
-                radioButton("Formatter-based, sequential (deprecated)", IrAnnotatorType.FORMATTER_SEQUENTIAL)
-            }
-            row {
-                radioButton("Simple, incremental (not recommended)", IrAnnotatorType.SIMPLE)
+                createOpacitySlider()
             }
         }
     }
 
     private fun Row.createPaletteTypeButtonGroup() {
-        val binding = PropertyBinding(
-            { config.paletteType },
-            { config.paletteType = it }
-        )
-        buttonGroup(binding) {
+        buttonGroup(config::paletteType) {
             row {
                 radioButton("Default (4 colors)", IrColorsPaletteType.DEFAULT)
             }
@@ -87,8 +46,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 cell {
                     val radioButton = this@row.radioButton("Custom with", IrColorsPaletteType.CUSTOM)
                     intTextField(
-                        getter = { config.customPaletteNumberColors },
-                        setter = { config.customPaletteNumberColors = it },
+                        prop = config::customPaletteNumberColors,
                         columns = 1,
                         range = 1..99
                     ).enableIf(radioButton.selected)
@@ -106,27 +64,6 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
         }
     }
 
-    private fun Row.createHighlightingOptions() {
-        lateinit var disableErrorHighlightingCheckbox: CellBuilder<JBCheckBox>
-        lateinit var highlightOnlyIncorrectIndentCheckbox: CellBuilder<JBCheckBox>
-        row {
-            disableErrorHighlightingCheckbox = checkBox(
-                "Never highlight indent as error (in red color)",
-                getter = { config.disableErrorHighlighting },
-                setter = { config.disableErrorHighlighting = it }
-            )
-        }
-        row {
-            highlightOnlyIncorrectIndentCheckbox = checkBox(
-                "Highlight only lines with incorrect indentation",
-                getter = { config.highlightOnlyIncorrectIndent },
-                setter = { config.highlightOnlyIncorrectIndent = it }
-            )
-        }
-        disableErrorHighlightingCheckbox.enableIf(highlightOnlyIncorrectIndentCheckbox.selected.not())
-        highlightOnlyIncorrectIndentCheckbox.enableIf(disableErrorHighlightingCheckbox.selected.not())
-    }
-
     private fun openColorSettings(context: Component) {
         val dataContext = DataManager.getInstance().getDataContext(context)
         val settings = Settings.KEY.getData(dataContext) ?: return
@@ -139,17 +76,6 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
         } catch (ignored: IllegalStateException) {
             // see ScopeColorsPageFactory.java:74
         }
-    }
-
-    private fun InnerCell.createFileMasksField() {
-        val emptyTextString = ApplicationBundle.message("soft.wraps.file.masks.empty.text")
-        val commentString = ApplicationBundle.message("soft.wraps.file.masks.hint")
-
-        label("Enable for files:")
-        textField({ config.fileMasks }, { config.fileMasks = it })
-            .growPolicy(GrowPolicy.MEDIUM_TEXT)
-            .applyToComponent { emptyText.text = emptyTextString }
-            .comment(commentString)
     }
 
     private fun Row.createOpacitySlider() {
@@ -170,6 +96,25 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             }
         ))
         slider.constraints(CCFlags.growX)
+    }
+
+    private fun Row.createHighlightingOptions() {
+        lateinit var disableErrorHighlightingCheckbox: CellBuilder<JBCheckBox>
+        lateinit var highlightOnlyIncorrectIndentCheckbox: CellBuilder<JBCheckBox>
+        row {
+            disableErrorHighlightingCheckbox = checkBox(
+                "Never highlight indent as error (in red color)",
+                config::disableErrorHighlighting
+            )
+        }
+        row {
+            highlightOnlyIncorrectIndentCheckbox = checkBox(
+                "Highlight only lines with incorrect indentation",
+                config::highlightOnlyIncorrectIndent
+            )
+        }
+        disableErrorHighlightingCheckbox.enableIf(highlightOnlyIncorrectIndentCheckbox.selected.not())
+        highlightOnlyIncorrectIndentCheckbox.enableIf(disableErrorHighlightingCheckbox.selected.not())
     }
 
     override fun apply() {
@@ -202,11 +147,4 @@ private class ActionLink(text: String, listener: ActionListener) : JButton() {
     }
 
     override fun getUIClassID(): String = "LinkButtonUI"
-}
-
-fun ComponentPredicate.not(): ComponentPredicate = NotPredicate(this)
-
-private class NotPredicate(private val predicate: ComponentPredicate) : ComponentPredicate() {
-    override fun invoke(): Boolean = !predicate.invoke()
-    override fun addListener(listener: (Boolean) -> Unit) = predicate.addListener { listener(!it) }
 }

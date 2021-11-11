@@ -27,7 +27,10 @@
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable instance="indent.rainbow.settings.IrConfigurable" />
+        <applicationConfigurable instance="indent.rainbow.settings.IrConfigurable">
+            <configurable instance="indent.rainbow.settings.IrConfigurableAdvanced" />
+        </applicationConfigurable>
+
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
         <errorHandler implementation="indent.rainbow.IrSentryErrorReporter" />
