@@ -10,17 +10,15 @@ import indent.rainbow.settings.IrConfig
 enum class IrAnnotatorType {
     SIMPLE,
     SIMPLE_WITHOUT_PSI,
-    FORMATTER_SEQUENTIAL,
     FORMATTER_INCREMENTAL,
 }
 
-fun IrConfig.isAnnotatorEnabled(annotatorType: IrAnnotatorType, file: PsiFile): Boolean =
+fun IrConfig.isAnnotatorEnabled(file: PsiFile): Boolean =
     enabled
-            && isEnabledForFile(file.name)
+            && matchesFileMask(fileMasks, file.name)
             && (file.isWritable || isEnabledForReadOnlyFiles)
-            && annotatorType == getAnnotatorTypeForFile(file)
 
-private fun IrConfig.isEnabledForFile(fileName: String): Boolean {
+private fun matchesFileMask(fileMasks: String, fileName: String): Boolean {
     val masks = fileMasks.trim()
     if (masks == "*") return true
     return masks.split(";").any {
@@ -39,8 +37,12 @@ fun PsiElement.isWhiteSpace(): Boolean {
 // Multiline strings usually implement `PsiLanguageInjectionHost`
 fun PsiElement.isCommentOrInjectedHost(): Boolean = this is PsiComment || this is PsiLanguageInjectionHost
 
-private fun IrConfig.getAnnotatorTypeForFile(file: PsiFile): IrAnnotatorType =
-    if (file.isSingleNodeFile()) IrAnnotatorType.SIMPLE_WITHOUT_PSI else annotatorType
+fun IrConfig.getAnnotatorTypeForFile(file: PsiFile): IrAnnotatorType =
+    when {
+        file.isSingleNodeFile() -> IrAnnotatorType.SIMPLE_WITHOUT_PSI
+        useSimpleHighlighter && matchesFileMask(simpleHighlighterFileMasks, file.name) -> IrAnnotatorType.SIMPLE
+        else -> IrAnnotatorType.FORMATTER_INCREMENTAL
+    }
 
 // This function is needed to detect two types of languages:
 // 1. Language which doesn't have plugin yet,

@@ -2,13 +2,11 @@ package indent.rainbow.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.XmlSerializerUtil
-import indent.rainbow.annotators.IrAnnotatorType
 
 @Service
 @State(name = "IndentRainbowConfig", storages = [Storage("IndentRainbowConfig.xml")])
 data class IrConfig(
     var enabled: Boolean = true,
-    var annotatorType: IrAnnotatorType = IrAnnotatorType.FORMATTER_INCREMENTAL,
     var disableErrorHighlighting: Boolean = false,
     var highlightOnlyIncorrectIndent: Boolean = false,
     var isEnabledForReadOnlyFiles: Boolean = false,
@@ -17,6 +15,9 @@ data class IrConfig(
 
     var paletteType: IrColorsPaletteType = IrColorsPaletteType.DEFAULT,
     var customPaletteNumberColors: Int = 7,
+
+    var useSimpleHighlighter: Boolean = false,
+    var simpleHighlighterFileMasks: String = "*",
 ) : PersistentStateComponent<IrConfig> {
 
     override fun getState(): IrConfig = this

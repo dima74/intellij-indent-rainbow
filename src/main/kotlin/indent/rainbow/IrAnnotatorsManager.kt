@@ -1,8 +1,10 @@
 package indent.rainbow
 
-import com.intellij.lang.*
+import com.intellij.lang.DependentLanguage
+import com.intellij.lang.Language
+import com.intellij.lang.LanguageAnnotators
+import com.intellij.lang.MetaLanguage
 import indent.rainbow.annotators.IrAnnotatorProxy
-import indent.rainbow.annotators.IrFormatterSequentialAnnotator
 
 object IrAnnotatorsManager {
 
@@ -20,7 +22,6 @@ object IrAnnotatorsManager {
 
             debug { "Add language: ${language.displayName}" }
             LanguageAnnotators.INSTANCE.addExplicitExtension(language, IrAnnotatorProxy.INSTANCE)
-            ExternalLanguageAnnotators.INSTANCE.addExplicitExtension(language, IrFormatterSequentialAnnotator.INSTANCE)
         }
     }
 
@@ -28,7 +29,6 @@ object IrAnnotatorsManager {
         for (languageId in registeredLanguages) {
             val language = Language.findLanguageByID(languageId) ?: continue
             LanguageAnnotators.INSTANCE.removeExplicitExtension(language, IrAnnotatorProxy.INSTANCE)
-            ExternalLanguageAnnotators.INSTANCE.removeExplicitExtension(language, IrFormatterSequentialAnnotator.INSTANCE)
         }
         registeredLanguages.clear()
     }

@@ -14,17 +14,18 @@ class IrAnnotatorProxy : Annotator, DumbAware {
             return
         }
         val file = element.containingFile
-        when {
-            config.isAnnotatorEnabled(IrAnnotatorType.FORMATTER_INCREMENTAL, file) -> {
+        if (!config.isAnnotatorEnabled(file)) return
+        when (config.getAnnotatorTypeForFile(file)) {
+            IrAnnotatorType.FORMATTER_INCREMENTAL -> {
                 val success = IrFormatterIncrementalAnnotator.INSTANCE.tryAnnotate(element, holder)
                 if (!success) {
                     IrSimpleAnnotator.INSTANCE.annotate(element, holder, true)
                 }
             }
-            config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE, file) -> {
+            IrAnnotatorType.SIMPLE -> {
                 IrSimpleAnnotator.INSTANCE.annotate(element, holder, false)
             }
-            config.isAnnotatorEnabled(IrAnnotatorType.SIMPLE_WITHOUT_PSI, file) -> {
+            IrAnnotatorType.SIMPLE_WITHOUT_PSI -> {
                 IrSimpleWithoutPsiAnnotator.INSTANCE.annotate(element, holder)
             }
         }
