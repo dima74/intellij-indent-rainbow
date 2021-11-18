@@ -33,7 +33,7 @@
 
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
-        <errorHandler implementation="indent.rainbow.IrSentryErrorReporter" />
+        <errorHandler implementation="indent.rainbow.IrExceptionAnalyzerReporter" />
     </extensions>
 
     <actions>
