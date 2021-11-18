@@ -1,3 +1,10 @@
+## 1.7.0
+- Add option to disable Indent Rainbow on big files
+- Add option to use simple highlighter only in specific files
+- Removed old deprecated sequential highlighter
+- Fix interaction with [`Settings Repository`](https://www.jetbrains.com/help/idea/settings-tools-settings-repository.html) feature
+- Rework exceptions reporting
+
 ## 1.6.2
 - Fix dynamic plugin unloading
 
