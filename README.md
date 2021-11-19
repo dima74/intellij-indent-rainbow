@@ -18,14 +18,14 @@ There are two options to change indent colors:
 
 1. You can change indent colors opacity using corresponding slider (Settings / Indent Rainbow):
 
-  ![Settings page](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/settings.png)
+  ![Settings page](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/opacity_slider.png)
 
 2. You can configure each color (the error color and four indent colors) independently for each scheme (Settings / Editor / Color Scheme / Indent Rainbow). Firstly, uncheck checkbox "Inherit values from", then change background color. See [screenshot](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/color-scheme.png) for details.
 
 ## FAQ
 
 **Q:** Plugin is slow!  
-**A:** Plugin performance has significantly improved in version 1.4. Please ensure that you have latest version. If you still encounter performance issues, please switch to "simple highlighter" in settings ([screenshot](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/choose-simple-annotator.png))
+**A:** Plugin performance has significantly improved in version 1.4. Please ensure that you have the latest version. If you still encounter performance issues, please switch to "simple highlighter" in settings ([screenshot](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/choose-simple-annotator.png))
 
 **Q:** What does "formatter based highlighting" mean?  
 **A:** Currently there are two highlighting algorithms: formatter-based and simple. 
