@@ -37,7 +37,7 @@ class IrSimpleAnnotator {
             } else {
                 range.endOffset
             }
-            // Я не смог придумать пример когда строго больше, но было несколько репортов из-за этого в Sentry
+            // Я не смог придумать пример когда строго больше, но было несколько репортов из-за этого
             if (highlightStartOffset >= highlightEndOffset) continue
 
             val highlightText = document.getText(TextRange(highlightStartOffset, highlightEndOffset))

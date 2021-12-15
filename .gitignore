@@ -2,4 +2,3 @@
 .idea
 .qodana
 build
-/src/main/resources/sentry.properties

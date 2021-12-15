@@ -21,12 +21,6 @@ repositories {
 }
 dependencies {
     compileOnly(kotlin("stdlib-jdk8"))
-    implementation("io.sentry:sentry:1.7.30") {
-        // we need to exclude the slf4j transitive dependency
-        // IntelliJ already bundles it and will report a classloader
-        // problem if this isn't excluded
-        exclude("org.slf4j")
-    }
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

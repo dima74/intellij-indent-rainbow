@@ -28,11 +28,6 @@ jobs:
           java-version: 11
           cache: gradle
 
-      - name: Create sentry.properties
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-        run: echo "dsn=$SENTRY_DSN" >src/main/resources/sentry.properties
-
       # Publish the plugin to the Marketplace
       - name: Publish Plugin
         env:
