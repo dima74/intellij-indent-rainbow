@@ -6,7 +6,7 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
-    id("org.jetbrains.intellij") version "1.2.1"
+    id("org.jetbrains.intellij") version "1.3.0"
     // Used only for `markdownToHTML` function
     id("org.jetbrains.changelog") version "1.3.1"
     id("org.jetbrains.qodana") version "0.1.13"
@@ -40,7 +40,7 @@ qodana {
     cachePath.set(projectDir.resolve(".qodana").canonicalPath)
     reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
     saveReport.set(true)
-    showReport.set(System.getenv("QODANA_SHOW_REPORT").toBoolean())
+    showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
 }
 
 tasks {
@@ -74,10 +74,6 @@ tasks {
 
         // Get the latest available change notes from the changelog file
         changeNotes.set(markdownToHTML(file("$projectDir/CHANGELOG.md").readText().replace("## ", "# ")))
-    }
-
-    runPluginVerifier {
-        ideVersions.set(properties("pluginVerifierIdeVersions").split(',').map(String::trim).filter(String::isNotEmpty))
     }
 
     // Configure UI tests plugin

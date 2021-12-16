@@ -28,6 +28,22 @@ jobs:
           java-version: 11
           cache: gradle
 
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
+          ${{ github.event.release.body }}
+          EOM
+          )"
+          
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+
+          echo "::set-output name=changelog::$CHANGELOG"
+
       # Publish the plugin to the Marketplace
       - name: Publish Plugin
         env:
