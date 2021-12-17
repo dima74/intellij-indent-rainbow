@@ -16,8 +16,8 @@ data class IrConfig(
     var paletteType: IrColorsPaletteType = IrColorsPaletteType.DEFAULT,
     var customPaletteNumberColors: Int = 7,
 
-    var useSimpleHighlighter: Boolean = false,
-    var simpleHighlighterFileMasks: String = "*",
+    var useFormatterHighlighter: Boolean = false,
+    var formatterHighlighterFileMasks: String = "*",
 
     var disableOnBigFiles: Boolean = true,
     var bigFilesLineThreshold: Int = 1000,

@@ -34,6 +34,8 @@
         <postStartupActivity implementation="indent.rainbow.IrPostStartupActivity" />
         <colorSettingsPage implementation="indent.rainbow.settings.IrColorSettingsPage" />
         <errorHandler implementation="indent.rainbow.IrExceptionAnalyzerReporter" />
+
+        <highlightingPassFactory implementation="indent.rainbow.highlightingPass.IrHighlightingPassFactory"/>
     </extensions>
 
     <actions>

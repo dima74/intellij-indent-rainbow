@@ -38,8 +38,8 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
     }
 
     private fun Row.createSimpleHighlighterInFiles() {
-        val checkbox = checkBox("Use simple highlighter in these files:", config::useSimpleHighlighter)
-        createFilesMask(config::simpleHighlighterFileMasks)
+        val checkbox = checkBox("Use formatter highlighter in these files:", config::useFormatterHighlighter)
+        createFilesMask(config::formatterHighlighterFileMasks)
             .enableIf(checkbox.selected)
     }
 

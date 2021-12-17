@@ -11,6 +11,7 @@ import indent.rainbow.settings.IrConfig
 enum class IrAnnotatorType {
     SIMPLE,
     SIMPLE_WITHOUT_PSI,
+    SIMPLE_HIGHLIGHTING_PASS,
     FORMATTER_INCREMENTAL,
 }
 
@@ -19,6 +20,9 @@ fun IrConfig.isAnnotatorEnabled(file: PsiFile): Boolean =
             && matchesFileMask(fileMasks, file.name)
             && (file.isWritable || isEnabledForReadOnlyFiles)
             && !(disableOnBigFiles && file.hasMoreLinesThan(bigFilesLineThreshold))
+
+fun IrConfig.isAnnotatorEnabled(file: PsiFile, type: IrAnnotatorType): Boolean =
+    isAnnotatorEnabled(file) && getAnnotatorTypeForFile(file) == type
 
 private fun PsiFile.hasMoreLinesThan(count: Int): Boolean {
     val document = document ?: return false
@@ -45,10 +49,10 @@ fun PsiElement.isWhiteSpace(): Boolean {
 fun PsiElement.isCommentOrInjectedHost(): Boolean = this is PsiComment || this is PsiLanguageInjectionHost
 
 fun IrConfig.getAnnotatorTypeForFile(file: PsiFile): IrAnnotatorType =
-    when {
-        file.isSingleNodeFile() -> IrAnnotatorType.SIMPLE_WITHOUT_PSI
-        useSimpleHighlighter && matchesFileMask(simpleHighlighterFileMasks, file.name) -> IrAnnotatorType.SIMPLE
-        else -> IrAnnotatorType.FORMATTER_INCREMENTAL
+    if (useFormatterHighlighter && matchesFileMask(formatterHighlighterFileMasks, file.name)) {
+        IrAnnotatorType.FORMATTER_INCREMENTAL
+    } else {
+        IrAnnotatorType.SIMPLE_HIGHLIGHTING_PASS
     }
 
 // This function is needed to detect two types of languages:

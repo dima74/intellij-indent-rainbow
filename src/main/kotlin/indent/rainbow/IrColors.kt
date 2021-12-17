@@ -161,6 +161,7 @@ object IrColors {
     fun getErrorTextAttributes(): TextAttributesKey = currentPalette.errorTextAttributes
 
     fun getTextAttributes(tabIndex: Int): TextAttributesKey {
+        if (tabIndex == -1) return getErrorTextAttributes()
         val indentsTa = currentPalette.indentsTextAttributes
         return indentsTa[tabIndex % indentsTa.size]
     }
