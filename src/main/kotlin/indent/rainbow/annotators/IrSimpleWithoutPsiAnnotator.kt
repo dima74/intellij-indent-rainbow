@@ -9,7 +9,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import indent.rainbow.IrAnnotatorImpl
-import indent.rainbow.settings.document
+import indent.rainbow.document
 
 class IrSimpleWithoutPsiAnnotator {
 

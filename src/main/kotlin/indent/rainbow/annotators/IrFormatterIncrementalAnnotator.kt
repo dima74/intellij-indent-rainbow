@@ -6,7 +6,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import indent.rainbow.IrAnnotatorImpl
-import indent.rainbow.settings.document
+import indent.rainbow.document
 
 class IrFormatterIncrementalAnnotator {
 

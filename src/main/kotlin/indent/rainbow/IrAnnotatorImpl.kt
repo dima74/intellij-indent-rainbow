@@ -23,7 +23,6 @@ class IrAnnotatorImpl private constructor(
     private val useTabs: Boolean = indentHelper.indentOptions.USE_TAB_CHARACTER
     private val tabSize: Int = indentHelper.indentOptions.TAB_SIZE.ifNotPositive { 4 }
     private val indentSize: Int = indentHelper.indentOptions.INDENT_SIZE.ifNotPositive { 4 }
-    private fun Int.ifNotPositive(provider: () -> Int): Int = if (this > 0) this else provider()
 
     fun runForElement(element: PsiElement) {
         val lines = getElementLinesRange(element, document)

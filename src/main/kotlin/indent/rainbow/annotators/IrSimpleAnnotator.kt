@@ -8,8 +8,8 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.IrColors
+import indent.rainbow.document
 import indent.rainbow.settings.IrConfig
-import indent.rainbow.settings.document
 
 class IrSimpleAnnotator {
 

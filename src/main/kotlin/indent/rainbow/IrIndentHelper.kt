@@ -12,7 +12,6 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import indent.rainbow.FormatterImplHelper.buildProcessorAndWrapBlocks
 import indent.rainbow.FormatterImplHelper.calcIndent
 import indent.rainbow.FormatterImplHelper.getWhiteSpaceAtOffset
-import indent.rainbow.settings.document
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.math.max

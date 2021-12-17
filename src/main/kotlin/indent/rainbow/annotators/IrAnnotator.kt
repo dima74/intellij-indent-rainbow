@@ -5,8 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.PatternUtil
+import indent.rainbow.document
 import indent.rainbow.settings.IrConfig
-import indent.rainbow.settings.document
 
 enum class IrAnnotatorType {
     SIMPLE,
