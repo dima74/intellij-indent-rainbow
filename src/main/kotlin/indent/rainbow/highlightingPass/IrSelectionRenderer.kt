@@ -15,6 +15,7 @@ import java.awt.Graphics2D
  */
 object IrSelectionsRenderer : CustomHighlighterRenderer {
     override fun paint(editor: Editor, highlighter: RangeHighlighter, g: Graphics) {
+        return
         val painter = IrSelectionPainter(editor, g as Graphics2D)
         for (caret in editor.caretModel.allCarets) {
             val start = caret.selectionStart

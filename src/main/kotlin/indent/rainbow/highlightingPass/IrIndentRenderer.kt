@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.impl.view.VisualLinesIterator
 import com.intellij.openapi.editor.markup.CustomHighlighterRenderer
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import indent.rainbow.IrColors
+import java.awt.Color
 import java.awt.Graphics
 
 /** Paints one [IndentDescriptor]. */
@@ -27,7 +28,16 @@ class IrHighlighterRenderer(
         val isOneLine = startPosition.line == endPosition.line
         if (isOneLine && startPosition.column == endPosition.column) return
 
-        g.color = editor.colorsScheme.getAttributes(taKey).backgroundColor
+        if (level == -1) return
+        val colors = arrayOf(0x26C7CEEA, 0x26B5EAD7, 0x26E2F0CB, 0x26FFDAC1, 0x26FFB7B2, 0x26FF9AA2)
+//        val colors = arrayOf(0x12FFFF40, 0x127FFF7F, 0x12FF7FFF, 0x124FECEC)
+        val colorRgba = colors[level % colors.size]
+        val color = Color(colorRgba, true)
+        g.color = color
+
+//        g.color = editor.colorsScheme.getAttributes(taKey).backgroundColor
+
+
         val indentGuideShift = EditorPainter.getIndentGuideShift(editor)
         if (isOneLine || !editor.hasSoftWraps()) {
             editor.paintIndent(startPosition, endPosition, indentGuideShift, g)
