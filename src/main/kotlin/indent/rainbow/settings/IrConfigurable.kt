@@ -1,16 +1,10 @@
 package indent.rainbow.settings
 
-import com.intellij.application.options.colors.ColorAndFontOptions
-import com.intellij.ide.DataManager
 import com.intellij.openapi.options.BoundConfigurable
-import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.layout.*
 import indent.rainbow.IrColors
-import java.awt.Component
-import java.awt.event.ActionListener
-import javax.swing.JButton
 import javax.swing.JLabel
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -43,38 +37,13 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
             }
             row {
-                cell {
-                    val radioButton = this@row.radioButton("Custom with", IrColorsPaletteType.CUSTOM)
-                    intTextField(
-                        prop = config::customPaletteNumberColors,
-                        columns = 3,
-                        range = 1..99
-                    ).enableIf(radioButton.selected)
-                    label("colors")
-                }
+                val radioButton = radioButton("Custom with colors:", IrColorsPaletteType.CUSTOM)
+                val commentText = "Colors must be in AARRGGBB format <br>First color is error color, then indent colors <br>Use comma to separate colors"
+                textField(prop = config::customPalette)
+                    .growPolicy(GrowPolicy.MEDIUM_TEXT)
+                    .comment(commentText, forComponent = true)
+                    .enableIf(radioButton.selected)
             }
-            row {
-                cell {
-                    val label = label("To set custom colors, visit")
-                    ActionLink("Settings | Editor | Color Scheme | Indent Rainbow") {
-                        openColorSettings(label.component)
-                    }()
-                }
-            }
-        }
-    }
-
-    private fun openColorSettings(context: Component) {
-        val dataContext = DataManager.getInstance().getDataContext(context)
-        val settings = Settings.KEY.getData(dataContext) ?: return
-        try {
-            // try to select related configurable in the current Settings dialog
-            val configurable = settings.find("reference.settingsdialog.IDE.editor.colors") ?: return
-            val configurables = (configurable as? ColorAndFontOptions)?.configurables ?: return
-            val irConfigurable = configurables.find { it.displayName == "Indent Rainbow" } ?: return
-            settings.select(irConfigurable)
-        } catch (ignored: IllegalStateException) {
-            // see ScopeColorsPageFactory.java:74
         }
     }
 
@@ -119,6 +88,9 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
 
     override fun apply() {
         super.apply()
+        if (config.paletteType == IrColorsPaletteType.CUSTOM && config.customPalette == IrConfig.DEFAULT_CUSTOM_COLORS) {
+            config.paletteType = IrConfig.DEFAULT_PALETTE_TYPE
+        }
         IrColors.onSchemeChange()
         IrColors.refreshEditorIndentColors()
     }
@@ -137,14 +109,4 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 }
             }
     }
-}
-
-/** Similar to [com.intellij.ui.components.ActionLink] introduced in 2020.2, but without `autoHideOnDisable` */
-private class ActionLink(text: String, listener: ActionListener) : JButton() {
-    init {
-        this.text = text
-        addActionListener(listener)
-    }
-
-    override fun getUIClassID(): String = "LinkButtonUI"
 }

@@ -1,23 +1,26 @@
 package indent.rainbow.highlightingPass
 
+import com.intellij.openapi.components.serviceOrNull
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.VisualPosition
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.impl.view.EditorPainter
 import com.intellij.openapi.editor.impl.view.VisualLinesIterator
 import com.intellij.openapi.editor.markup.CustomHighlighterRenderer
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import indent.rainbow.IrColors
+import indent.rainbow.getColor
+import indent.rainbow.settings.IrConfig
 import java.awt.Graphics
 
 /** Paints one [IndentDescriptor]. */
 class IrHighlighterRenderer(
-    private var level: Int,
-    private var taKey: TextAttributesKey,
+    var level: Int,
     private val indentSize: Int,
 ) : CustomHighlighterRenderer {
+
+    private val config: IrConfig? = serviceOrNull()
+
     override fun paint(editor: Editor, highlighter: RangeHighlighter, g: Graphics) {
         val startPosition = editor.offsetToVisualPosition(highlighter.startOffset)
         val endPosition = editor.offsetToVisualPosition(highlighter.endOffset)
@@ -27,7 +30,9 @@ class IrHighlighterRenderer(
         val isOneLine = startPosition.line == endPosition.line
         if (isOneLine && startPosition.column == endPosition.column) return
 
-        g.color = editor.colorsScheme.getAttributes(taKey).backgroundColor
+        if (config == null) return
+        g.color = config.getColor(level)
+
         val indentGuideShift = EditorPainter.getIndentGuideShift(editor)
         if (isOneLine || !editor.hasSoftWraps()) {
             editor.paintIndent(startPosition, endPosition, indentGuideShift, g)
@@ -78,11 +83,6 @@ class IrHighlighterRenderer(
         val right = endXY.x + indentGuideShift
         val bottom = endXY.y + lineHeight
         g.fillRect(left, top, right - left, bottom - top)
-    }
-
-    fun setLevel(level: Int) {
-        this.level = level
-        taKey = IrColors.getTextAttributes(level)
     }
 }
 

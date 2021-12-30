@@ -3,8 +3,6 @@ package indent.rainbow.highlightingPass
 import com.intellij.codeHighlighting.*
 import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar.Anchor
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.editor.impl.view.EditorPainter
 import com.intellij.openapi.editor.markup.CustomHighlighterRenderer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea.EXACT_RANGE
 import com.intellij.openapi.editor.markup.MarkupModel
@@ -14,7 +12,6 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiFile
-import indent.rainbow.IrColors
 import indent.rainbow.annotators.IrAnnotatorType
 import indent.rainbow.annotators.isAnnotatorEnabled
 import indent.rainbow.settings.IrConfig
@@ -57,16 +54,11 @@ class IrHighlightingPass(
             removeAllHighlighters()
             return
         }
-        addIndentHighlighters(descriptors)
+        addHighlighters(descriptors)
     }
 
-    private fun addIndentHighlighters(descriptors: List<IndentDescriptor>) {
-        /**
-         * See [EditorPainter.Session.paint].
-         * We use [EditorEx.getFilteredDocumentMarkupModel] for indents and usual [Editor.getMarkupModel] for selection.
-         */
-        val markupModel = (editor as EditorEx).filteredDocumentMarkupModel
-
+    private fun addHighlighters(descriptors: List<IndentDescriptor>) {
+        val markupModel = editor.markupModel
         val existingHighlighters = editor.getUserData(IR_RANGE_HIGHLIGHTERS) ?: emptyList()
         val newHighlighters = mutableListOf<RangeHighlighter>()
 
@@ -78,7 +70,7 @@ class IrHighlightingPass(
         val descriptorsIterator = descriptors.iterator()
         while (existingIterator.hasNext() || descriptorsIterator.hasNext()) {
             if (!existingIterator.hasNext()) {
-                newHighlighters += addIndentHighlighter(markupModel, descriptorsIterator.next())
+                newHighlighters += addHighlighter(markupModel, descriptorsIterator.next())
             } else if (!descriptorsIterator.hasNext()) {
                 existingIterator.next().dispose()
             } else {
@@ -86,11 +78,11 @@ class IrHighlightingPass(
                 val descriptor = descriptorsIterator.next()
                 val canReuseHighlighter = existing.startOffset == descriptor.startOffset && existing.endOffset == descriptor.endOffset
                 newHighlighters += if (canReuseHighlighter) {
-                    (existing.customRenderer as IrHighlighterRenderer).setLevel(descriptor.level)
+                    (existing.customRenderer as IrHighlighterRenderer).level = descriptor.level
                     existing
                 } else {
                     existing.dispose()
-                    addIndentHighlighter(markupModel, descriptor)
+                    addHighlighter(markupModel, descriptor)
                 }
             }
         }
@@ -98,10 +90,8 @@ class IrHighlightingPass(
         editor.putUserData(IR_RANGE_HIGHLIGHTERS, newHighlighters)
     }
 
-    private fun addIndentHighlighter(markupModel: MarkupModel, descriptor: IndentDescriptor): RangeHighlighter {
-        // TODO: Convert IrColors to ColorKey
-        val taKey = IrColors.getTextAttributes(descriptor.level)
-        val renderer = IrHighlighterRenderer(descriptor.level, taKey, descriptor.indentSize)
+    private fun addHighlighter(markupModel: MarkupModel, descriptor: IndentDescriptor): RangeHighlighter {
+        val renderer = IrHighlighterRenderer(descriptor.level, descriptor.indentSize)
         return markupModel.addRangeHighlighter(descriptor.startOffset, descriptor.endOffset, renderer)
     }
 

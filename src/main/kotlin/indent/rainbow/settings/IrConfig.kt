@@ -13,7 +13,9 @@ data class IrConfig(
     var opacityMultiplier: Float = 0F,  // [-1, +1]
     var fileMasks: String = "*",
 
-    var paletteType: IrColorsPaletteType = IrColorsPaletteType.PASTEL,
+    var paletteType: IrColorsPaletteType = DEFAULT_PALETTE_TYPE,
+    var customPalette: String = DEFAULT_CUSTOM_COLORS,
+    // BACKCOMPAT: Remove it
     var customPaletteNumberColors: Int = 7,
 
     var useFormatterHighlighter: Boolean = false,
@@ -30,6 +32,9 @@ data class IrConfig(
     companion object {
         val INSTANCE: IrConfig get() = service()
         val isInitialized: Boolean get() = serviceOrNull<IrConfig>() != null
+
+        val DEFAULT_PALETTE_TYPE: IrColorsPaletteType = IrColorsPaletteType.PASTEL
+        const val DEFAULT_CUSTOM_COLORS = "4D802020, ..."
     }
 }
 
