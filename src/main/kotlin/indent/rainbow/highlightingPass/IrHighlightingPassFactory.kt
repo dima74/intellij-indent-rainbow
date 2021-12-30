@@ -58,7 +58,6 @@ class IrHighlightingPass(
             return
         }
         addIndentHighlighters(descriptors)
-        addSelectionHighlighter()
     }
 
     private fun addIndentHighlighters(descriptors: List<IndentDescriptor>) {
@@ -106,21 +105,9 @@ class IrHighlightingPass(
         return markupModel.addRangeHighlighter(descriptor.startOffset, descriptor.endOffset, renderer)
     }
 
-    private fun addSelectionHighlighter() {
-        val endOffset = document.textLength
-        val existing = editor.getUserData(IR_SELECTION_HIGHLIGHTER)
-        if (existing?.endOffset == endOffset) return
-        existing?.dispose()
-
-        val highlighter = editor.markupModel.addRangeHighlighter(0, endOffset, IrSelectionsRenderer)
-        editor.putUserData(IR_SELECTION_HIGHLIGHTER, highlighter)
-    }
-
     private fun removeAllHighlighters() {
         editor.getUserData(IR_RANGE_HIGHLIGHTERS)?.forEach { it.dispose() }
-        editor.getUserData(IR_SELECTION_HIGHLIGHTER)?.dispose()
         editor.putUserData(IR_RANGE_HIGHLIGHTERS, null)
-        editor.putUserData(IR_SELECTION_HIGHLIGHTER, null)
     }
 }
 
@@ -137,4 +124,3 @@ private fun MarkupModel.addRangeHighlighter(
 
 private val IR_DESCRIPTORS: Key<List<IndentDescriptor>> = Key.create("IR_DESCRIPTORS")
 private val IR_RANGE_HIGHLIGHTERS: Key<List<RangeHighlighter>> = Key.create("IR_RANGE_HIGHLIGHTER")
-private val IR_SELECTION_HIGHLIGHTER: Key<RangeHighlighter> = Key.create("IR_SELECTION_HIGHLIGHTER")
