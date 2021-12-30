@@ -13,7 +13,7 @@ data class IrConfig(
     var opacityMultiplier: Float = 0F,  // [-1, +1]
     var fileMasks: String = "*",
 
-    var paletteType: IrColorsPaletteType = IrColorsPaletteType.DEFAULT,
+    var paletteType: IrColorsPaletteType = IrColorsPaletteType.PASTEL,
     var customPaletteNumberColors: Int = 7,
 
     var useFormatterHighlighter: Boolean = false,

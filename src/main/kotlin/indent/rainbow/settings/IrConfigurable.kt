@@ -37,7 +37,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
     private fun Row.createPaletteTypeButtonGroup() {
         buttonGroup(config::paletteType) {
             row {
-                radioButton("Default (4 colors)", IrColorsPaletteType.DEFAULT)
+                radioButton("Classic (4 colors)", IrColorsPaletteType.DEFAULT)
             }
             row {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
