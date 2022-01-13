@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.IrColors
 import indent.rainbow.document
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.cachedData
 
 class IrSimpleAnnotator {
 
@@ -45,7 +46,8 @@ class IrSimpleAnnotator {
                     && highlightText.chars().allMatch { it == ' '.toInt() }
                     && (highlightEndOffset - highlightStartOffset) % tabSize == 0
             val okTabs = useTabs && highlightText.chars().allMatch { it == '\t'.toInt() }
-            val disableErrorHighlighting = config.disableErrorHighlighting || asFallback
+            val disableErrorHighlighting = config.cachedData.disableErrorHighlightingLanguageFilter(file.language)
+                    || asFallback
                     || PsiTreeUtil.getParentOfType(element, PsiComment::class.java, false) != null
             val isCorrectIndent = okSpaces || okTabs
             if (isCorrectIndent && config.highlightOnlyIncorrectIndent) return

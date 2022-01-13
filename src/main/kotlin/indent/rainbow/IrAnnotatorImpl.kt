@@ -11,6 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import indent.rainbow.annotators.isCommentOrInjectedHost
 import indent.rainbow.annotators.isWhiteSpace
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.cachedData
 import kotlin.math.min
 
 class IrAnnotatorImpl private constructor(
@@ -97,7 +98,7 @@ class IrAnnotatorImpl private constructor(
 
         val prefixActual = lineText.takeWhile { it == ' ' || it == '\t' }
 
-        val disableErrorHighlighting = config.disableErrorHighlighting
+        val disableErrorHighlighting = config.cachedData.disableErrorHighlightingLanguageFilter(file.language)
                 || !useFormatterIndentHelper
                 // todo this is actually a workaround,
                 //  ideally we should retrieve continuationIndentSize from formatter

@@ -20,6 +20,9 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
             checkBox("Enable in read only files", config::isEnabledForReadOnlyFiles)
         }
         row {
+            checkBox("Highlight only lines with incorrect indentation", config::highlightOnlyIncorrectIndent)
+        }
+        row {
             createSimpleHighlighterInFiles()
         }
         row {
@@ -27,6 +30,9 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
         }
         row {
             createIgnoreLinesStartingWith()
+        }
+        row {
+            createDisableErrorHighlightingForLanguages()
         }
     }
 
@@ -70,6 +76,13 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
             .growPolicy(GrowPolicy.MEDIUM_TEXT)
             .applyToComponent { emptyText.text = emptyTextString }
             .comment(commentString, forComponent = true)
+    }
+
+    private fun Row.createDisableErrorHighlightingForLanguages() {
+        label("Never highlight indent as error for languages:")
+        textField(config::disableErrorHighlightingLanguageMasks)
+            .growPolicy(GrowPolicy.MEDIUM_TEXT)
+            .applyToComponent { emptyText.text = "No languages" }
     }
 
     override fun apply() {

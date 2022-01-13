@@ -7,7 +7,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 @State(name = "IndentRainbowConfig", storages = [Storage("IndentRainbowConfig.xml")])
 data class IrConfig(
     var enabled: Boolean = true,
-    var disableErrorHighlighting: Boolean = false,
+    var disableErrorHighlightingLanguageMasks: String = "Markdown; Haskell",
     var highlightOnlyIncorrectIndent: Boolean = false,
     var isEnabledForReadOnlyFiles: Boolean = false,
     var opacityMultiplier: Float = 0F,  // [-1, +1]

@@ -2,7 +2,6 @@ package indent.rainbow.settings
 
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.layout.*
 import indent.rainbow.IrColors
 import javax.swing.JLabel
@@ -16,7 +15,6 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             row {
                 checkBox("Enable Indent Rainbow", config::enabled)
             }
-            createHighlightingOptions()
         }
         titledRow("Color Palette") {
             createPaletteTypeButtonGroup()
@@ -65,25 +63,6 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             }
         ))
         slider.constraints(CCFlags.growX)
-    }
-
-    private fun Row.createHighlightingOptions() {
-        lateinit var disableErrorHighlightingCheckbox: CellBuilder<JBCheckBox>
-        lateinit var highlightOnlyIncorrectIndentCheckbox: CellBuilder<JBCheckBox>
-        row {
-            disableErrorHighlightingCheckbox = checkBox(
-                "Never highlight indent as error (in red color)",
-                config::disableErrorHighlighting
-            )
-        }
-        row {
-            highlightOnlyIncorrectIndentCheckbox = checkBox(
-                "Highlight only lines with incorrect indentation",
-                config::highlightOnlyIncorrectIndent
-            )
-        }
-        disableErrorHighlightingCheckbox.enableIf(highlightOnlyIncorrectIndentCheckbox.selected.not())
-        highlightOnlyIncorrectIndentCheckbox.enableIf(disableErrorHighlightingCheckbox.selected.not())
     }
 
     override fun apply() {

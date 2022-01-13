@@ -18,6 +18,7 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
 
     private val config = IrConfig.INSTANCE
     private val ignoreLinesStartingWith: Pattern = config.cachedData.ignoreLinesStartingWith
+    private val disableErrorHighlighting: Boolean = config.cachedData.disableErrorHighlightingLanguageFilter(file.language)
 
     fun compute(): LineIndents {
         val tabsAndSpaces = getTabsAndSpaces()
@@ -44,7 +45,7 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
             val indents = tabsAndSpaces.mapToIntArray {
                 val isCorrectLine = it.tabs == 0 && it.spaces == it.totalIndent
                         && (it.spaces % indentSize == 0 || shouldIgnoreLine(it, fileText))
-                if (isCorrectLine || config.disableErrorHighlighting) {
+                if (isCorrectLine || disableErrorHighlighting) {
                     it.spaces / indentSize
                 } else {
                     -1
