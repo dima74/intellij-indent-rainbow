@@ -44,7 +44,7 @@ class IrHighlightingPass(
 
         if (!config.isAnnotatorEnabled(file, IrAnnotatorType.SIMPLE_HIGHLIGHTING_PASS)) return
         val indents = LineIndentsCalculator(file, document).compute()
-        val descriptors = createDescriptors(document, indents)
+        val descriptors = createDescriptors(document, indents, config.highlightOnlyIncorrectIndent)
         editor.putUserData(IR_DESCRIPTORS, descriptors)
     }
 
@@ -76,9 +76,11 @@ class IrHighlightingPass(
             } else {
                 val existing = existingIterator.next()
                 val descriptor = descriptorsIterator.next()
-                val canReuseHighlighter = existing.startOffset == descriptor.startOffset && existing.endOffset == descriptor.endOffset
+                val canReuseHighlighter = existing.isValid
+                        && existing.startOffset == descriptor.startOffset
+                        && existing.endOffset == descriptor.endOffset
                 newHighlighters += if (canReuseHighlighter) {
-                    (existing.customRenderer as IrHighlighterRenderer).level = descriptor.level
+                    (existing.customRenderer as IrHighlighterRenderer).updateFrom(descriptor)
                     existing
                 } else {
                     existing.dispose()

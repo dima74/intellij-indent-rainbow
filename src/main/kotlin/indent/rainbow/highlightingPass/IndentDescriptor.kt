@@ -41,7 +41,7 @@ class IndentDescriptor(
     }
 }
 
-fun createDescriptors(document: Document, indents: LineIndents): List<IndentDescriptor> {
+fun createDescriptors(document: Document, indents: LineIndents, onlyErrors: Boolean): List<IndentDescriptor> {
     val (levels, indentSize) = indents
     var previousLevel = 0
     val descriptors = mutableListOf<IndentDescriptor>()
@@ -59,7 +59,9 @@ fun createDescriptors(document: Document, indents: LineIndents): List<IndentDesc
                 ++lineEnd
             }
             --lineEnd  // inclusive
-            descriptors += createDescriptor(document, line, lineEnd, level, indentSize)
+            if (!onlyErrors) {
+                descriptors += createDescriptor(document, line, lineEnd, level, indentSize)
+            }
         }
         previousLevel = currentLevel
     }

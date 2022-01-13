@@ -16,7 +16,8 @@ data class LineIndents(val levels: IntArray, val indentSize: Int)
 
 class LineIndentsCalculator(private val file: PsiFile, private val document: Document) {
 
-    private val ignoreLinesStartingWith: Pattern = IrConfig.INSTANCE.cachedData.ignoreLinesStartingWith
+    private val config = IrConfig.INSTANCE
+    private val ignoreLinesStartingWith: Pattern = config.cachedData.ignoreLinesStartingWith
 
     fun compute(): LineIndents {
         val tabsAndSpaces = getTabsAndSpaces()
@@ -30,17 +31,23 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
         val useTabs = indentOptions.USE_TAB_CHARACTER
         val indentSize = indentOptions.INDENT_SIZE.ifNotPositive { 4 }
         return if (useTabs) {
-            val indents = tabsAndSpaces.mapToIntArray { it.tabs }
+            val indents = tabsAndSpaces.mapToIntArray {
+                if (it.tabs + it.spaces == it.totalIndent) {
+                    it.tabs
+                } else {
+                    -1  // incorrect mixed tabs and spaces
+                }
+            }
             LineIndents(indents, 1)
         } else {
             val fileText = document.charsSequence
             val indents = tabsAndSpaces.mapToIntArray {
-                if (it.tabs != 0 || it.spaces != it.totalIndent) {
-                    -1  // line with mixed indent
-                } else if (it.spaces % indentSize == 0 || shouldIgnoreLine(it, fileText)) {
+                val isCorrectLine = it.tabs == 0 && it.spaces == it.totalIndent
+                        && (it.spaces % indentSize == 0 || shouldIgnoreLine(it, fileText))
+                if (isCorrectLine || config.disableErrorHighlighting) {
                     it.spaces / indentSize
                 } else {
-                    -1  // line with incorrect indent
+                    -1
                 }
             }
             LineIndents(indents, indentSize)

@@ -15,8 +15,8 @@ import java.awt.Graphics
 
 /** Paints one [IndentDescriptor]. */
 class IrHighlighterRenderer(
-    var level: Int,
-    private val indentSize: Int,
+    private var level: Int,
+    private var indentSize: Int,
 ) : CustomHighlighterRenderer {
 
     private val config: IrConfig? = serviceOrNull()
@@ -25,7 +25,8 @@ class IrHighlighterRenderer(
         val startPosition = editor.offsetToVisualPosition(highlighter.startOffset)
         val endPosition = editor.offsetToVisualPosition(highlighter.endOffset)
 
-        if (level != -1 && endPosition.column - startPosition.column != indentSize) return
+        val topRightOffset = editor.visualPositionToOffset(VisualPosition(startPosition.line, endPosition.column))
+        if (level != -1 && topRightOffset - highlighter.startOffset != indentSize) return
 
         val isOneLine = startPosition.line == endPosition.line
         if (isOneLine && startPosition.column == endPosition.column) return
@@ -83,6 +84,11 @@ class IrHighlighterRenderer(
         val right = endXY.x + indentGuideShift
         val bottom = endXY.y + lineHeight
         g.fillRect(left, top, right - left, bottom - top)
+    }
+
+    fun updateFrom(descriptor: IndentDescriptor) {
+        level = descriptor.level
+        indentSize = descriptor.indentSize
     }
 }
 
