@@ -25,6 +25,9 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
         row {
             createEnableInFiles()
         }
+        row {
+            createIgnoreLinesStartingWith()
+        }
     }
 
     private fun InnerCell.createDisableOnBigFilesCheckBox() {
@@ -53,6 +56,17 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
         val commentString = ApplicationBundle.message("soft.wraps.file.masks.hint")
 
         return textField(property)
+            .growPolicy(GrowPolicy.MEDIUM_TEXT)
+            .applyToComponent { emptyText.text = emptyTextString }
+            .comment(commentString, forComponent = true)
+    }
+
+    private fun Row.createIgnoreLinesStartingWith() {
+        label("Ignore lines starting with:")
+        val emptyTextString = "No patterns"
+        val commentString = "Regex syntax <br>Use | to separate patterns and \\ to escape chars <br>By default lines with comments are ignored"
+
+        textField(config::ignoreLinesStartingWith)
             .growPolicy(GrowPolicy.MEDIUM_TEXT)
             .applyToComponent { emptyText.text = emptyTextString }
             .comment(commentString, forComponent = true)

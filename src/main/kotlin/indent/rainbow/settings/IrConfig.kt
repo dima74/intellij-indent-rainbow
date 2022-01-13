@@ -23,6 +23,8 @@ data class IrConfig(
 
     var disableOnBigFiles: Boolean = true,
     var bigFilesLineThreshold: Int = 1000,
+
+    var ignoreLinesStartingWith: String = DEFAULT_IGNORE_LINES_STARTING_WITH,
 ) : PersistentStateComponent<IrConfig> {
 
     override fun getState(): IrConfig = this
@@ -38,6 +40,7 @@ data class IrConfig(
 
         val DEFAULT_PALETTE_TYPE: IrColorsPaletteType = IrColorsPaletteType.PASTEL
         const val DEFAULT_CUSTOM_COLORS = "4D802020, ..."
+        const val DEFAULT_IGNORE_LINES_STARTING_WITH: String = "//|\\*"
     }
 }
 

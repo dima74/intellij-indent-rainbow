@@ -1,6 +1,7 @@
 package indent.rainbow.highlightingPass
 
 import com.intellij.openapi.editor.Document
+import com.intellij.util.text.CharArrayUtil
 
 /**
  * Consider code:
@@ -74,8 +75,7 @@ fun createDescriptor(document: Document, lineStart: Int, lineEnd: Int, level: In
 }
 
 fun createErrorDescriptor(document: Document, line: Int): IndentDescriptor {
-    val (tabs, spaces) = document.getNumberTabsAndSpaces(line)
     val startOffset = document.getLineStartOffset(line)
-    val endOffset = startOffset + tabs + spaces
+    val endOffset = CharArrayUtil.shiftForward(document.charsSequence, startOffset, " \t")
     return IndentDescriptor(startOffset, endOffset, -1, -1)
 }

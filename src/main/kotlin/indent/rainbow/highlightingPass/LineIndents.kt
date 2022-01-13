@@ -3,14 +3,21 @@ package indent.rainbow.highlightingPass
 import com.intellij.application.options.CodeStyle
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.PsiFile
+import com.intellij.util.text.CharArrayUtil
 import indent.rainbow.ifNotPositive
 import indent.rainbow.mapToIntArray
+import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.cachedData
+import java.util.regex.Pattern
 import kotlin.math.min
 
 @Suppress("ArrayInDataClass")
 data class LineIndents(val levels: IntArray, val indentSize: Int)
 
 class LineIndentsCalculator(private val file: PsiFile, private val document: Document) {
+
+    private val ignoreLinesStartingWith: Pattern = IrConfig.INSTANCE.cachedData.ignoreLinesStartingWith
+
     fun compute(): LineIndents {
         val tabsAndSpaces = getTabsAndSpaces()
         val indents = getExplicitIndents(tabsAndSpaces)
@@ -18,7 +25,7 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
         return indents
     }
 
-    private fun getExplicitIndents(tabsAndSpaces: Array<TabsAndSpaces>): LineIndents {
+    private fun getExplicitIndents(tabsAndSpaces: Array<LineIndentInfo>): LineIndents {
         val indentOptions = CodeStyle.getIndentOptions(file)
         val useTabs = indentOptions.USE_TAB_CHARACTER
         val indentSize = indentOptions.INDENT_SIZE.ifNotPositive { 4 }
@@ -26,8 +33,11 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
             val indents = tabsAndSpaces.mapToIntArray { it.tabs }
             LineIndents(indents, 1)
         } else {
+            val fileText = document.charsSequence
             val indents = tabsAndSpaces.mapToIntArray {
-                if (it.tabs == 0 && it.spaces % indentSize == 0) {
+                if (it.tabs != 0 || it.spaces != it.totalIndent) {
+                    -1  // line with mixed indent
+                } else if (it.spaces % indentSize == 0 || shouldIgnoreLine(it, fileText)) {
                     it.spaces / indentSize
                 } else {
                     -1  // line with incorrect indent
@@ -35,6 +45,11 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
             }
             LineIndents(indents, indentSize)
         }
+    }
+
+    private fun shouldIgnoreLine(info: LineIndentInfo, fileText: CharSequence): Boolean {
+        val lineText = fileText.subSequence(info.startOffset + info.totalIndent, fileText.length)
+        return ignoreLinesStartingWith.matcher(lineText).lookingAt()
     }
 
     private fun fillIndentsOnEmptyLines(indents: IntArray) {
@@ -57,19 +72,26 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
         }
     }
 
-    private fun getTabsAndSpaces(): Array<TabsAndSpaces> =
+    private fun getTabsAndSpaces(): Array<LineIndentInfo> =
         Array(document.lineCount) { line -> document.getNumberTabsAndSpaces(line) }
 }
 
-data class TabsAndSpaces(val tabs: Int, val spaces: Int)
+/** [totalIndent] can be greater then [tabs] + [spaces] if line contains mixed tabs/spaces */
+private data class LineIndentInfo(
+    val startOffset: Int,
+    val tabs: Int,
+    val spaces: Int,
+    val totalIndent: Int,
+)
 
-fun Document.getNumberTabsAndSpaces(line: Int): TabsAndSpaces {
+private fun Document.getNumberTabsAndSpaces(line: Int): LineIndentInfo {
     val lineStart = getLineStartOffset(line)
     val fileText = charsSequence
 
     val numberTabs = fileText.getNumberCharsFrom(lineStart, '\t')
     val numberSpaces = fileText.getNumberCharsFrom(lineStart + numberTabs, ' ')
-    return TabsAndSpaces(numberTabs, numberSpaces)
+    val totalIndent = CharArrayUtil.shiftForward(fileText, lineStart + numberTabs + numberSpaces, " \t") - lineStart
+    return LineIndentInfo(lineStart, numberTabs, numberSpaces, totalIndent)
 }
 
 private fun CharSequence.getNumberCharsFrom(start: Int, char: Char): Int {
