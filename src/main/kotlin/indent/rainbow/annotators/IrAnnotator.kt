@@ -4,9 +4,10 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.util.PatternUtil
 import indent.rainbow.document
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.cachedData
+import java.util.regex.Pattern
 
 enum class IrAnnotatorType {
     SIMPLE,
@@ -17,7 +18,7 @@ enum class IrAnnotatorType {
 
 fun IrConfig.isAnnotatorEnabled(file: PsiFile): Boolean =
     enabled
-            && matchesFileMask(fileMasks, file.name)
+            && matchesFileMask(cachedData.fileMasks, file.name)
             && (file.isWritable || isEnabledForReadOnlyFiles)
             && !(disableOnBigFiles && file.hasMoreLinesThan(bigFilesLineThreshold))
 
@@ -29,13 +30,9 @@ private fun PsiFile.hasMoreLinesThan(count: Int): Boolean {
     return document.lineCount > count
 }
 
-private fun matchesFileMask(fileMasks: String, fileName: String): Boolean {
-    val masks = fileMasks.trim()
-    if (masks == "*") return true
-    return masks.split(";").any {
-        val mask = it.trim()
-        mask.isNotEmpty() && PatternUtil.fromMask(mask).matcher(fileName).matches()
-    }
+private fun matchesFileMask(fileMasks: List<Pattern>?, fileName: String): Boolean {
+    if (fileMasks == null) return true
+    return fileMasks.any { it.matcher(fileName).matches() }
 }
 
 // we can't check `element is PsiWhiteSpace`, because e.g. in Yaml custom LeafPsiElement is used
@@ -49,7 +46,7 @@ fun PsiElement.isWhiteSpace(): Boolean {
 fun PsiElement.isCommentOrInjectedHost(): Boolean = this is PsiComment || this is PsiLanguageInjectionHost
 
 fun IrConfig.getAnnotatorTypeForFile(file: PsiFile): IrAnnotatorType =
-    if (useFormatterHighlighter && matchesFileMask(formatterHighlighterFileMasks, file.name)) {
+    if (useFormatterHighlighter && matchesFileMask(cachedData.formatterHighlighterFileMasks, file.name)) {
         IrAnnotatorType.FORMATTER_INCREMENTAL
     } else {
         IrAnnotatorType.SIMPLE_HIGHLIGHTING_PASS

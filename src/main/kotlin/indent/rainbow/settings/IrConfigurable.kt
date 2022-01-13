@@ -91,6 +91,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
         if (config.paletteType == IrColorsPaletteType.CUSTOM && config.customPalette == IrConfig.DEFAULT_CUSTOM_COLORS) {
             config.paletteType = IrConfig.DEFAULT_PALETTE_TYPE
         }
+        IrCachedData.update(config)
         IrColors.onSchemeChange()
         IrColors.refreshEditorIndentColors()
     }

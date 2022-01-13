@@ -2,6 +2,7 @@ package indent.rainbow
 
 import indent.rainbow.settings.IrColorsPaletteType
 import indent.rainbow.settings.IrConfig
+import indent.rainbow.settings.cachedData
 import java.awt.Color
 
 class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) {
@@ -31,23 +32,11 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
     }
 }
 
-object IrCustomColorsPaletteNew {
-    private var cachedValue: Pair<String, IrColorsPaletteNew>? = null
-    fun get(colorsString: String): IrColorsPaletteNew? {
-        cachedValue
-            ?.takeIf { it.first == colorsString }
-            ?.let { return it.second }
-        val palette = IrColorsPaletteNew.parse(colorsString) ?: return null
-        cachedValue = colorsString to palette
-        return palette
-    }
-}
-
 val IrConfig.currentPalette: IrColorsPaletteNew
     get() = when (paletteType) {
         IrColorsPaletteType.DEFAULT -> IrColorsPaletteNew.CLASSIC
         IrColorsPaletteType.PASTEL -> IrColorsPaletteNew.PASTEL
-        IrColorsPaletteType.CUSTOM -> IrCustomColorsPaletteNew.get(customPalette) ?: IrColorsPaletteNew.PASTEL
+        IrColorsPaletteType.CUSTOM -> cachedData.customColorPalette ?: IrColorsPaletteNew.PASTEL
     }
 
 fun IrConfig.getColor(level: Int): Color {

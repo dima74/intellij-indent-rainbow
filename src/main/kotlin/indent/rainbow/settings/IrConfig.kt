@@ -27,7 +27,10 @@ data class IrConfig(
 
     override fun getState(): IrConfig = this
 
-    override fun loadState(state: IrConfig) = XmlSerializerUtil.copyBean(state, this)
+    override fun loadState(state: IrConfig) {
+        XmlSerializerUtil.copyBean(state, this)
+        IrCachedData.update(this)
+    }
 
     companion object {
         val INSTANCE: IrConfig get() = service()

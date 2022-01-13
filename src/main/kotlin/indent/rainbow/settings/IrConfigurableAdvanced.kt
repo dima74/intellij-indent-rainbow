@@ -60,6 +60,7 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
 
     override fun apply() {
         super.apply()
+        IrCachedData.update(config)
         IrColors.onSchemeChange()
         IrColors.refreshEditorIndentColors()
     }
