@@ -11,32 +11,10 @@ import indent.rainbow.IrColorsPalette.Companion.DEFAULT_ERROR_COLOR
 import indent.rainbow.settings.IrColorsPaletteType
 import indent.rainbow.settings.IrConfig
 import java.awt.Color
-import kotlin.math.abs
-import kotlin.math.pow
 
 fun Color?.toStringWithAlpha(): String {
     if (this == null) return "null"
     return "Color[r=$red,g=$green,b=$blue,a=$alpha]"
-}
-
-fun interpolate(a: Float, b: Float, qa: Float): Float = a * qa + b * (1 - qa)
-
-fun getAlpha(alpha: Float): Float {
-    var opacityMultiplier = IrConfig.INSTANCE.opacityMultiplier  // [-1, +1]
-    val needMoreOpacity = opacityMultiplier > 0F
-
-    opacityMultiplier = abs(opacityMultiplier)
-    // чтобы при изменении opacity возле стандартного значения цвета не сильно менялись
-    opacityMultiplier = opacityMultiplier.pow(2)
-    // чтобы например при `targetOpacity == 0` цвета оставались видны
-    opacityMultiplier *= 0.7F
-
-    val targetOpacity = if (needMoreOpacity) {
-        1F
-    } else {
-        0F
-    }
-    return interpolate(targetOpacity, alpha, opacityMultiplier)
 }
 
 fun applyAlpha(color: Color, background: Color, increaseOpacity: Boolean): Color {
@@ -47,7 +25,7 @@ fun applyAlpha(color: Color, background: Color, increaseOpacity: Boolean): Color
 
     val backgroundF = background.getRGBComponents(null)
     val colorF = color.getRGBComponents(null)
-    val alpha = getAlpha(colorF[3] + if (increaseOpacity) 0.05F else 0F)
+    val alpha = adjustAlpha(colorF[3] + if (increaseOpacity) 0.05F else 0F, IrConfig.INSTANCE.opacityMultiplier)
 
     val resultF = (0..2).map { i -> interpolate(colorF[i], backgroundF[i], alpha) }
     val result = Color(resultF[0], resultF[1], resultF[2])
@@ -204,9 +182,4 @@ object IrColors {
     fun refreshEditorIndentColors() {
         (EditorColorsManager.getInstance() as EditorColorsManagerImpl).schemeChangedOrSwitched(null)
     }
-}
-
-private fun isColorLight(color: Color): Boolean {
-    val lightness = (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255
-    return lightness >= 0.5
 }

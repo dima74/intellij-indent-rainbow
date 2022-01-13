@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.impl.view.EditorPainter
 import com.intellij.openapi.editor.impl.view.VisualLinesIterator
 import com.intellij.openapi.editor.markup.CustomHighlighterRenderer
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import indent.rainbow.getColor
+import indent.rainbow.getColorWithAdjustedAlpha
 import indent.rainbow.settings.IrConfig
 import java.awt.Graphics
 
@@ -32,7 +32,7 @@ class IrHighlighterRenderer(
         if (isOneLine && startPosition.column == endPosition.column) return
 
         if (config == null) return
-        g.color = config.getColor(level)
+        g.color = config.getColorWithAdjustedAlpha(level, editor)
 
         val indentGuideShift = EditorPainter.getIndentGuideShift(editor)
         if (isOneLine || !editor.hasSoftWraps()) {
