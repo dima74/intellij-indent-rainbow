@@ -26,9 +26,9 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
                 .map { it.trim() }
                 .map {
                     if (it.length != 8) return null  // AARRGGBB
-                    it.toIntOrNull(16) ?: return null
+                    it.toLongOrNull(16) ?: return null
                 }
-                .map { Color(it, true) }
+                .map { Color(it.toInt(), true) }
             if (colors.size < 3) return null
             return IrColorsPaletteNew(colors.first(), colors.drop(1).toTypedArray())
         }
