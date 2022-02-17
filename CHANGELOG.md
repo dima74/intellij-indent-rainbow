@@ -1,3 +1,11 @@
+## 2.0.2
+- Pastel color palette is now the default for new installations
+- Indent rainbows are now pixel perfect aligned with indent guides
+- Indent rainbow now shows on empty lines
+- Fixes that inspections can hide Indent rainbows
+- Use simple highlighter by default and improved it performance
+- Custom colors are now configured in `Settings | Indent Rainbow | Color palette`
+
 ## 1.7.0
 - Add option to disable Indent Rainbow on big files
 - Add option to use simple highlighter only in specific files
@@ -10,7 +18,7 @@
 
 ## 1.6.1
 - Add an option to show only incorrect indentation
-- Addressed some exceptions, thanks to everyone who reported them! 
+- Addressed some exceptions, thanks to everyone who reported them!
 
 ## 1.6.0
 - Now you can [choose color palette in settings](https://user-images.githubusercontent.com/6505554/91661297-94f18f00-eaf4-11ea-9d8e-0a97ba7ae982.png):
