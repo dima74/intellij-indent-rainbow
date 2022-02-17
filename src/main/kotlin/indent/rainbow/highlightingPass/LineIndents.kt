@@ -23,7 +23,9 @@ class LineIndentsCalculator(private val file: PsiFile, private val document: Doc
     fun compute(): LineIndents {
         val tabsAndSpaces = getTabsAndSpaces()
         val indents = getExplicitIndents(tabsAndSpaces)
-        fillIndentsOnEmptyLines(indents.levels)
+        if (config.highlightEmptyLines) {
+            fillIndentsOnEmptyLines(indents.levels)
+        }
         return indents
     }
 

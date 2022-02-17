@@ -23,6 +23,9 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
             checkBox("Highlight only lines with incorrect indentation", config::highlightOnlyIncorrectIndent)
         }
         row {
+            checkBox("Highlight empty lines", config::highlightEmptyLines)
+        }
+        row {
             createSimpleHighlighterInFiles()
         }
         row {

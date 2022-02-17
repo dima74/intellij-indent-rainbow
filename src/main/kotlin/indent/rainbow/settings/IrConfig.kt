@@ -10,6 +10,7 @@ data class IrConfig(
     var disableErrorHighlightingLanguageMasks: String = "Markdown; Haskell",
     var highlightOnlyIncorrectIndent: Boolean = false,
     var isEnabledForReadOnlyFiles: Boolean = false,
+    var highlightEmptyLines: Boolean = true,
     var opacityMultiplier: Float = 0F,  // [-1, +1]
     var fileMasks: String = "*",
 
