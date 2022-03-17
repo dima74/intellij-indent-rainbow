@@ -67,6 +67,9 @@ tasks {
         jvmArgs("-Dide.show.tips.on.startup.default.value=false")
     }
 
+    // https://plugins.jetbrains.com/docs/intellij/ide-development-instance.html#enabling-auto-reload
+    // buildSearchableOptions { enabled = false }
+
     patchPluginXml {
         version.set(properties("pluginVersion"))
         sinceBuild.set(properties("pluginSinceBuild"))

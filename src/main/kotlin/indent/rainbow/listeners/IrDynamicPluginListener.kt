@@ -1,9 +1,12 @@
 package indent.rainbow.listeners
 
+import com.intellij.ide.plugins.CannotUnloadPluginException
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
+import com.intellij.openapi.editor.markup.RangeHighlighter
 import indent.rainbow.IrAnnotatorsManager
 import indent.rainbow.IrApplicationService
+import indent.rainbow.highlightingPass.IndentDescriptor
 
 class IrDynamicPluginListener : DynamicPluginListener {
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
@@ -17,6 +20,13 @@ class IrDynamicPluginListener : DynamicPluginListener {
     override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
         if (pluginDescriptor.isOurPlugin()) {
             IrAnnotatorsManager.disposeAnnotators()
+        }
+    }
+
+    override fun checkUnloadPlugin(pluginDescriptor: IdeaPluginDescriptor) {
+        if (pluginDescriptor.isOurPlugin()) {
+            /** We store in editors user data [IndentDescriptor]s and [RangeHighlighter]s */
+            throw CannotUnloadPluginException("Indent Rainbow doesn't support dynamic unload")
         }
     }
 }
