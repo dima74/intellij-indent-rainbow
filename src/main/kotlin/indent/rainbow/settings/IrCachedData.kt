@@ -25,7 +25,9 @@ class IrCachedData(config: IrConfig) {
             .split(';')
             .mapTo(hashSetOf()) { it.trim().lowercase() }
         return@run { language: Language ->
-            language.displayName.lowercase() in languages
+            language.baseLanguages.any {
+                it.displayName.lowercase() in languages
+            }
         }
     }
 
@@ -49,3 +51,6 @@ fun createFilePatterns(masks: String): List<Pattern>? {
         .filter { it.isNotEmpty() }
         .map(PatternUtil::fromMask)
 }
+
+private val Language.baseLanguages: Sequence<Language>
+    get() = generateSequence(this) { it.baseLanguage }
