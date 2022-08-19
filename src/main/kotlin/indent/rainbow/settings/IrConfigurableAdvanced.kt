@@ -37,6 +37,16 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
         row {
             createDisableErrorHighlightingForLanguages()
         }
+        titledRow("Round Corners") {
+            row {
+                label("Corner radius")
+                intTextField(config::cornerRadius)
+                    .growPolicy(GrowPolicy.MEDIUM_TEXT)
+            }
+            row {
+                checkBox("Apply to both left and right side", config::applyRadiusToBothSides)
+            }
+        }
     }
 
     private fun InnerCell.createDisableOnBigFilesCheckBox() {

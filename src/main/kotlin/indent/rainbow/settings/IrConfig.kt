@@ -26,6 +26,9 @@ data class IrConfig(
     var bigFilesLineThreshold: Int = 1000,
 
     var ignoreLinesStartingWith: String = DEFAULT_IGNORE_LINES_STARTING_WITH,
+
+    var cornerRadius: Int = 0,
+    var applyRadiusToBothSides: Boolean = false
 ) : PersistentStateComponent<IrConfig> {
 
     override fun getState(): IrConfig = this

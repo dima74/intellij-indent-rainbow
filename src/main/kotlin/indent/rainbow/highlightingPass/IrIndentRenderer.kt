@@ -83,7 +83,43 @@ class IrHighlighterRenderer(
         val top = startXY.y
         val right = endXY.x + indentGuideShift
         val bottom = endXY.y + lineHeight
-        g.fillRect(left, top, right - left, bottom - top)
+        val width = right - left
+        val height = bottom - top
+
+        val cornerRadius = config?.cornerRadius ?: 0
+        when {
+            cornerRadius <= 0 ->
+                g.fillRect(left, top, width, height)
+
+            config!!.applyRadiusToBothSides ->
+                g.fillRoundRect(left, top, width, height, cornerRadius, cornerRadius)
+
+            else ->
+                g.fillRectangleWithRoundedRightSide(left, top, width, height, cornerRadius)
+        }
+    }
+
+    private fun Graphics.fillRectangleWithRoundedRightSide(left: Int, top: Int, width: Int, height: Int, cornerRadius: Int) {
+        // Top right corner
+        fillArc(left + width - cornerRadius, top, cornerRadius, cornerRadius, 0, 90)
+        // Bottom right corner
+        fillArc(
+            left + width - cornerRadius,
+            top + height - cornerRadius,
+            cornerRadius,
+            cornerRadius,
+            90 + 180,
+            90
+        )
+        // Part between corners
+        fillRect(
+            left + cornerRadius / 2 + width - cornerRadius,
+            top + cornerRadius / 2,
+            cornerRadius / 2,
+            height - cornerRadius
+        )
+        // The rest area
+        fillRect(left, top, width - cornerRadius / 2, height)
     }
 
     fun updateFrom(descriptor: IndentDescriptor) {
