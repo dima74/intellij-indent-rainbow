@@ -17,6 +17,9 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
             }
         }
         row {
+            checkBox("Align with indent guides", config::alignWithIndentGuides)
+        }
+        row {
             checkBox("Enable in read only files", config::isEnabledForReadOnlyFiles)
         }
         row {

@@ -34,7 +34,7 @@ class IrHighlighterRenderer(
         if (config == null) return
         g.color = config.getColorWithAdjustedAlpha(level, editor)
 
-        val indentGuideShift = EditorPainter.getIndentGuideShift(editor)
+        val indentGuideShift = alignWithIndentGuides ? EditorPainter.getIndentGuideShift(editor) : 0
         if (isOneLine || !editor.hasSoftWraps()) {
             editor.paintIndent(startPosition, endPosition, indentGuideShift, g)
         } else {

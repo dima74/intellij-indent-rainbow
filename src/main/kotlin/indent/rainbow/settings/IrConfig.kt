@@ -9,6 +9,7 @@ data class IrConfig(
     var enabled: Boolean = true,
     var disableErrorHighlightingLanguageMasks: String = "Markdown; Haskell",
     var highlightOnlyIncorrectIndent: Boolean = false,
+    var alignWithIndentGuides: Boolean = true,
     var isEnabledForReadOnlyFiles: Boolean = false,
     var highlightEmptyLines: Boolean = true,
     var opacityMultiplier: Float = 0F,  // [-1, +1]
