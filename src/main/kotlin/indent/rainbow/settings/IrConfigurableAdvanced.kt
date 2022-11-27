@@ -96,6 +96,7 @@ class IrConfigurableAdvanced : BoundConfigurable("Advanced Settings") {
         textField(config::disableErrorHighlightingLanguageMasks)
             .growPolicy(GrowPolicy.MEDIUM_TEXT)
             .applyToComponent { emptyText.text = "No languages" }
+            .comment("Use * to disable for all languages", forComponent = true)
     }
 
     override fun apply() {
