@@ -10,8 +10,6 @@ import indent.rainbow.settings.cachedData
 import java.util.regex.Pattern
 
 enum class IrAnnotatorType {
-    SIMPLE,
-    SIMPLE_WITHOUT_PSI,
     SIMPLE_HIGHLIGHTING_PASS,
     FORMATTER_INCREMENTAL,
 }
@@ -51,13 +49,3 @@ fun IrConfig.getAnnotatorTypeForFile(file: PsiFile): IrAnnotatorType =
     } else {
         IrAnnotatorType.SIMPLE_HIGHLIGHTING_PASS
     }
-
-// This function is needed to detect two types of languages:
-// 1. Language which doesn't have plugin yet,
-//    but has syntax highlighting thanks to textmate — https://plugins.jetbrains.com/plugin/7221-textmate-bundles
-// 2. Language which doesn't implement proper PSI structure yet
-//    Like F# — see https://github.com/izhangzhihao/intellij-rainbow-brackets/issues/186#issuecomment-609733425 for details
-fun PsiFile.isSingleNodeFile(): Boolean {
-    val firstChild = firstChild
-    return firstChild != null && firstChild.nextSibling == null && firstChild.firstChild == null
-}
