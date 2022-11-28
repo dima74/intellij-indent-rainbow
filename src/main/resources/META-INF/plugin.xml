@@ -1,15 +1,15 @@
 <idea-plugin>
     <id>indent-rainbow.indent-rainbow</id>
     <name>Indent Rainbow</name>
-    <vendor email="diraria+indent-rainbow@yandex.ru" url="https://github.com/dima74/intellij-indent-rainbow">Indent Rainbow</vendor>
+    <vendor email="diralik+indent-rainbow@yandex.ru" url="https://github.com/dima74/intellij-indent-rainbow">Indent Rainbow</vendor>
 
     <description><![CDATA[
         <h1 align="center">Indent Rainbow Plugin</h1>
         <h2 align="center">A simple extension to make indentation more readable</h2>
         <!--
-        <div><img width="509" height="477" src="https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example.png"></div>
+        <div><img src="https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example_16_10.png"></div>
         -->
-        <p>This extension colorizes the indentation in front of your text alternating four different colors on each step.</p>
+        <p>This extension colorizes the indentation in front of your text alternating six different colors on each step.</p>
     ]]></description>
 
     <depends>com.intellij.modules.lang</depends>
