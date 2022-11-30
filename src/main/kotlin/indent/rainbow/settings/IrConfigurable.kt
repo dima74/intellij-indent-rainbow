@@ -2,7 +2,8 @@ package indent.rainbow.settings
 
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.layout.*
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.HorizontalAlign
 import indent.rainbow.IrColors
 import javax.swing.JLabel
 import kotlin.math.abs
@@ -11,23 +12,22 @@ import kotlin.math.roundToInt
 class IrConfigurable : BoundConfigurable("Indent Rainbow") {
 
     override fun createPanel(): DialogPanel = panel {
-        blockRow {
-            row {
-                checkBox("Enable Indent Rainbow", config::enabled)
-            }
+        row {
+            @Suppress("DialogTitleCapitalization")
+            checkBox("Enable Indent Rainbow").bindSelected(config::enabled)
         }
-        titledRow("Color Palette") {
+        group("Color Palette") {
             createPaletteTypeButtonGroup()
         }
-        row("Indent colors opacity") {
+        group("Indent Colors Opacity") {
             row {
                 createOpacitySlider()
             }
         }
     }
 
-    private fun Row.createPaletteTypeButtonGroup() {
-        buttonGroup(config::paletteType) {
+    private fun Panel.createPaletteTypeButtonGroup() {
+        buttonsGroup {
             row {
                 radioButton("Classic (4 colors)", IrColorsPaletteType.DEFAULT)
             }
@@ -36,33 +36,37 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
             }
             row {
                 val radioButton = radioButton("Custom with colors:", IrColorsPaletteType.CUSTOM)
-                val commentText = "Colors must be in AARRGGBB format <br>First color is error color, then indent colors <br>Use comma to separate colors"
-                textField(prop = config::customPalette)
-                    .growPolicy(GrowPolicy.MEDIUM_TEXT)
-                    .comment(commentText, forComponent = true)
-                    .enableIf(radioButton.selected)
+                val commentText =
+                    "Colors must be in AARRGGBB format <br>First color is error color, then indent colors <br>Use comma to separate colors"
+                textField()
+                    .bindText(config::customPalette)
+                    .columns(COLUMNS_MEDIUM)
+                    .comment(commentText)
+                    .enabledIf(radioButton.selected)
             }
-        }
+        }.bind(config::paletteType)
     }
 
     private fun Row.createOpacitySlider() {
         val min = -100
         val max = +100
         val slider = slider(min, max, 0, 0)
-        slider.labelTable {
-            put(min, JLabel("Less opacity"))
-            put(max, JLabel("More opacity"))
-            put(0, JLabel("Default"))
-        }
-        slider.withValueBinding(PropertyBinding(
+        slider.labelTable(
+            hashMapOf(
+                min to JLabel("Less opacity"),
+                max to JLabel("More opacity"),
+                0 to JLabel("Default"),
+            )
+        )
+        slider.bindValue(
             { opacityMultiplierValue },
             {
                 opacityMultiplierValue = it
-                // to prevent "Apply" button remain active is value is close to zero
+                // to prevent "Apply" button remain active if value is close to zero
                 slider.component.value = opacityMultiplierValue
             }
-        ))
-        slider.constraints(CCFlags.growX)
+        )
+        slider.horizontalAlign(HorizontalAlign.FILL)
     }
 
     override fun apply() {
