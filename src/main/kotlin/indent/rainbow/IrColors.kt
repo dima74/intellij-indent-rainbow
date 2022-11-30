@@ -147,6 +147,8 @@ object IrColors {
     fun onSchemeChange() = updateTextAttributesForAllSchemes()
 
     private fun updateTextAttributesForAllSchemes() {
+        if (!IrConfig.INSTANCE.useFormatterHighlighter) return
+
         val allSchemes = EditorColorsManager.getInstance().allSchemes
         val currentPalette = currentPalette as? IrBuiltinColorsPalette ?: return
         for (scheme in allSchemes) {
