@@ -80,7 +80,7 @@ class IrHighlightingPass(
                         && existing.startOffset == descriptor.startOffset
                         && existing.endOffset == descriptor.endOffset
                 newHighlighters += if (canReuseHighlighter) {
-                    (existing.customRenderer as IrHighlighterRenderer).updateFrom(descriptor)
+                    (existing.customRenderer as IrHighlighterRenderer).update(descriptor, editor)
                     existing
                 } else {
                     existing.dispose()
@@ -93,7 +93,7 @@ class IrHighlightingPass(
     }
 
     private fun addHighlighter(markupModel: MarkupModel, descriptor: IndentDescriptor): RangeHighlighter {
-        val renderer = IrHighlighterRenderer(descriptor.level, descriptor.indentSize)
+        val renderer = IrHighlighterRenderer(descriptor, editor)
         return markupModel.addRangeHighlighter(descriptor.startOffset, descriptor.endOffset, renderer)
     }
 

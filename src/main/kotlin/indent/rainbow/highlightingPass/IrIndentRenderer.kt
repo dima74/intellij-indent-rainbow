@@ -14,9 +14,10 @@ import indent.rainbow.settings.IrConfig
 import java.awt.Graphics
 
 /** Paints one [IndentDescriptor]. */
-class IrHighlighterRenderer(
+class IrHighlighterRenderer private constructor(
     private var level: Int,
     private var indentSize: Int,
+    private var isIndentGuidesShown: Boolean,
 ) : CustomHighlighterRenderer {
 
     private val config: IrConfig? = serviceOrNull()
@@ -34,7 +35,7 @@ class IrHighlighterRenderer(
         if (config == null) return
         g.color = config.getColorWithAdjustedAlpha(level, editor)
 
-        val indentGuideShift = EditorPainter.getIndentGuideShift(editor)
+        val indentGuideShift = if (isIndentGuidesShown) EditorPainter.getIndentGuideShift(editor) else 0
         if (isOneLine || !editor.hasSoftWraps()) {
             editor.paintIndent(startPosition, endPosition, indentGuideShift, g)
         } else {
@@ -78,7 +79,7 @@ class IrHighlighterRenderer(
         val startXY = visualPositionToXY(start)
         val endXY = visualPositionToXY(end)
 
-        val indentGuideWidth = 1
+        val indentGuideWidth = if (isIndentGuidesShown) 1 else 0
         val left = startXY.x + if (level <= 0) 0 else (indentGuideShift + indentGuideWidth)
         val top = startXY.y
         val right = endXY.x + indentGuideShift
@@ -122,9 +123,14 @@ class IrHighlighterRenderer(
         fillRect(left, top, width - cornerRadius / 2, height)
     }
 
-    fun updateFrom(descriptor: IndentDescriptor) {
+    constructor(descriptor: IndentDescriptor, editor: Editor) : this(0, 0, false) {
+        update(descriptor, editor)
+    }
+
+    fun update(descriptor: IndentDescriptor, editor: Editor) {
         level = descriptor.level
         indentSize = descriptor.indentSize
+        isIndentGuidesShown = editor.settings.isIndentGuidesShown
     }
 }
 
