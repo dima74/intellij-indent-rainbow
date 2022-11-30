@@ -5,8 +5,8 @@ fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
-    id("org.jetbrains.intellij") version "1.9.0"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
+    id("org.jetbrains.intellij") version "1.10.0"
     // Used only for `markdownToHTML` function
     id("org.jetbrains.changelog") version "1.3.1"
     id("org.jetbrains.qodana") version "0.1.13"
