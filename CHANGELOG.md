@@ -1,3 +1,9 @@
+## 2.1.0
+- Add option to make edges round
+- Fix language detection for "Never highlight indent as error" option
+- Fix conflict with Rider UI Theme
+- Fix gap between indents when "Show indent guides" option is disabled
+
 ## 2.0.2
 - Pastel color palette is now the default for new installations
 - Indent rainbows are now pixel perfect aligned with indent guides
