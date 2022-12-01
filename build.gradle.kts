@@ -8,8 +8,9 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("org.jetbrains.intellij") version "1.10.0"
     // Used only for `markdownToHTML` function
-    id("org.jetbrains.changelog") version "1.3.1"
+    id("org.jetbrains.changelog") version "2.0.0"
     id("org.jetbrains.qodana") version "0.1.13"
+    id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 group = properties("pluginGroup")
@@ -19,17 +20,16 @@ version = properties("pluginVersion")
 repositories {
     mavenCentral()
 }
-dependencies {
-    compileOnly(kotlin("stdlib-jdk8"))
+
+kotlin {
+    jvmToolchain(17)
 }
 
-// Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
+// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     pluginName.set(properties("pluginName"))
     version.set(properties("platformVersion"))
     type.set(properties("platformType"))
-    downloadSources.set(properties("platformDownloadSources").toBoolean())
-    updateSinceUntilBuild.set(true)
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
@@ -37,38 +37,21 @@ intellij {
 
 // Configure Gradle Qodana Plugin - read more: https://github.com/JetBrains/gradle-qodana-plugin
 qodana {
-    cachePath.set(projectDir.resolve(".qodana").canonicalPath)
-    reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
+    cachePath.set(file(".qodana").canonicalPath)
+    reportPath.set(file("build/reports/inspections").canonicalPath)
     saveReport.set(true)
     showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
 }
 
-tasks {
-    // Set the JVM compatibility versions
-    properties("javaVersion").let {
-        withType<JavaCompile> {
-            sourceCompatibility = it
-            targetCompatibility = it
-        }
-        withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = it
-            kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=all")
-        }
-    }
+// Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
+kover.xmlReport {
+    onCheck.set(true)
+}
 
+tasks {
     wrapper {
         gradleVersion = properties("gradleVersion")
     }
-
-    runIde {
-        // https://plugins.jetbrains.com/docs/intellij/dynamic-plugins.html#diagnosing-leaks
-        jvmArgs("-XX:+UnlockDiagnosticVMOptions")
-        // Don't show "Tip of the Day" at startup
-        jvmArgs("-Dide.show.tips.on.startup.default.value=false")
-    }
-
-    // https://plugins.jetbrains.com/docs/intellij/ide-development-instance.html#enabling-auto-reload
-    // buildSearchableOptions { enabled = false }
 
     patchPluginXml {
         version.set(properties("pluginVersion"))
@@ -88,6 +71,12 @@ tasks {
         systemProperty("jb.consents.confirmation.enabled", "false")
     }
 
+    signPlugin {
+        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+        privateKey.set(System.getenv("PRIVATE_KEY"))
+        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+    }
+
     publishPlugin {
         dependsOn("patchChangelog")
         token.set(System.getenv("PUBLISH_TOKEN"))
@@ -95,5 +84,16 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=all")
+    }
+
+    runIde {
+        // https://plugins.jetbrains.com/docs/intellij/dynamic-plugins.html#diagnosing-leaks
+        jvmArgs("-XX:+UnlockDiagnosticVMOptions")
+        // Don't show "Tip of the Day" at startup
+        jvmArgs("-Dide.show.tips.on.startup.default.value=false")
     }
 }
