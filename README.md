@@ -22,6 +22,9 @@ There are two options to change indent colors in `Settings | Indent Rainbow`:
 
 ![Settings page](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/settings.png)
 
+## Dev Environment Requirements
+Java 17 for Gradle 7.3 build and run.
+
 ## Feedback
 Please welcome to submit issues and feature requests!
 
