@@ -35,7 +35,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
             }
             row {
-                radioButton("Spectrum (10 colors)", IrColorsPaletteType.SPECTRUM)
+                radioButton("Spectrum (13 colors)", IrColorsPaletteType.SPECTRUM)
             }
             row {
                 radioButton("Nightfall (10 colors)", IrColorsPaletteType.NIGHTFALL)
