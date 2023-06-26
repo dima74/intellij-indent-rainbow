@@ -53,8 +53,8 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
         val slider = slider(min, max, 0, 0)
         slider.labelTable(
             hashMapOf(
-                min to JLabel("Less opacity"),
-                max to JLabel("More opacity"),
+                min to JLabel("Transparent"),
+                max to JLabel("Opaque"),
                 0 to JLabel("Default"),
             )
         )
