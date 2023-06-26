@@ -9,12 +9,12 @@ import javax.swing.JLabel
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class IrConfigurable : BoundConfigurable("Indent Rainbow Beta") {
+class IrConfigurable : BoundConfigurable("Indent Rainbow") {
 
     override fun createPanel(): DialogPanel = panel {
         row {
             @Suppress("DialogTitleCapitalization")
-            checkBox("Enable Indent Rainbow Beta").bindSelected(config::enabled)
+            checkBox("Enable Indent Rainbow").bindSelected(config::enabled)
         }
         group("Color Palette") {
             createPaletteTypeButtonGroup()
@@ -35,12 +35,6 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow Beta") {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
             }
             row {
-                radioButton("Spectrum (10 colors)", IrColorsPaletteType.SPECTRUM)
-            }
-            row {
-                radioButton("Nightfall (10 colors)", IrColorsPaletteType.NIGHTFALL)
-            }
-            row {
                 val radioButton = radioButton("Custom with colors:", IrColorsPaletteType.CUSTOM)
                 val commentText =
                     "Colors must be in AARRGGBB format <br>First color is error color, then indent colors <br>Use comma to separate colors"
@@ -59,8 +53,8 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow Beta") {
         val slider = slider(min, max, 0, 0)
         slider.labelTable(
             hashMapOf(
-                min to JLabel("Transparent"),
-                max to JLabel("Opaque"),
+                min to JLabel("Less opacity"),
+                max to JLabel("More opacity"),
                 0 to JLabel("Default"),
             )
         )
