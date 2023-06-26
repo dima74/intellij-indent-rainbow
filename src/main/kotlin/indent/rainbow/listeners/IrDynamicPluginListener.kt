@@ -26,7 +26,7 @@ class IrDynamicPluginListener : DynamicPluginListener {
     override fun checkUnloadPlugin(pluginDescriptor: IdeaPluginDescriptor) {
         if (pluginDescriptor.isOurPlugin()) {
             /** We store in editors user data [IndentDescriptor]s and [RangeHighlighter]s */
-            throw CannotUnloadPluginException("Indent Rainbow Beta doesn't support dynamic unload")
+            throw CannotUnloadPluginException("Indent Rainbow doesn't support dynamic unload")
         }
     }
 }

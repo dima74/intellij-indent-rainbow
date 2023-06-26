@@ -1,10 +1,10 @@
 <idea-plugin>
     <id>indent-rainbow.indent-rainbow</id>
-    <name>Indent Rainbow Beta</name>
-    <vendor email="diralik+indent-rainbow@yandex.ru" url="https://github.com/dima74/intellij-indent-rainbow">Indent Rainbow Beta</vendor>
+    <name>Indent Rainbow</name>
+    <vendor email="diralik+indent-rainbow@yandex.ru" url="https://github.com/dima74/intellij-indent-rainbow">Indent Rainbow</vendor>
 
     <description><![CDATA[
-        <h1 align="center">Indent Rainbow Beta Plugin</h1>
+        <h1 align="center">Indent Rainbow Plugin</h1>
         <h2 align="center">A simple extension to make indentation more readable</h2>
         <!--
         <div><img src="https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example_16_10.png"></div>
@@ -41,6 +41,6 @@
     <actions>
         <action id="IndentRainbow.Toggle"
                 class="indent.rainbow.actions.IrToggleAction"
-                text="Indent Rainbow Beta: Toggle (Enable/Disable)" />
+                text="Indent Rainbow: Toggle (Enable/Disable)" />
     </actions>
 </idea-plugin>
