@@ -1,3 +1,8 @@
+## 2.2.0
+- Updated version to 2.2.0
+- Added new themes: 'Spectrum' and 'Nightfall'
+- Improved slider language for opacity: 'Less Opacity'/'More Opacity' to 'Transparent'/'Opaque'
+
 ## 2.1.0
 - Add option to make edges round
 - Fix language detection for "Never highlight indent as error" option
