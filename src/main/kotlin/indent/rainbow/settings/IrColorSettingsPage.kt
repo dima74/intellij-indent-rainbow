@@ -62,7 +62,7 @@ class IrColorSettingsPage : ColorSettingsPage {
 
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName(): String = "Indent Rainbow"
+    override fun getDisplayName(): String = "Indent Rainbow Beta"
 
     private fun wrapTextWithTags(text: String): String {
         return text.lines()
