@@ -20,6 +20,34 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
         // https://github.com/oderwat/vscode-indent-rainbow/pull/64
         val PASTEL = IrColorsPaletteNew(0x26C7CEEA, 0x26B5EAD7, 0x26E2F0CB, 0x26FFDAC1, 0x26FFB7B2, 0x26FF9AA2)
 
+        val SPECTRUM = IrColorsPaletteNew(
+                0x1200BFFF,
+                0x121E90FF,
+                0x127B68EE,
+                0x128A2BE2,
+                0x12C71585,
+                0x12FF1493,
+                0x12FF0000,
+                0x12FF8C00,
+                0x12FFD700,
+                0x12ADFF2F,
+                0x1232CD32,
+                0x1220B2AA,
+                0x1200CED1
+        )
+
+        val NIGHTFALL = IrColorsPaletteNew(
+                0x120052A2,
+                0x120065B4,
+                0x1254589F,
+                0x12D47796,
+                0x12FFA3A1,
+                0x12FEE9D6,
+                0x12FFB9AD,
+                0x12FFDA8B,
+                0x12FFC07A,
+                0x12FFAC8A
+        )
         fun parse(palette: String): IrColorsPaletteNew? {
             val colors = palette
                 .split(',')
@@ -39,6 +67,8 @@ val IrConfig.currentPalette: IrColorsPaletteNew
     get() = when (paletteType) {
         IrColorsPaletteType.DEFAULT -> IrColorsPaletteNew.CLASSIC
         IrColorsPaletteType.PASTEL -> IrColorsPaletteNew.PASTEL
+        IrColorsPaletteType.SPECTRUM -> IrColorsPaletteNew.SPECTRUM
+        IrColorsPaletteType.NIGHTFALL -> IrColorsPaletteNew.NIGHTFALL
         IrColorsPaletteType.CUSTOM -> cachedData.customColorPalette ?: IrColorsPaletteNew.PASTEL
     }
 

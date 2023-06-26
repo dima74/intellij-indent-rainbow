@@ -80,6 +80,40 @@ class IrBuiltinColorsPalette(errorColor: Int, indentColors: Array<Int>) : IrColo
             // https://github.com/oderwat/vscode-indent-rainbow/pull/64
             arrayOf(0x26C7CEEA, 0x26B5EAD7, 0x26E2F0CB, 0x26FFDAC1, 0x26FFB7B2, 0x26FF9AA2)
         )
+        val SPECTRUM = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            // Original RRGGBBAA colors: 1200BFFF, 121E90FF, 127B68EE, 128A2BE2, 12C71585, 12FF1493, 12FF0000, 12FF8C00, 12FFD700, 12ADFF2F, 1232CD32, 1220B2AA, 1200CED1
+            arrayOf(
+                0x1200BFFF,
+                0x121E90FF,
+                0x127B68EE,
+                0x128A2BE2,
+                0x12C71585,
+                0x12FF1493,
+                0x12FF0000,
+                0x12FF8C00,
+                0x12FFD700,
+                0x12ADFF2F,
+                0x1232CD32,
+                0x1220B2AA,
+                0x1200CED1
+            )
+        )
+        val NIGHTFALL = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x120052A2,
+                0x120065B4,
+                0x1254589F,
+                0x12D47796,
+                0x12FFA3A1,
+                0x12FEE9D6,
+                0x12FFB9AD,
+                0x12FFDA8B,
+                0x12FFC07A,
+                0x12FFAC8A
+            )
+        )
     }
 }
 
@@ -132,6 +166,8 @@ object IrColors {
             return when (config.paletteType) {
                 IrColorsPaletteType.DEFAULT -> IrBuiltinColorsPalette.DEFAULT
                 IrColorsPaletteType.PASTEL -> IrBuiltinColorsPalette.PASTEL
+                IrColorsPaletteType.SPECTRUM -> IrBuiltinColorsPalette.SPECTRUM
+                IrColorsPaletteType.NIGHTFALL -> IrBuiltinColorsPalette.NIGHTFALL
                 IrColorsPaletteType.CUSTOM -> IrCustomColorsPalette.getInstance(config)
             }
         }
