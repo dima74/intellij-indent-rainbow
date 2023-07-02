@@ -41,6 +41,21 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 radioButton("Nightfall (10 colors)", IrColorsPaletteType.NIGHTFALL)
             }
             row {
+                radioButton("Aquaflow (6 colors)", IrColorsPaletteType.AQUAFLOW)
+            }
+            row {
+                radioButton("Luminarium (16 colors)", IrColorsPaletteType.LUMINARIUM)
+            }
+            row {
+                radioButton("Monochrome (9 colors)", IrColorsPaletteType.MONOCHROME)
+            }
+            row {
+                radioButton("Prism (18 colors)", IrColorsPaletteType.PRISM)
+            }
+            row {
+                radioButton("Solarized (8 colors)", IrColorsPaletteType.SOLARIZED)
+            }
+            row {
                 val radioButton = radioButton("Custom with colors:", IrColorsPaletteType.CUSTOM)
                 val commentText =
                     "Colors must be in AARRGGBB format <br>First color is error color, then indent colors <br>Use comma to separate colors"
