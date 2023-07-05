@@ -35,22 +35,22 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
             }
             row {
-                radioButton("Spectrum (13 colors)", IrColorsPaletteType.SPECTRUM)
+                radioButton("Spectrum (7 colors)", IrColorsPaletteType.SPECTRUM)
             }
             row {
-                radioButton("Nightfall (10 colors)", IrColorsPaletteType.NIGHTFALL)
+                radioButton("Rainbow Spectrum (7 colors)", IrColorsPaletteType.RAINBOW_SPECTRUM)
+            }
+            row {
+                radioButton("Nightfall (7 colors)", IrColorsPaletteType.NIGHTFALL)
             }
             row {
                 radioButton("Aquaflow (6 colors)", IrColorsPaletteType.AQUAFLOW)
             }
             row {
-                radioButton("Luminarium (16 colors)", IrColorsPaletteType.LUMINARIUM)
+                radioButton("Luminarium (7 colors)", IrColorsPaletteType.LUMINARIUM)
             }
             row {
-                radioButton("Monochrome (9 colors)", IrColorsPaletteType.MONOCHROME)
-            }
-            row {
-                radioButton("Prism (18 colors)", IrColorsPaletteType.PRISM)
+                radioButton("Monochrome (7 colors)", IrColorsPaletteType.MONOCHROME)
             }
             row {
                 radioButton("Solarized (8 colors)", IrColorsPaletteType.SOLARIZED)
