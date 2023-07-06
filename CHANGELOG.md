@@ -1,7 +1,6 @@
 ## 2.2.0
-- Updated version to 2.2.0
-- Added new themes: 'Spectrum' and 'Nightfall'
-- Improved slider language for opacity: 'Less Opacity'/'More Opacity' to 'Transparent'/'Opaque'
+- Added new color palettes: Spectrum, Rainbow Spectrum, Nightfall, Aquaflow, Luminarium, Monochrome, and Solarized.
+- Enhanced user experience by improving the language of the opacity slider. Renamed "Less Opacity"/"More Opacity" to "Transparent"/"Opaque".
 
 ## 2.1.0
 - Add option to make edges round
