@@ -80,6 +80,83 @@ class IrBuiltinColorsPalette(errorColor: Int, indentColors: Array<Int>) : IrColo
             // https://github.com/oderwat/vscode-indent-rainbow/pull/64
             arrayOf(0x26C7CEEA, 0x26B5EAD7, 0x26E2F0CB, 0x26FFDAC1, 0x26FFB7B2, 0x26FF9AA2)
         )
+        val SPECTRUM = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x121E90FF, // Dodger Blue
+                0x128A2BE2, // Dark Violet
+                0x12FF0000, // Red
+                0x12FF8C00, // Dark Orange
+                0x12FFD700, // Gold
+                0x1232CD32  // Green
+            )
+        )
+        val RAINBOW_SPECTRUM = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x12FF0000, // Red
+                0x12FF8C00, // Dark Orange
+                0x12FFD700, // Gold
+                0x1232CD32, // Green
+                0x121E90FF, // Dodger Blue
+                0x128A2BE2  // Dark Violet
+            )
+        )
+        val NIGHTFALL = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x120052A2, // Navy
+                0x1254589F, // Medium Purple
+                0x12D47796, // Dusty Dark Rose
+                0x12FFA3A1, // Salmon
+                0x12FFEABD, // Peach
+                0x12FFC07A  // Goldenrod
+            )
+        )
+        val AQUAFLOW = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x1222237D, // Dark Blue
+                0x122A3A88, // Prussian Blue
+                0x12355A97, // Medium Blue
+                0x12417CA7, // Cerulean
+                0x124C9CB6, // Light Blue
+                0x1281C8d8  // Sky Blue
+            )
+        )
+        val LUMINARIUM = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x12FE817D, // Salmon
+                0x12FEAE97, // Deep Peach
+                0x12FEDDBC, // Beige
+                0x12C4DED2, // Light Cyan
+                0x12A3EBDE, // Powder Blue
+                0x12FFFFFF  // White
+            )
+        )
+        val MONOCHROME = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+                arrayOf(
+                0x126B6B6B, // Onyx
+                0x127C7C7C, // Dim Gray
+                0x128E8E8E, // Gray
+                0x12A0A0A0, // Silver
+                0x12B1B1B1, // Quick Silver
+                0x12C3C3C3 //  Silver Chalice
+            )
+        )
+        val SOLARIZED = IrBuiltinColorsPalette(
+            DEFAULT_ERROR_COLOR,
+            arrayOf(
+                0x12CFA000, // Green-Gold
+                0x12E1661C, // Pumpkin
+                0x12F03A37, // Fresh Blood
+                0x12F15098, // Pink
+                0x123095E6, // Dodger Blue
+                0x1238B2A2 // Sea Green
+            )
+        )
     }
 }
 
@@ -132,6 +209,13 @@ object IrColors {
             return when (config.paletteType) {
                 IrColorsPaletteType.DEFAULT -> IrBuiltinColorsPalette.DEFAULT
                 IrColorsPaletteType.PASTEL -> IrBuiltinColorsPalette.PASTEL
+                IrColorsPaletteType.SPECTRUM -> IrBuiltinColorsPalette.SPECTRUM
+                IrColorsPaletteType.RAINBOW_SPECTRUM -> IrBuiltinColorsPalette.RAINBOW_SPECTRUM
+                IrColorsPaletteType.NIGHTFALL -> IrBuiltinColorsPalette.NIGHTFALL
+                IrColorsPaletteType.AQUAFLOW -> IrBuiltinColorsPalette.AQUAFLOW
+                IrColorsPaletteType.LUMINARIUM -> IrBuiltinColorsPalette.LUMINARIUM
+                IrColorsPaletteType.MONOCHROME -> IrBuiltinColorsPalette.MONOCHROME
+                IrColorsPaletteType.SOLARIZED -> IrBuiltinColorsPalette.SOLARIZED
                 IrColorsPaletteType.CUSTOM -> IrCustomColorsPalette.getInstance(config)
             }
         }

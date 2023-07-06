@@ -48,4 +48,4 @@ data class IrConfig(
     }
 }
 
-enum class IrColorsPaletteType { DEFAULT, PASTEL, CUSTOM }
+enum class IrColorsPaletteType { DEFAULT, PASTEL, SPECTRUM, RAINBOW_SPECTRUM, NIGHTFALL, AQUAFLOW, LUMINARIUM, MONOCHROME, SOLARIZED, CUSTOM }

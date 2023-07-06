@@ -11,7 +11,7 @@ This extension colorizes the indentation in front of your text alternating six d
 
 Get it here: [JetBrains Plugins Repository](https://plugins.jetbrains.com/plugin/13308-indent-rainbow)
 
-![Example](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/example_16_10.png)
+https://github.com/bv-torrent/intellij-indent-rainbow/assets/5946246/493486dd-70c9-4275-a90e-ed473c3136b1
 
 ## Change colors
 There are two options to change indent colors in `Settings | Indent Rainbow`:
@@ -20,7 +20,7 @@ There are two options to change indent colors in `Settings | Indent Rainbow`:
 
 2. You can configure each color (the error color and six indent colors) by specifying custom color palette
 
-![Settings page](https://raw.githubusercontent.com/dima74/intellij-indent-rainbow/master/assets/settings.png)
+![settings](https://github.com/bv-torrent/intellij-indent-rainbow/assets/5946246/801a8ab4-5a2b-4525-b4d6-114845397953)
 
 ## Feedback
 Please welcome to submit issues and feature requests!

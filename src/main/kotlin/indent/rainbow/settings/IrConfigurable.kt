@@ -35,6 +35,27 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
             }
             row {
+                radioButton("Spectrum (6 colors)", IrColorsPaletteType.SPECTRUM)
+            }
+            row {
+                radioButton("Rainbow Spectrum (6 colors)", IrColorsPaletteType.RAINBOW_SPECTRUM)
+            }
+            row {
+                radioButton("Nightfall (6 colors)", IrColorsPaletteType.NIGHTFALL)
+            }
+            row {
+                radioButton("Aquaflow (6 colors)", IrColorsPaletteType.AQUAFLOW)
+            }
+            row {
+                radioButton("Luminarium (6 colors)", IrColorsPaletteType.LUMINARIUM)
+            }
+            row {
+                radioButton("Monochrome (6 colors)", IrColorsPaletteType.MONOCHROME)
+            }
+            row {
+                radioButton("Solarized (6 colors)", IrColorsPaletteType.SOLARIZED)
+            }
+            row {
                 val radioButton = radioButton("Custom with colors:", IrColorsPaletteType.CUSTOM)
                 val commentText =
                     "Colors must be in AARRGGBB format <br>First color is error color, then indent colors <br>Use comma to separate colors"
@@ -53,8 +74,8 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
         val slider = slider(min, max, 0, 0)
         slider.labelTable(
             hashMapOf(
-                min to JLabel("Less opacity"),
-                max to JLabel("More opacity"),
+                min to JLabel("Transparent"),
+                max to JLabel("Opaque"),
                 0 to JLabel("Default"),
             )
         )
