@@ -22,7 +22,6 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
 
         val SPECTRUM = IrColorsPaletteNew(
                 0x121E90FF, // Dodger Blue
-                0x126D24B1, // Indigo
                 0x128A2BE2, // Dark Violet
                 0x12FF0000, // Red
                 0x12FF8C00, // Dark Orange
@@ -36,13 +35,11 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
                 0x12FFD700, // Gold
                 0x1232CD32, // Green
                 0x121E90FF, // Dodger Blue
-                0x126D24B1, // Indigo
                 0x128A2BE2  // Dark Violet
         )
 
         val NIGHTFALL = IrColorsPaletteNew(
                 0x120052A2, // Navy
-                0x120065B4, // Dodger Blue
                 0x1254589F, // Medium Purple
                 0x12D47796, // Dusty Dark Rose
                 0x12FFA3A1, // Salmon
@@ -60,7 +57,6 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
         )
 
         val LUMINARIUM = IrColorsPaletteNew(
-                0x12FE5768, // Coral Pink
                 0x12FE817D, // Salmon
                 0x12FEAE97, // Deep Peach
                 0x12FEDDBC, // Beige
@@ -70,7 +66,6 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
         )
 
         val MONOCHROME = IrColorsPaletteNew(
-                0x12595959, // Outer Space
                 0x126B6B6B, // Onyx
                 0x127C7C7C, // Dim Gray
                 0x128E8E8E, // Gray
@@ -84,10 +79,8 @@ class IrColorsPaletteNew(val errorColor: Color, val indentColors: Array<Color>) 
                 0x12E1661C, // Pumpkin
                 0x12F03A37, // Fresh Blood
                 0x12F15098, // Pink
-                0x127884D8, // Cornflower Blue
                 0x123095E6, // Dodger Blue
-                0x1238B2A2, // Sea Green
-                0x1298B500  // Chartreuse
+                0x1238B2A2 // Sea Green
         )
         fun parse(palette: String): IrColorsPaletteNew? {
             val colors = palette
