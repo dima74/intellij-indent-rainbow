@@ -35,25 +35,25 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 radioButton("Pastel (6 colors)", IrColorsPaletteType.PASTEL)
             }
             row {
-                radioButton("Spectrum (7 colors)", IrColorsPaletteType.SPECTRUM)
+                radioButton("Spectrum (6 colors)", IrColorsPaletteType.SPECTRUM)
             }
             row {
-                radioButton("Rainbow Spectrum (7 colors)", IrColorsPaletteType.RAINBOW_SPECTRUM)
+                radioButton("Rainbow Spectrum (6 colors)", IrColorsPaletteType.RAINBOW_SPECTRUM)
             }
             row {
-                radioButton("Nightfall (7 colors)", IrColorsPaletteType.NIGHTFALL)
+                radioButton("Nightfall (6 colors)", IrColorsPaletteType.NIGHTFALL)
             }
             row {
                 radioButton("Aquaflow (6 colors)", IrColorsPaletteType.AQUAFLOW)
             }
             row {
-                radioButton("Luminarium (7 colors)", IrColorsPaletteType.LUMINARIUM)
+                radioButton("Luminarium (6 colors)", IrColorsPaletteType.LUMINARIUM)
             }
             row {
-                radioButton("Monochrome (7 colors)", IrColorsPaletteType.MONOCHROME)
+                radioButton("Monochrome (6 colors)", IrColorsPaletteType.MONOCHROME)
             }
             row {
-                radioButton("Solarized (8 colors)", IrColorsPaletteType.SOLARIZED)
+                radioButton("Solarized (6 colors)", IrColorsPaletteType.SOLARIZED)
             }
             row {
                 val radioButton = radioButton("Custom with colors:", IrColorsPaletteType.CUSTOM)
