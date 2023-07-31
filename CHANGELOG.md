@@ -1,3 +1,7 @@
+## 2.2.0
+- Fixed plugin icon in 2023.2
+- Enhanced user experience by improving the language of the opacity slider. Renamed "Less Opacity"/"More Opacity" to "Transparent"/"Opaque" (thanks [@bv-torrent](https://github.com/bv-torrent)!)
+
 ## 2.1.0
 - Add option to make edges round
 - Fix language detection for "Never highlight indent as error" option
