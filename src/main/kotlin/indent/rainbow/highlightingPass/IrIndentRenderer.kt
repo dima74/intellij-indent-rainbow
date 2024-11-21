@@ -27,7 +27,8 @@ class IrHighlighterRenderer private constructor(
         val endPosition = editor.offsetToVisualPosition(highlighter.endOffset)
 
         val topRightOffset = editor.visualPositionToOffset(VisualPosition(startPosition.line, endPosition.column))
-        if (level != -1 && topRightOffset - highlighter.startOffset != indentSize) return
+        val colDiff = topRightOffset - highlighter.startOffset
+//        if (level != -1 && colDiff != indentSize && colDiff != continuationSize) return
 
         val isOneLine = startPosition.line == endPosition.line
         if (isOneLine && startPosition.column == endPosition.column) return

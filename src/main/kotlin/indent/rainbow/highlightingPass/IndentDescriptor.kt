@@ -42,28 +42,45 @@ class IndentDescriptor(
 }
 
 fun createDescriptors(document: Document, indents: LineIndents, onlyErrors: Boolean): List<IndentDescriptor> {
-    val (levels, indentSize) = indents
-    var previousLevel = 0
+    val (lines, indentSize, continuationSize) = indents
+    var prevLine = LineIndent(0, false)
     val descriptors = mutableListOf<IndentDescriptor>()
-    for (line in levels.indices) {
-        val currentLevel = levels[line]
-        if (currentLevel == -1) {
-            descriptors += createErrorDescriptor(document, line)
-            previousLevel = 0
+    var continuationNum = 0
+    for (i in lines.indices) {
+        val curLine = lines[i]
+        if (curLine.level == -1) {
+            descriptors += createErrorDescriptor(document, i)
+            prevLine = LineIndent(0, false)
             continue
         }
 
-        for (level in previousLevel until currentLevel) {
-            var lineEnd = line + 1
-            while (lineEnd < levels.size && levels[lineEnd] > level) {
+        for (level in prevLine.level until curLine.level) {
+            var lineEnd = i + 1
+            while (lineEnd < lines.size && lines[lineEnd].level > level) {
                 ++lineEnd
             }
             --lineEnd  // inclusive
             if (!onlyErrors) {
-                descriptors += createDescriptor(document, line, lineEnd, level, indentSize)
+                descriptors += createDescriptor(document, i, lineEnd, level, indentSize)
             }
         }
-        previousLevel = currentLevel
+
+        if (curLine.isContinuation) {
+            continuationNum++
+            var lineEnd = i + 1
+            while (lineEnd < lines.size && lines[lineEnd].level == curLine.level && lines[lineEnd].isContinuation) {
+                lineEnd++
+            }
+            --lineEnd  // inclusive
+
+            if (!onlyErrors) {
+                descriptors += createDescriptor(document, i, lineEnd, curLine.level - 1, indentSize, continuationSize, continuationNum)
+            }
+        } else {
+            continuationNum = 0
+        }
+
+        prevLine = curLine
     }
     return descriptors
 }
@@ -71,8 +88,15 @@ fun createDescriptors(document: Document, indents: LineIndents, onlyErrors: Bool
 fun createDescriptor(document: Document, lineStart: Int, lineEnd: Int, level: Int, indentSize: Int): IndentDescriptor {
     val lineStartOffset = document.getLineStartOffset(lineStart)
     val lineEndOffset = document.getLineStartOffset(lineEnd)
-    val startOffset = lineStartOffset + level * indentSize
-    val endOffset = lineEndOffset + (level + 1) * indentSize
+    val startOffset = lineStartOffset + indentSize * level
+    val endOffset = lineEndOffset + indentSize * (level + 1)
+    return IndentDescriptor(startOffset, endOffset, level, indentSize)
+}
+fun createDescriptor(document: Document, lineStart: Int, lineEnd: Int, level: Int, indentSize: Int, continuationSize: Int, continuationNum: Int): IndentDescriptor {
+    val lineStartOffset = document.getLineStartOffset(lineStart)
+    val lineEndOffset = document.getLineStartOffset(lineEnd)
+    val startOffset = lineStartOffset + indentSize * (level + 1) + continuationSize * (continuationNum - 1)
+    val endOffset = lineEndOffset + indentSize * (level + 1) + continuationSize * continuationNum
     return IndentDescriptor(startOffset, endOffset, level, indentSize)
 }
 
