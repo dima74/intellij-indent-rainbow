@@ -66,7 +66,7 @@ class IrConfigurable : BoundConfigurable("Indent Rainbow") {
                 slider.component.value = opacityMultiplierValue
             }
         )
-        slider.horizontalAlign(HorizontalAlign.FILL)
+        slider.align(Align.FILL)
     }
 
     override fun apply() {
