@@ -97,4 +97,8 @@ tasks {
         // Don't show "Tip of the Day" at startup
         jvmArgs("-Dide.show.tips.on.startup.default.value=false")
     }
+
+    runPluginVerifier {
+        ideVersions.set(listOf("2025.1.6", "2025.2.2"))
+    }
 }
